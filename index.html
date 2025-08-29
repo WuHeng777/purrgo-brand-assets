@@ -1,1 +1,48 @@
-index.html
+<!doctype html>
+document.getElementById('guildContrib').textContent = state.guild.contribution|0;
+}
+function createGuild(){
+if((state.user.lifetimeSpend||0) < GUILD_CREATE_NEED){ return alert('尚未達到創立門檻：累積消費 $1,200'); }
+const name = prompt('輸入公會名稱'); if(!name) return;
+state.guild.name=name; state.guild.level=1; save(); alert('公會已創立！');
+}
+function contribute(n){ if(!state.guild.name) return alert('請先創立公會'); state.guild.contribution += n; if(state.guild.contribution>= (state.guild.level*500)) { state.guild.level++; alert('公會升級！'); } save(); }
+function mockWar(){ if(!state.guild.name) return alert('先創立公會'); const add=Math.floor(Math.random()*500+100); const tr=document.createElement('tr'); tr.innerHTML=`<td>*</td><td>${state.guild.name}</td><td>你的區域</td><td>+${add}</td>`; document.getElementById('warTable').prepend(tr); }
+
+
+// ===== 健檢預約（示範，保存在本機） =====
+function bookVet(e){ e.preventDefault(); const f=e.target; const rec={ name:f[0].value, city:f[1].value, note:f[2].value, time:new Date().toLocaleString() }; state.vet.push(rec); save(); f.reset(); alert('已建立預約（示範，本機存檔）'); return false; }
+function renderVet(){ const box=document.getElementById('vetList'); if(!box) return; if(!state.vet.length){ box.textContent='目前無預約紀錄（示範）'; return;} box.innerHTML = '預約紀錄：<br>'+state.vet.map(v=>`${v.time}｜${v.city}｜${v.name}`).join('<br>'); }
+
+
+// ===== 照片牆（本機） =====
+function addPhoto(e){ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ state.wall = state.wall||[]; state.wall.push(reader.result); save(); }; reader.readAsDataURL(file); }
+function renderWall(){ const wall=document.getElementById('wall'); if(!wall) return; wall.innerHTML=''; (state.wall||[]).forEach(src=>{ const img=new Image(); img.src=src; img.style.borderRadius='12px'; wall.appendChild(img); }); }
+function clearWall(){ if(confirm('清除所有本機照片？')){ state.wall=[]; save(); }}
+
+
+// ===== 地圖（Leaflet + OSM） =====
+async function initMap(){
+const map=L.map('map').setView([25.0330,121.5654],12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+try{
+const res = await fetch('/data/locations.json',{cache:'no-cache'}); const points = await res.json();
+points.forEach(p=>{
+const m=L.marker([p.lat,p.lng]).addTo(map);
+const gLink = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
+const aLink = `https://maps.apple.com/?q=${p.lat},${p.lng}`;
+m.bindPopup(`<b>${p.name}</b><br>${p.address||''}<br><a href='${gLink}' target='_blank'>Google Maps</a> ｜ <a href='${aLink}' target='_blank'>Apple Maps</a>`);
+});
+}catch(e){ /* ignore */ }
+}
+
+
+// ===== 聯絡表單（示範） =====
+function submitForm(e){ e.preventDefault(); alert('已收到您的訊息（示範）'); e.target.reset(); return false; }
+
+
+// ===== 啟動 =====
+window.addEventListener('DOMContentLoaded',()=>{ loadProducts(); initMap(); renderVet(); if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); } });
+</script>
+</body>
+</html>
