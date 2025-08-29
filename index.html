@@ -132,14 +132,14 @@
   // 其餘函式（vip/guild/vet/photo/cart…）保留你原本內容即可
 
   // 啟動：把 service worker 改成相對路徑
-  window.addEventListener('DOMContentLoaded',()=>{
-    loadProducts();
-    initMap();
-    renderVet?.();
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // ... 你的其他初始化 ...
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
     }
   });
+</script>
 </script>
 </body>
 </html>
