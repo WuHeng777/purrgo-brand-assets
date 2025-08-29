@@ -1,1 +1,56 @@
-style.css
+/* ===== PurrGo Design System (Public Demo v1) ===== */
+:root{
+--brand:#ff7f50; --brand-ink:#000;
+--bg:#fff; --ink:#111; --muted:#666; --line:#eee;
+--radius:14px; --shadow:0 10px 24px rgba(0,0,0,.06);
+--container:min(1100px,92vw);
+}
+@media (prefers-color-scheme: dark){
+:root{ --bg:#0b0b0c; --ink:#eee; --muted:#aaa; --line:#222 }
+body{ background:#0b0b0c }
+}
+*{ box-sizing:border-box }
+html,body{ margin:0; padding:0 }
+body{ color:var(--ink); background:var(--bg);
+font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC",sans-serif }
+a{ color:inherit; text-decoration:none }
+img{ max-width:100%; display:block }
+.container{ width:var(--container); margin:auto }
+
+
+header{ position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(10px);
+background:color-mix(in oklab,var(--bg),transparent 8%); border-bottom:1px solid var(--line) }
+.nav{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; gap:12px }
+.brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px }
+.logo{ width:28px;height:28px; border-radius:8px; background:var(--brand); display:grid; place-items:center; color:var(--brand-ink); font-weight:900 }
+.tabs{ display:flex; gap:6px; flex-wrap:wrap }
+.tab{ padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-weight:600 }
+.tab[aria-current="page"]{ background:var(--brand); border-color:var(--brand); color:var(--brand-ink) }
+
+
+main{ padding:28px 0 80px }
+.grid{ display:grid; gap:16px }
+.g-2{ grid-template-columns:repeat(2,1fr) }
+.g-3{ grid-template-columns:repeat(3,1fr) }
+.gcol-2{ grid-column:1/-1 }
+@media(max-width:900px){ .g-2,.g-3{ grid-template-columns:1fr } }
+
+
+.card{ background:linear-gradient(180deg,color-mix(in oklab,var(--bg),#fff 6%),color-mix(in oklab,var(--bg),#000 2%));
+border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px }
+.btn{ display:inline-grid; place-items:center; height:44px; padding:0 18px; border-radius:12px;
+font-weight:800; border:1.5px solid #000; background:var(--brand); color:var(--brand-ink); cursor:pointer }
+.btn.secondary{ background:transparent; border-color:var(--line); color:var(--ink) }
+.pill{ display:inline-block; padding:4px 10px; border-radius:999px; background:color-mix(in oklab,var(--brand),#fff 70%); color:#000; font-weight:700; font-size:12px }
+.muted{ color:var(--muted) }
+.empty{ text-align:center; padding:22px; border:1px dashed var(--line); border-radius:12px }
+.input,textarea,select{ width:100%; height:44px; border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:transparent; color:inherit }
+textarea{ height:120px; resize:vertical }
+.inline{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+.list{ padding-left:18px }
+.list li{ margin:6px 0 }
+.hero{ display:grid; grid-template-columns:1.15fr .85fr; gap:22px; align-items:center; margin:10px 0 28px }
+@media(max-width:900px){ .hero{ grid-template-columns:1fr } }
+.hero-title{ margin:.2em 0 .3em; font-size:clamp(28px,3.4vw,44px); line-height:1.15 }
+.table{ width:100%; border-collapse:collapse; font-size:14px }
+.table th,.table td{ border-bottom:1px solid var(--line); padding:10px 8px; text-align:left }
