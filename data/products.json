@@ -1,1 +1,5 @@
-products.json
+[
+{"id":"tofu-young","name":"微量元素驅蟲砂｜幼貓","price":399,"spec":"2.5kg","bullets":["食品級原料","分齡精準","抑臭結團"]},
+{"id":"tofu-adult","name":"微量元素驅蟲砂｜成貓","price":429,"spec":"2.5kg","bullets":["長效抑臭","日常補給","溫和不刺激"]},
+{"id":"tofu-senior","name":"微量元素驅蟲砂｜熟齡","price":459,"spec":"2.5kg","bullets":["關節照護","減敏溫和","硒酵母配方"]}
+]
