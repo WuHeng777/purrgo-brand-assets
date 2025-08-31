@@ -1,5 +1,29 @@
 [
-{"id":"tofu-young","name":"微量元素驅蟲砂｜幼貓","price":399,"spec":"2.5kg","bullets":["食品級原料","分齡精準","抑臭結團"]},
-{"id":"tofu-adult","name":"微量元素驅蟲砂｜成貓","price":429,"spec":"2.5kg","bullets":["長效抑臭","日常補給","溫和不刺激"]},
-{"id":"tofu-senior","name":"微量元素驅蟲砂｜熟齡","price":459,"spec":"2.5kg","bullets":["關節照護","減敏溫和","硒酵母配方"]}
+  {
+    "id": "tofu-young",
+    "name": "微量元素驅蟲砂｜幼貓",
+    "price": 399,
+    "spec": "2.5kg",
+    "img": "./img/tofu-young.jpg",
+    "bullets": ["食品級原料", "分齡精準", "溫和呵護"],
+    "desc": "專為幼貓設計，低粉塵、好適應。搭配基礎微量元素，溫和守護。"
+  },
+  {
+    "id": "tofu-adult",
+    "name": "微量元素驅蟲砂｜成貓",
+    "price": 429,
+    "spec": "2.5kg",
+    "img": "./img/tofu-adult.jpg",
+    "bullets": ["長效抑臭", "強力結團", "日常補給"],
+    "desc": "日常耐用的萬用配方，結團力佳、抑臭穩定，是多數貓奴的首選。"
+  },
+  {
+    "id": "tofu-senior",
+    "name": "微量元素驅蟲砂｜熟齡",
+    "price": 459,
+    "spec": "2.5kg",
+    "img": "./img/tofu-senior.jpg",
+    "bullets": ["關節照護", "減敏溫和", "硒酵母配方"],
+    "desc": "配方針對熟齡貓的細膩需求設計，氣味溫和、腳感舒適。"
+  }
 ]
