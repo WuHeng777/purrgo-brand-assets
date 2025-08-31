@@ -24,29 +24,41 @@
 <body>
 
 <!-- Header -->
-<header class="container">
-  <nav class="nav">
-    <a class="brand" href="#home" onclick="route('home')">
-      <img src="./logo/logo-192.png" alt="" class="logo" />
-      <span>PurrGo.TW</span>
+<header class="site-header">
+  <div class="nav container">
+    <!-- 品牌 -->
+    <a class="brand" href="#home" onclick="scrollToHash('home')">
+      <img class="logo" src="./logo/logo-192.png" alt="PurrGo Logo" />
+      <span class="brand-name">PurrGo 喵來速</span>
     </a>
 
-    <!-- Desktop Tabs -->
-    <div class="tabs desktop-only">
-      <a class="tab" data-sec="home"      href="#home"      onclick="route('home')">首頁</a>
-      <a class="tab" data-sec="products"  href="#products"  onclick="route('products')">產品</a>
-      <a class="tab" data-sec="guild"     href="#guild"     onclick="route('guild')">公會</a>
-      <a class="tab" data-sec="kiosk"     href="#kiosk"     onclick="route('kiosk')">據點</a>
-      <a class="tab" data-sec="community" href="#community" onclick="route('community')">照片牆</a>
-      <a class="tab" data-sec="about"     href="#about"     onclick="route('about')">理念</a>
-      <a class="tab" data-sec="contact"   href="#contact"   onclick="route('contact')">聯絡</a>
-    </div>
+    <!-- 桌機：水平分頁 -->
+    <nav class="tabs" aria-label="主選單（桌機）">
+      <a class="tab" data-sec="home"     href="#home">首頁</a>
+      <a class="tab" data-sec="products" href="#products">產品</a>
+      <a class="tab" data-sec="guild"    href="#guild">公會</a>
+      <a class="tab" data-sec="kiosk"    href="#kiosk">據點</a>
+      <a class="tab" data-sec="community" href="#community">照片牆</a>
+      <a class="tab" data-sec="about"    href="#about">理念</a>
+      <a class="tab" data-sec="contact"  href="#contact">聯絡</a>
+    </nav>
 
-    <!-- Mobile Hamburger -->
-    <button class="hamburger" id="menuBtn" aria-label="開啟選單">
-  <span></span><span></span><span></span>
-</button>
-  </nav>
+    <!-- 手機：漢堡按鈕 -->
+    <button class="menu-toggle" aria-label="開啟選單" title="開啟選單">
+      <span class="menu-ico" aria-hidden="true"></span>
+    </button>
+
+    <!-- 手機：抽屜式選單 -->
+    <nav id="menu" class="menu" aria-label="主選單（手機）">
+      <a href="#home"       onclick="closeMenu()">首頁</a>
+      <a href="#products"   onclick="closeMenu()">產品</a>
+      <a href="#guild"      onclick="closeMenu()">公會</a>
+      <a href="#kiosk"      onclick="closeMenu()">據點</a>
+      <a href="#community"  onclick="closeMenu()">照片牆</a>
+      <a href="#about"      onclick="closeMenu()">理念</a>
+      <a href="#contact"    onclick="closeMenu()">聯絡</a>
+    </nav>
+  </div>
 </header>
 
 <!-- Drawer（手機） -->
