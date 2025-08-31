@@ -293,6 +293,14 @@
   © PurrGo 喵來速 ｜ 公開 Demo
 </footer>
 
+<!-- Floating Action Buttons -->
+<div class="fab">
+  <button class="fab-btn" aria-label="回頂部" title="回頂部" onclick="scrollToHash('home')">⬆</button>
+  <button class="fab-btn" aria-label="看產品" title="看產品" onclick="scrollToHash('products')">🛒</button>
+  <button class="fab-btn" aria-label="看據點" title="看據點" onclick="scrollToHash('kiosk')">📍</button>
+  <button class="fab-btn" aria-label="聯絡我們" title="聯絡我們" onclick="scrollToHash('contact')">✉</button>
+</div>
+
 <!-- Product Detail Modal -->
 <div id="modal" class="modal" aria-hidden="true">
   <div class="modal-backdrop" onclick="closeModal()"></div>
@@ -523,5 +531,6 @@ function initReveal(){
   targets.forEach(t => io.observe(t));
 }
 </script>
+
 </body>
 </html>
