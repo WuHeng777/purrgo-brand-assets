@@ -690,6 +690,34 @@ window.addEventListener('DOMContentLoaded', async () => {
   save();
 });
 window.addEventListener('hashchange', syncRoute);
+  // ===== 漢堡選單控制 =====
+  const toggle = document.querySelector('.menu-toggle');
+  const menu   = document.getElementById('menu');
+  toggle?.addEventListener('click', () => {
+    menu?.classList.toggle('active');
+  });
+  function closeMenu(){ menu?.classList.remove('active'); }
+
+  // ===== 頁籤高亮（沿用你原本的 highlight，如沒有就用底下這個） =====
+  function highlight(){
+    const hash=(location.hash||'#home').replace('#','');
+    document.querySelectorAll('.tab').forEach(a=>{
+      const sec = a.getAttribute('data-sec');
+      a.setAttribute('aria-current', sec===hash ? 'page':'false');
+      a.classList.toggle('active', sec===hash);
+    });
+  }
+  window.addEventListener('hashchange', highlight);
+  window.addEventListener('DOMContentLoaded', highlight);
+
+  // ===== 橫滑左右按鈕（若已實作可略過） =====
+  function scrollRow(rowId, dir=1){
+    const el = document.getElementById(rowId);
+    if(!el) return;
+    const card = el.querySelector(':scope > *');
+    const step = card ? (card.clientWidth + 16) : 360;
+    el.scrollBy({ left: step*dir, behavior:'smooth' });
+  }
 </script>
 </body>
 </html>
