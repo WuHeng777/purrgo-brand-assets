@@ -1,196 +1,131 @@
-/* ===== PurrGo Design System (Public Demo v1) ===== */
+/* ===== Design System ===== */
 :root{
-  /* 色票（淺色主題） */
-  --brand:#ff7f50;           /* 主品牌色 */
-  --brand-ink:#000;          /* 品牌色上的字色（深色品牌建議用黑） */
-  --bg:#ffffff;              /* 頁面背景 */
-  --ink:#111111;             /* 主要文字 */
-  --muted:#666666;           /* 次要文字 */
-  --line:#eeeeee;            /* 邊框/分隔線 */
-  --card:#18191a;            /* 深色卡片底（深色模式用） */
-
-  /* 字體與排版 */
-  --font: "Noto Sans TC", "PingFang TC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --h1: clamp(28px, 4vw, 40px);
-  --h2: clamp(22px, 3vw, 28px);
-  --h3: clamp(18px, 2.4vw, 22px);
-  --p: 16px;
-
-  /* UI 語彙 */
-  --radius: 14px;
-  --radius-lg: 20px;
-  --shadow: 0 10px 24px rgba(0,0,0,.06);
-  --gap: 12px;
-
-  /* 版心寬度 */
-  --container: min(1100px, 92vw);
+  --brand:#ff7f50; --brand-ink:#000;
+  --bg:#fff; --ink:#111; --muted:#666; --line:#eee;
+  --radius:14px; --radius-lg:20px;
+  --shadow:0 10px 24px rgba(0,0,0,.06);
+  --shadow-strong: 0 16px 40px rgba(0,0,0,.12);
+  --container:min(1120px,92vw);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --band-alt: color-mix(in oklab, var(--bg), #000 3%);
 }
-
-/* 深色主題（跟隨系統） */
 @media (prefers-color-scheme: dark){
-  :root{
-    --bg:#0b0b0c;
-    --ink:#eeeeee;
-    --muted:#aaaaaa;
-    --line:#222222;
-    --shadow: 0 10px 24px rgba(0,0,0,.25);
-  }
-  body{ background:#0b0b0c; }
+  :root{ --bg:#0b0b0c; --ink:#eee; --muted:#aaa; --line:#222; --shadow:0 10px 24px rgba(0,0,0,.25); --band-alt: color-mix(in oklab, var(--bg), #fff 4%) }
+  body{ background:#0b0b0c }
 }
-
-/* 標準化 */
 *{ box-sizing:border-box }
 html,body{ margin:0; padding:0 }
-body{
-  color:var(--ink);
-  background:var(--bg);
-  font: var(--p)/1.65 var(--font);
-}
+body{ color:var(--ink); background:var(--bg);
+  font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC",sans-serif }
 a{ color:inherit; text-decoration:none }
 img{ max-width:100%; display:block }
 .container{ width:var(--container); margin:auto }
 
+/* ===== Band（章節分帶） ===== */
+.band{ padding:44px 0; position:relative }
+.band-alt{ background: var(--band-alt) }
+.band-hero{ padding-top:28px; padding-bottom:44px }
+.section-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:16px }
+.section-head h2{ margin:.2em 0 0; font-size:clamp(22px,3.2vw,32px) }
+.section-sub{ margin:6px 0 0; color:var(--muted) }
+.divider{ height:1px; background:var(--line); margin:18px 0 }
+
 /* Header / Nav */
-header{
-  position:sticky; top:0; z-index:10;
-  backdrop-filter:saturate(180%) blur(10px);
-  /* 先給純色 fallback，再給 color-mix（新瀏覽器） */
-  background: var(--bg);
-  background: color-mix(in oklab, var(--bg), transparent 8%);
-  border-bottom:1px solid var(--line);
-}
+header{ position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(10px);
+  background:var(--bg); background:color-mix(in oklab,var(--bg),transparent 8%); border-bottom:1px solid var(--line) }
 .nav{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; gap:12px }
 .brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px }
-.logo{ width:28px; height:28px; border-radius:8px; background:var(--brand);
-       display:grid; place-items:center; color:var(--brand-ink); font-weight:900 }
+.logo{ width:28px;height:28px; border-radius:8px; background:var(--brand); display:grid; place-items:center; color:var(--brand-ink); font-weight:900; box-shadow: var(--shadow) }
 .tabs{ display:flex; gap:6px; flex-wrap:wrap }
-.tab{ padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-weight:600 }
-.tab[aria-current="page"]{ background:var(--brand); border-color:var(--brand); color:var(--brand-ink) }
+.tab{ position:relative; padding:10px 14px; border:1px solid var(--line); border-radius:999px; font-weight:700;
+  transition:transform .15s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease) }
+.tab:hover{ transform:translateY(-1px); box-shadow:var(--shadow) }
+.tab::after{ content:""; position:absolute; left:14px; right:14px; bottom:6px; height:2px; background:var(--brand); transform:scaleX(0); transform-origin:left; transition:transform .25s var(--ease) }
+.tab[aria-current="page"]{ background:var(--brand); border-color:var(--brand); color:var(--brand-ink); box-shadow:var(--shadow) }
+.tab[aria-current="page"]::after{ transform:scaleX(1) }
 
-/* Layout */
-main{ padding:28px 0 80px }
+/* Layout utils */
 .grid{ display:grid; gap:16px }
 .g-2{ grid-template-columns:repeat(2,1fr) }
 .g-3{ grid-template-columns:repeat(3,1fr) }
+.g-4{ grid-template-columns:repeat(4,1fr) }
 .gcol-2{ grid-column:1/-1 }
-@media(max-width:900px){ .g-2,.g-3{ grid-template-columns:1fr } }
+@media(max-width:900px){ .g-2,.g-3,.g-4{ grid-template-columns:1fr } }
+.mt-1{ margin-top:10px } .mt-2{ margin-top:18px }
 
 /* Cards / Buttons / Inputs */
-.card{
-  /* 先給純色 fallback，再給漸層與 color-mix（新瀏覽器） */
-  background: #fff;
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--bg), #ffffff 6%),
-    color-mix(in oklab, var(--bg), #000000 2%)
-  );
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:22px;
-}
-.btn{
-  display:inline-grid; place-items:center;
-  height:44px; padding:0 18px; border-radius:12px;
-  font-weight:800; border:1.5px solid #000;
-  background:var(--brand); color:var(--brand-ink);
-  cursor:pointer;
-}
+.card{ background:linear-gradient(180deg,color-mix(in oklab,var(--bg),#fff 6%),color-mix(in oklab,var(--bg),#000 2%));
+  border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px }
+.card.subtle{ box-shadow: var(--shadow) }
+.card.mini{ padding:16px }
+
+.btn{ display:inline-grid; place-items:center; height:44px; padding:0 18px; border-radius:12px;
+  font-weight:800; border:1.5px solid #000; background:var(--brand); color:var(--brand-ink);
+  cursor:pointer; transition: transform .12s var(--ease), box-shadow .25s var(--ease) }
+.btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow-strong) }
+.btn:active{ transform: translateY(0); box-shadow: var(--shadow) }
 .btn.secondary{ background:transparent; border-color:var(--line); color:var(--ink) }
-.pill{ display:inline-block; padding:4px 10px; border-radius:999px;
-       background: color-mix(in oklab, var(--brand), #fff 70%);
-       color:#000; font-weight:700; font-size:12px }
+.btn.tertiary{ background:transparent; border:1.5px dashed var(--line); color:var(--ink) }
+
+.pill{ display:inline-block; padding:4px 10px; border-radius:999px; background:color-mix(in oklab,var(--brand),#fff 70%); color:#000; font-weight:700; font-size:12px; box-shadow:var(--shadow) }
 .muted{ color:var(--muted) }
+.small{ font-size:13px }
 .empty{ text-align:center; padding:22px; border:1px dashed var(--line); border-radius:12px }
-.input, textarea, select{
-  width:100%; height:44px; border:1px solid var(--line);
-  border-radius:10px; padding:10px 12px; background:transparent; color:inherit
-}
+.input,textarea,select{ width:100%; height:44px; border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:transparent; color:inherit }
 textarea{ height:120px; resize:vertical }
 .inline{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
 .list{ padding-left:18px }
 .list li{ margin:6px 0 }
 
 /* Hero */
-.hero{ display:grid; grid-template-columns:1.15fr .85fr; gap:22px; align-items:center; margin:10px 0 28px }
+.hero{ display:grid; grid-template-columns:1.15fr .85fr; gap:22px; align-items:center }
 @media(max-width:900px){ .hero{ grid-template-columns:1fr } }
 .hero-title{ margin:.2em 0 .3em; font-size:clamp(28px,3.4vw,44px); line-height:1.15 }
-
-/* ===== Hero Section ===== */
-.hero {
-  display: grid;
-  grid-template-columns: 1.15fr .85fr;
-  gap: 22px;
-  align-items: center;
-  margin: 10px 0 28px;
-}
-
-/* 文字側 */
-.hero-copy .hero-title {
-  margin: .2em 0 .3em;
-  font-size: clamp(28px, 3.6vw, 44px);
-  line-height: 1.15;
-}
-
-/* 視覺側（圓角漸層背景 + 浮起 logo） */
 .hero-art .hero-visual{
-  width: 100%;
-  aspect-ratio: 1.2 / 1;
-  border-radius: var(--radius-lg);
-  background:
-    radial-gradient(100% 120% at 80% 20%, color-mix(in oklab, var(--brand), #fff 60%), transparent 40%),
-    radial-gradient(120% 120% at 10% 90%, color-mix(in oklab, var(--brand), #000 30%), transparent 45%),
-    linear-gradient(180deg, color-mix(in oklab, var(--bg), #fff 6%), color-mix(in oklab, var(--bg), #000 2%));
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  position: relative;
-  overflow: hidden;
+  width:100%; aspect-ratio: 1.2/1; border-radius:var(--radius-lg);
+  background: radial-gradient(100% 120% at 80% 20%, color-mix(in oklab, var(--brand), #fff 60%), transparent 40%),
+              radial-gradient(120% 120% at 10% 90%, color-mix(in oklab, var(--brand), #000 30%), transparent 45%),
+              linear-gradient(180deg, color-mix(in oklab, var(--bg), #fff 6%), color-mix(in oklab, var(--bg), #000 2%));
+  display:grid; place-items:center; border:1px solid var(--line); box-shadow:var(--shadow-strong); position:relative; overflow:hidden;
 }
-.hero-logo{
-  width: clamp(140px, 28vw, 260px);
-  filter: drop-shadow(0 16px 28px rgba(0,0,0,.25));
-  transform: translateY(0);
-  transition: transform .3s ease;
-}
-.hero-visual:hover .hero-logo{ transform: translateY(-4px); }
+.hero-logo{ width: clamp(140px, 28vw, 260px); filter: drop-shadow(0 16px 28px rgba(0,0,0,.25)); transition: transform .25s var(--ease) }
+.hero-visual:hover .hero-logo{ transform: translateY(-3px) }
 
-/* 第三種按鈕（透明邊框） */
-.btn.tertiary{
-  background: transparent;
-  border: 1.5px dashed var(--line);
-  color: var(--ink);
-}
+/* Products */
+.product-card{ display:flex; flex-direction:column; overflow:hidden; padding:0 }
+.product-img{ aspect-ratio: 4/3; background:#f7f7f7; border-bottom:1px solid var(--line) }
+.product-img img{ width:100%; height:100%; object-fit:cover }
+.product-body{ padding:16px }
+.price{ font-weight:900 }
 
-/* 響應式：手機單欄 */
-@media (max-width: 900px){
-  .hero{ grid-template-columns: 1fr; }
-  .hero-art{ order: -1; }           /* 先看圖再看字（可依偏好調整） */
-}
+/* Progress bars */
+.progress{ width:100%; height:10px; background:color-mix(in oklab,var(--bg),#000 6%); border-radius:999px; overflow:hidden; border:1px solid var(--line) }
+.fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--brand), #ffb199) }
 
-/* ===== About / Features ===== */
-.grid.g-4{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px }
-@media(max-width:900px){ .grid.g-4{ grid-template-columns:1fr 1fr } }
-@media(max-width:560px){ .grid.g-4{ grid-template-columns:1fr } }
-
-.feature{
-  border:1px solid var(--line);
-  border-radius: var(--radius);
-  padding:16px;
-  background: color-mix(in oklab, var(--bg), #fff 5%);
-}
-.feature-icon{
-  width:44px; height:44px; border-radius:12px;
-  display:grid; place-items:center;
-  background: color-mix(in oklab, var(--brand), #fff 70%);
-  color:#000; font-size:22px; font-weight:800; margin-bottom:8px;
-}
-
-/* ===== How it works ===== */
-.how-list{ margin:12px 0 0; padding-left:18px }
-.how-list li{ margin:10px 0 }
-.how-list b{ display:block; margin-bottom:2px }
 /* Table */
 .table{ width:100%; border-collapse:collapse; font-size:14px }
 .table th,.table td{ border-bottom:1px solid var(--line); padding:10px 8px; text-align:left }
+
+/* Wall */
+.wall-img{ width:100%; border-radius:12px; box-shadow: var(--shadow) }
+
+/* Footer */
+.footer{ padding:26px 0 60px; color:var(--muted) }
+
+/* Modal */
+.modal{ position:fixed; inset:0; display:grid; place-items:center; z-index:50 }
+.modal[aria-hidden="true"]{ display:none }
+.modal-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.5); backdrop-filter: blur(2px) }
+.modal-box{ position:relative; width:min(900px, 92vw); max-height:86vh; overflow:auto;
+  background:var(--bg); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow-strong); padding:16px }
+.modal-close{ position:absolute; right:10px; top:8px; height:36px; width:36px; border-radius:10px; border:1px solid var(--line); background:transparent; font-size:20px; cursor:pointer }
+.product-detail{ display:grid; grid-template-columns: 1fr 1.1fr; gap:16px }
+.product-detail .pd-img{ border:1px solid var(--line); border-radius:12px; overflow:hidden }
+.product-detail .pd-img img{ width:100%; height:100%; object-fit:cover }
+@media(max-width:900px){ .product-detail{ grid-template-columns:1fr } }
+
+/* Accordion（可收合，桌機預設收起，手機可預設打開） */
+.accordion{ border:1px solid var(--line); border-radius:12px; background:linear-gradient(180deg,color-mix(in oklab,var(--bg),#fff 4%),color-mix(in oklab,var(--bg),#000 1%)); box-shadow:var(--shadow); padding:10px 14px }
+.accordion > summary{ cursor:pointer; font-weight:800; list-style:none }
+.accordion > summary::-webkit-details-marker{ display:none }
+.accordion[open]{ box-shadow:var(--shadow-strong) }
