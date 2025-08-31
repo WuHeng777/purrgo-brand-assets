@@ -116,6 +116,59 @@ textarea{ height:120px; resize:vertical }
 @media(max-width:900px){ .hero{ grid-template-columns:1fr } }
 .hero-title{ margin:.2em 0 .3em; font-size:clamp(28px,3.4vw,44px); line-height:1.15 }
 
+/* ===== Hero Section ===== */
+.hero {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 22px;
+  align-items: center;
+  margin: 10px 0 28px;
+}
+
+/* 文字側 */
+.hero-copy .hero-title {
+  margin: .2em 0 .3em;
+  font-size: clamp(28px, 3.6vw, 44px);
+  line-height: 1.15;
+}
+
+/* 視覺側（圓角漸層背景 + 浮起 logo） */
+.hero-art .hero-visual{
+  width: 100%;
+  aspect-ratio: 1.2 / 1;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(100% 120% at 80% 20%, color-mix(in oklab, var(--brand), #fff 60%), transparent 40%),
+    radial-gradient(120% 120% at 10% 90%, color-mix(in oklab, var(--brand), #000 30%), transparent 45%),
+    linear-gradient(180deg, color-mix(in oklab, var(--bg), #fff 6%), color-mix(in oklab, var(--bg), #000 2%));
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.hero-logo{
+  width: clamp(140px, 28vw, 260px);
+  filter: drop-shadow(0 16px 28px rgba(0,0,0,.25));
+  transform: translateY(0);
+  transition: transform .3s ease;
+}
+.hero-visual:hover .hero-logo{ transform: translateY(-4px); }
+
+/* 第三種按鈕（透明邊框） */
+.btn.tertiary{
+  background: transparent;
+  border: 1.5px dashed var(--line);
+  color: var(--ink);
+}
+
+/* 響應式：手機單欄 */
+@media (max-width: 900px){
+  .hero{ grid-template-columns: 1fr; }
+  .hero-art{ order: -1; }           /* 先看圖再看字（可依偏好調整） */
+}
+
 /* Table */
 .table{ width:100%; border-collapse:collapse; font-size:14px }
 .table th,.table td{ border-bottom:1px solid var(--line); padding:10px 8px; text-align:left }
