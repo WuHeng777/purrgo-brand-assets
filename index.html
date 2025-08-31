@@ -21,12 +21,6 @@
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin="anonymous">
 </head>
-<!-- Floating Quick Nav -->
-<div class="fab" id="fab" aria-label="快速導覽">
-  <button class="fab-btn" aria-label="回到頂端" title="回到頂端" onclick="scrollToHash('home')">↑</button>
-  <button class="fab-btn" aria-label="看產品"  title="看產品"  onclick="scrollToHash('products')">🛒</button>
-  <button class="fab-btn" aria-label="看公會"  title="看公會"  onclick="scrollToHash('guild')">😺</button>
-</div>
 
 <body>
 
@@ -497,13 +491,28 @@ window.addEventListener('DOMContentLoaded', () => {
   save(); // render*
 });
 
-/* ===== Smooth Scroll to Section ===== */
+/* ===== Smooth Scroll to Section（桌機 200ms / 手機 300ms） ===== */
 function scrollToHash(id){
   const el = document.getElementById(id);
   if(!el) return;
   el.scrollIntoView({ behavior:'smooth', block:'start' });
-  // 等滾動穩定後更新 nav 高亮
-  setTimeout(highlight, 300);
+
+  // 判斷裝置類型
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  const delay = isMobile ? 300 : 200;
+
+  // 滾動完成後更新 nav 高亮
+  setTimeout(highlight, delay);
+
+  // 如果是手機，點擊後暫時收起 FAB
+  if(isMobile){
+    const fab = document.getElementById('fab');
+    if(fab){
+      fab.classList.add('hidden');
+      // 1 秒後再自動顯示回來
+      setTimeout(()=> fab.classList.remove('hidden'), 1000);
+    }
+  }
 }
 
 /* ===== FAB 顯示/隱藏（下捲顯示，上到頂隱藏） ===== */
@@ -531,6 +540,22 @@ function initReveal(){
   targets.forEach(t => io.observe(t));
 }
 </script>
+<!-- Floating Action Buttons ｜快速導覽 -->
+<div class="fab" id="fab" aria-label="快速導覽" role="navigation">
+  <!-- 回到頂端 -->
+  <button class="fab-btn" aria-label="回到頂端" title="回到頂端" onclick="scrollToHash('home')">↑</button>
 
+  <!-- 看產品 -->
+  <button class="fab-btn" aria-label="看產品" title="看產品" onclick="scrollToHash('products')">🛒</button>
+
+  <!-- 看公會 -->
+  <button class="fab-btn" aria-label="看公會" title="看公會" onclick="scrollToHash('guild')">😺</button>
+
+  <!-- 看據點 -->
+  <button class="fab-btn" aria-label="看據點" title="看據點" onclick="scrollToHash('kiosk')">📍</button>
+
+  <!-- 聯絡我們 -->
+  <button class="fab-btn" aria-label="聯絡我們" title="聯絡我們" onclick="scrollToHash('contact')">✉</button>
+</div>
 </body>
 </html>
