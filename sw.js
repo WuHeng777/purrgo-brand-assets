@@ -1,8 +1,8 @@
-const CACHE = 'purrgo-v9';
+const CACHE = 'purrgo-v11';
 const ASSETS = [
-  './', './index.html', './style.css', './manifest.webmanifest',
-  './data/products.json', './data/locations.json',
-  './logo/logo-192.png', './logo/logo-512.png', './logo/favicon.png'
+  '/', '/index.html', '/style.css', '/manifest.webmanifest',
+  '/data/products.json', '/data/locations.json', '/data/breeds.json', '/data/hospitals.json',
+  '/logo/logo-192.png', '/logo/logo-512.png', '/logo/favicon.png'
 ];
 
 self.addEventListener('install', (e) => {
@@ -21,11 +21,9 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then(cached =>
       cached || fetch(e.request).then(res => {
-        // 產品圖片等資源「動態加入快取」
-        const copy = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy));
+        const copy=res.clone(); caches.open(CACHE).then(c=>c.put(e.request, copy));
         return res;
-      }).catch(() => caches.match('./index.html'))
+      }).catch(() => caches.match('/index.html'))
     )
   );
 });
