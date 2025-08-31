@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PurrGo 喵來速｜品牌官網 Demo</title>
 
-  <!-- PWA / Icons（用相對路徑） -->
+  <!-- PWA / Icons -->
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./logo/favicon.png">
   <link rel="apple-touch-icon" sizes="192x192" href="./logo/logo-192.png">
@@ -15,153 +15,189 @@
   <!-- 站台樣式 -->
   <link rel="stylesheet" href="./style.css">
 
-  <!-- Leaflet CSS -->
+  <!-- Leaflet CSS（地圖） -->
   <link rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin="anonymous">
 </head>
 <body>
-<!-- Hero ｜品牌主視覺 -->
-<section id="hero" class="hero card">
-  <div class="hero-copy">
-    <span class="pill">PurrGo 喵來速</span>
-    <h1 class="hero-title">便利 × 可愛 × 永續 × 共創</h1>
-    <p class="muted">
-      我們用創新配送與社群化公會制度，讓貓咪日常補給變得更聰明、更便宜、更好玩。<br>
-      和貓奴們一起，把「買貓砂」變成一種有趣的里程碑遊戲。
-    </p>
+
+<!-- 固定導覽列 -->
+<header class="container">
+  <nav class="nav">
+    <div class="brand">
+      <img src="./logo/logo-192.png" alt="PurrGo" class="logo" />
+      <span>PurrGo 喵來速</span>
+    </div>
+    <div class="tabs">
+      <a class="tab" data-sec="home"     href="#home">首頁</a>
+      <a class="tab" data-sec="products" href="#products">產品</a>
+      <a class="tab" data-sec="kiosk"    href="#kiosk">販賣機點位</a>
+      <a class="tab" data-sec="survey"   href="#survey">用戶問卷</a>
+      <a class="tab" data-sec="guild"    href="#guild">公會</a>
+      <a class="tab" data-sec="about"    href="#about">理念</a>
+    </div>
+  </nav>
+</header>
+
+<main class="container">
+
+  <!-- Hero ｜品牌主視覺 -->
+  <section id="home" class="hero card">
+    <div class="hero-copy">
+      <span class="pill">PurrGo 喵來速</span>
+      <h1 class="hero-title">便利 × 可愛 × 永續 × 共創</h1>
+      <p class="muted">
+        我們用創新配送與社群化公會制度，讓貓咪日常補給變得更聰明、更便宜、更好玩。<br>
+        和貓奴們一起，把「買貓砂」變成一種有趣的里程碑遊戲。
+      </p>
+      <div class="inline mt-1">
+        <a class="btn"           href="#products">開始探索產品</a>
+        <a class="btn secondary" href="#guild">加入貓奴公會</a>
+        <a class="btn tertiary"  href="#about">了解品牌理念</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="hero-visual">
+        <img src="./logo/logo-512.png" alt="PurrGo Logo" class="hero-logo" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Products ｜商品＋購物示範 -->
+  <section id="products" class="card">
+    <span class="pill">Products</span>
+    <h2 class="mt-0">熱銷與方案</h2>
+    <div id="productGrid" class="grid g-3 mt-1"><div class="empty">載入中…</div></div>
+
+    <h3 class="mt-2">購物車（示範）</h3>
+    <div id="cartItems" class="muted">尚無商品</div>
     <div class="inline mt-1">
-      <a class="btn" href="#products">開始探索產品</a>
-      <a class="btn secondary" href="#guild">加入貓奴公會</a>
-      <a class="btn tertiary" href="#about">了解品牌理念</a>
+      <button class="btn"           onclick="checkout()">結帳（示範）</button>
+      <button class="btn secondary" onclick="clearCart()">清空購物車</button>
     </div>
-  </div>
+  </section>
 
-  <div class="hero-art">
-    <!-- 你可以放品牌大圖/插畫；先用漸層 + logo 當示意 -->
-    <div class="hero-visual">
-      <img src="/logo/logo-512.png" alt="PurrGo Logo" class="hero-logo" />
+  <!-- Guild ｜公會制度 -->
+  <section id="guild" class="card">
+    <span class="pill">Guild</span>
+    <h2 class="mt-0">加入貓奴公會，越玩越省</h2>
+
+    <div class="grid g-2">
+      <div>
+        <h3 class="mt-0">我的身分</h3>
+        <div id="identityInfo" class="muted">尚未綁定手機</div>
+        <div class="inline mt-1">
+          <input class="input" id="phoneInput" placeholder="輸入手機號碼">
+          <button class="btn" onclick="bindPhone(document.getElementById('phoneInput').value)">綁定手機（示意）</button>
+          <button id="lineBtn" class="btn secondary" onclick="toggleLine()">綁定 LINE（示意）</button>
+        </div>
+
+        <h3 class="mt-2">VIP 等級 / 簽到</h3>
+        <div class="muted">累積消費：<b id="lifetimeSpend">$0</b> ｜ 目前等級：<b id="vipLevel">V0</b> ｜ 下個等級尚需：<b id="vipNext">$0</b></div>
+        <div class="inline mt-1">
+          <button class="btn" onclick="dailyCheckin()">每日簽到 + 經驗</button>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="mt-0">我的公會</h3>
+        <div class="muted">名稱：<b id="guildName">（尚未創立）</b> ｜ 等級：<b id="guildLevel">–</b> ｜ 貢獻：<b id="guildContrib">0</b></div>
+        <div class="inline mt-1">
+          <button class="btn"           onclick="createGuild()">創立公會（需累積消費 $1,200）</button>
+          <button class="btn secondary" onclick="contribute(50)">捐 50 貢獻（示意）</button>
+          <button class="btn secondary" onclick="mockWar()">模擬區域戰積分</button>
+        </div>
+        <table class="table mt-2">
+          <thead><tr><th>對手</th><th>我方公會</th><th>地區</th><th>增加積分</th></tr></thead>
+          <tbody id="warTable"></tbody>
+        </table>
+      </div>
     </div>
-  </div>
-</section>
-<!-- 你的頁面內容（節錄重點段落） -->
+  </section>
 
-<!-- About ｜品牌理念 -->
-<section id="about" class="card">
-  <span class="pill">About</span>
-  <h2 class="mt-0">我們相信「便利 × 可愛 × 永續 × 共創」</h2>
-  <p class="muted">
-    PurrGo 喵來速不只是賣貓砂。我們用「創新配送」結合「公會化社群」，
-    讓補給變得更聰明、更便宜、更好玩；同時以永續思維，和貓奴們一起把日常消耗品變成參與式里程碑。
-  </p>
+  <!-- Survey ｜用戶問卷（示範入口） -->
+  <section id="survey" class="card">
+    <span class="pill">Survey</span>
+    <h2 class="mt-0">用戶問卷</h2>
+    <p class="muted">我們會不定期發布簡短問卷，作為新口味/產品的共創依據。</p>
+    <a class="btn" href="https://forms.gle/" target="_blank" rel="noopener">前往填寫（示範）</a>
+  </section>
 
-  <div class="grid g-4 mt-2">
-    <div class="feature">
-      <div class="feature-icon">🚀</div>
-      <h3 class="mt-0">便利</h3>
-      <p class="muted">快速到貨、預購/訂閱、在地販賣機補點，降低補給焦慮。</p>
+  <!-- Vet 健檢預約（示範，寫在本機 state） -->
+  <section id="vet" class="card">
+    <span class="pill">Vet</span>
+    <h2 class="mt-0">合作獸醫預約（示範）</h2>
+    <form class="grid g-2" onsubmit="return bookVet(event)">
+      <div><label>貓咪暱稱<input class="input" required></label></div>
+      <div><label>城市
+        <select class="input">
+          <option>台北</option><option>台中</option><option>高雄</option>
+        </select>
+      </label></div>
+      <div class="gcol-2"><label>備註<textarea class="input"></textarea></label></div>
+      <div class="inline"><button class="btn" type="submit">預約（示範）</button></div>
+    </form>
+    <div id="vetList" class="muted mt-1"></div>
+  </section>
+
+  <!-- Kiosk 地圖 -->
+  <section id="kiosk" class="card">
+    <span class="pill">Kiosk</span>
+    <h2 class="mt-0">販賣機點位</h2>
+    <div id="map" style="height:360px;border-radius:12px;overflow:hidden"></div>
+    <div class="muted mt-1">點擊標記可開啟 Google / Apple Maps 導航。</div>
+  </section>
+
+  <!-- Community 照片牆（本地示範） -->
+  <section id="community" class="card">
+    <span class="pill">Community</span>
+    <h2 class="mt-0">照片牆（本機示範）</h2>
+    <div class="inline">
+      <input type="file" accept="image/*" onchange="addPhoto(event)">
+      <button class="btn secondary" onclick="clearWall()">清除所有照片（本機）</button>
     </div>
-    <div class="feature">
-      <div class="feature-icon">😺</div>
-      <h3 class="mt-0">可愛</h3>
-      <p class="muted">公會化玩法與貓咪角色養成，讓日常補給變得有趣又有成就感。</p>
+    <div id="wall" class="grid g-3 mt-2"></div>
+  </section>
+
+  <!-- About ｜品牌理念 -->
+  <section id="about" class="card">
+    <span class="pill">About</span>
+    <h2 class="mt-0">我們相信「便利 × 可愛 × 永續 × 共創」</h2>
+    <div class="grid g-3">
+      <div>
+        <h3 class="mt-0">便利</h3>
+        <p class="muted">快速到貨、預購/訂閱、在地販賣機補點，降低補給焦慮。</p>
+      </div>
+      <div>
+        <h3 class="mt-0">可愛</h3>
+        <p class="muted">公會玩法與貓咪角色養成，讓日常補給變得有趣又有成就感。</p>
+      </div>
+      <div>
+        <h3 class="mt-0">永續 / 共創</h3>
+        <p class="muted">減少不必要包材、集中配送、鼓勵回收；並與社群一起研發迭代。</p>
+      </div>
     </div>
-    <div class="feature">
-      <div class="feature-icon">🌱</div>
-      <h3 class="mt-0">永續</h3>
-      <p class="muted">減少不必要包材、集中配送、鼓勵回收與重複使用。</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🤝</div>
-      <h3 class="mt-0">共創</h3>
-      <p class="muted">和社群一起研發迭代，產品投票、口味共創、活動同樂。</p>
-    </div>
-  </div>
+  </section>
 
-  <div class="inline mt-2">
-    <a class="btn" href="#how">如何運作</a>
-    <a class="btn secondary" href="#guild">認識公會制度</a>
-  </div>
-</section>
+  <!-- Contact 聯絡我們 -->
+  <section id="contact" class="card">
+    <span class="pill">Contact</span>
+    <h2 class="mt-0">聯絡我們</h2>
+    <form class="grid g-2" onsubmit="return submitForm(event)">
+      <div><label>您的稱呼<input class="input" required></label></div>
+      <div><label>Email<input type="email" class="input" required></label></div>
+      <div class="gcol-2"><label>訊息<textarea class="input" required></textarea></label></div>
+      <div class="inline"><button class="btn" type="submit">送出</button></div>
+    </form>
+    <p class="muted mt-1">也可來信：<a href="mailto:hello@purrgo.tw">hello@purrgo.tw</a> ｜ LINE 官方：@purrgo</p>
+  </section>
 
-<!-- How ｜運作方式（用戶版） -->
-<section id="how" class="card">
-  <span class="pill">How it works</span>
-  <h2 class="mt-0">三步驟，讓補給更輕鬆</h2>
-
-  <ol class="how-list">
-    <li>
-      <b>挑選方案</b>
-      <div class="muted">立即購買、預購，或開啟月/季訂閱。越穩定越划算。</div>
-    </li>
-    <li>
-      <b>智慧配送</b>
-      <div class="muted">系統依地區合併出貨，結合販賣機據點，補給更即時。</div>
-    </li>
-    <li>
-      <b>社群加成</b>
-      <div class="muted">加入公會、做任務、累積貢獻，一起升級拿更多折扣與獎勵。</div>
-    </li>
-  </ol>
-
-  <div class="inline mt-1">
-    <a class="btn" href="#products">看產品方案</a>
-    <a class="btn tertiary" href="#kiosk">附近據點</a>
-  </div>
-</section>
-
-<!-- Vet 健檢預約（補上 <form> 起始標籤與 onsubmit） -->
-<section id="vet" class="card">
-  <span class="pill">Vet</span>
-  <h2 class="mt-0">合作獸醫預約（示範）</h2>
-  <form class="grid g-2" onsubmit="return bookVet(event)">
-    <div><label>貓咪暱稱<input class="input" required></label></div>
-    <div><label>城市
-      <select class="input">
-        <option>台北</option><option>台中</option><option>高雄</option>
-      </select>
-    </label></div>
-    <div class="gcol-2"><label>備註<textarea class="input"></textarea></label></div>
-    <div class="inline"><button class="btn" type="submit">預約（示範）</button></div>
-  </form>
-  <div id="vetList" class="muted mt-1"></div>
-</section>
-
-<!-- Kiosk 地圖 -->
-<section id="kiosk" class="card">
-  <span class="pill">Kiosk</span>
-  <h2 class="mt-0">販賣機點位</h2>
-  <div id="map" style="height:360px;border-radius:12px;overflow:hidden"></div>
-  <div class="muted mt-1">點擊標記可開啟 Google/Apple Maps 導航。</div>
-</section>
-
-<!-- Community 照片牆（本地示範） -->
-<section id="community" class="card">
-  <span class="pill">Community</span>
-  <h2 class="mt-0">照片牆（本機示範）</h2>
-  <div class="inline">
-    <input type="file" accept="image/*" onchange="addPhoto(event)">
-    <button class="btn secondary" onclick="clearWall()">清除所有照片（本機）</button>
-  </div>
-  <div id="wall" class="grid g-3 mt-2"></div>
-</section>
-
-<!-- Contact 聯絡我們 -->
-<section id="contact" class="card">
-  <span class="pill">Contact</span>
-  <h2 class="mt-0">聯絡我們</h2>
-  <form class="grid g-2" onsubmit="return submitForm(event)">
-    <div><label>您的稱呼<input class="input" required></label></div>
-    <div><label>Email<input type="email" class="input" required></label></div>
-    <div class="gcol-2"><label>訊息<textarea class="input" required></textarea></label></div>
-    <div class="inline"><button class="btn" type="submit">送出</button></div>
-  </form>
-  <p class="muted mt-1">也可來信：<a href="mailto:hello@purrgo.tw">hello@purrgo.tw</a> ｜ LINE 官方：@purrgo</p>
-</section>
+</main>
 
 <footer class="container" style="padding:26px 0 60px;color:var(--muted)">
-  © PurrGo 喵來速 ｜ 品牌主色 #ff7f50 ｜ 公開 Demo（不含投資人資訊）
+  © PurrGo 喵來速 ｜ 品牌主色 #ff7f50 ｜ 公開 Demo
 </footer>
 
 <!-- Leaflet JS -->
@@ -169,63 +205,151 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin="anonymous"></script>
 
-<!-- 你的原本腳本：改成相對路徑 ./data/... 與 ./sw.js -->
+<!-- 主腳本（全部放同一個 <script>，避免巢狀 script） -->
 <script>
-  // ===== 全域狀態（省略：保留你原本內容） =====
+/* ===== 全域狀態（localStorage） ===== */
+const LS_KEY = 'purrgoState';
+const state = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+state.user  ||= { phone:'', line:false, vipXp:0, lifetimeSpend:0, energy:0, lastCheckin:'' };
+state.guild ||= { name:'', level:0, contribution:0 };
+state.cart  ||= [];
+state.vet   ||= [];
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state));
+  renderIdentity(); renderVIP(); renderGuild(); renderCart(); renderWall(); renderVet(); }
 
-  // 讀產品／地點：改為相對路徑
-  async function loadProducts(){
-    try{
-      const res = await fetch('./data/products.json',{cache:'no-cache'});
-      const list = await res.json();
-      const grid = document.getElementById('productGrid');
-      if(!grid) return;
-      grid.innerHTML='';
-      list.forEach(p=>{
-        const el = document.createElement('div'); el.className='card';
-        el.innerHTML = `<h3 class="mt-0">${p.name}</h3>
-          <div class="muted">規格：${p.spec}</div>
-          <div class="mt-1"><b>NT$ ${p.price.toLocaleString()}</b></div>
-          <ul class="list">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
-          <div class="inline mt-1">
-            <button class="btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>加入購物車</button>
-          </div>`;
-        grid.appendChild(el);
-      });
-    }catch(e){
-      const grid = document.getElementById('productGrid');
-      if(grid) grid.innerHTML='<div class="empty">讀取產品失敗</div>';
-    }
-  }
-
-  async function initMap(){
-    const map=L.map('map').setView([25.0330,121.5654],12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
-    try{
-      const res = await fetch('./data/locations.json',{cache:'no-cache'});
-      const points = await res.json();
-      points.forEach(p=>{
-        const m=L.marker([p.lat,p.lng]).addTo(map);
-        const gLink = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
-        const aLink = `https://maps.apple.com/?q=${p.lat},${p.lng}`;
-        m.bindPopup(`<b>${p.name}</b><br>${p.address||''}<br>
-          <a href='${gLink}' target='_blank'>Google Maps</a> ｜ 
-          <a href='${aLink}' target='_blank'>Apple Maps</a>`);
-      });
-    }catch(e){}
-  }
-
-  // 其餘函式（vip/guild/vet/photo/cart…）保留你原本內容即可
-
-  // 啟動：把 service worker 改成相對路徑
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // ... 你的其他初始化 ...
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
-    }
+/* ===== Nav 高亮 ===== */
+function highlight(){
+  const hash=(location.hash||'#home').replace('#','');
+  document.querySelectorAll('[data-sec]').forEach(a=>{
+    a.setAttribute('aria-current', a.dataset.sec===hash ? 'page' : 'false');
   });
-</script>
+}
+addEventListener('hashchange', highlight);
+
+/* ===== 身份 / 綁定 ===== */
+function bindPhone(v){ state.user.phone=v||''; save(); }
+function toggleLine(){ state.user.line=!state.user.line; save(); }
+function renderIdentity(){
+  const p = document.getElementById('identityInfo');
+  if(!p) return;
+  p.textContent = state.user.phone ? `已綁定：${state.user.phone} ｜ LINE：${state.user.line?'已連結':'未連結'}` : '尚未綁定手機';
+  const b = document.getElementById('lineBtn'); if(b) b.textContent = state.user.line? '取消 LINE 連結（示意）':'綁定 LINE（示意）';
+}
+
+/* ===== VIP / 簽到 ===== */
+function vipLevelByXp(x){ if(x>=5000) return 5; if(x>=3000) return 4; if(x>=1500) return 3; if(x>=600) return 2; if(x>=200) return 1; return 0; }
+function nextVipNeed(x){ const br=[200,600,1500,3000,5000]; for(const b of br){ if(x<b) return b-x; } return 0; }
+function renderVIP(){
+  const xp = state.user.vipXp|0;
+  const s = v => (v||0).toLocaleString();
+  const el = id => document.getElementById(id);
+  el('lifetimeSpend') && (el('lifetimeSpend').textContent = `$${s(state.user.lifetimeSpend)}`);
+  el('vipLevel')      && (el('vipLevel').textContent = 'V'+vipLevelByXp(xp));
+  el('vipNext')       && (el('vipNext').textContent  = nextVipNeed(xp)>0? `$${s(nextVipNeed(xp))}`:'已達頂級');
+}
+function dailyCheckin(){
+  const today = new Date().toISOString().slice(0,10);
+  if(state.user.lastCheckin===today){ const c=document.getElementById('checkinInfo'); if(c) c.textContent='今天已簽到'; return; }
+  state.user.lastCheckin=today; state.user.energy+=10; state.user.vipXp+=10;
+  const c=document.getElementById('checkinInfo'); if(c) c.textContent='簽到成功：+10 能量、+10 VIP XP'; save();
+}
+
+/* ===== 產品 / 購物示範 ===== */
+async function loadProducts(){
+  try{
+    const res = await fetch('./data/products.json',{cache:'no-cache'}); 
+    const list = await res.json();
+    const grid = document.getElementById('productGrid'); if(!grid) return;
+    grid.innerHTML='';
+    list.forEach(p=>{
+      const el = document.createElement('div'); el.className='card';
+      el.innerHTML = `<h3 class="mt-0">${p.name}</h3>
+        <div class="muted">規格：${p.spec}</div>
+        <div class="mt-1"><b>NT$ ${p.price.toLocaleString()}</b></div>
+        <ul class="list">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
+        <div class="inline mt-1">
+          <button class="btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>加入購物車</button>
+        </div>`;
+      grid.appendChild(el);
+    });
+  }catch(e){ const grid=document.getElementById('productGrid'); if(grid) grid.innerHTML='<div class="empty">讀取產品失敗</div>'; }
+}
+function addToCart(p){ const item = state.cart.find(i=>i.id===p.id) || (state.cart.push({...p,qty:0}), state.cart.find(i=>i.id===p.id)); item.qty++; save(); }
+function clearCart(){ state.cart=[]; save(); }
+function renderCart(){
+  const box=document.getElementById('cartItems'); if(!box) return;
+  if(state.cart.length===0){ box.textContent='尚無商品'; return; }
+  let sum=0; box.innerHTML = state.cart.map(i=>{ sum+=i.price*i.qty; return `${i.name} × ${i.qty} = NT$ ${(i.price*i.qty).toLocaleString()}`; }).join('<br>');
+  box.innerHTML += `<div class="mt-1"><b>小計：NT$ ${sum.toLocaleString()}</b></div>`;
+}
+function checkout(){
+  if(state.cart.length===0) return alert('購物車是空的');
+  const sum = state.cart.reduce((a,b)=>a+b.price*b.qty,0);
+  state.user.lifetimeSpend = (state.user.lifetimeSpend||0) + sum;
+  state.user.vipXp += Math.round(sum/10);
+  state.user.energy += Math.round(sum/20);
+  state.cart=[]; alert(`結帳成功！累積消費 +$${sum.toLocaleString()}（示範）`);
+  save();
+}
+
+/* ===== 公會 ===== */
+const GUILD_CREATE_NEED = 1200;
+function renderGuild(){
+  const e=id=>document.getElementById(id);
+  e('guildName')   && (e('guildName').textContent = state.guild.name||'（尚未創立）');
+  e('guildLevel')  && (e('guildLevel').textContent = state.guild.level||'–');
+  e('guildContrib')&& (e('guildContrib').textContent = state.guild.contribution|0);
+}
+function createGuild(){
+  if((state.user.lifetimeSpend||0) < GUILD_CREATE_NEED){ return alert('尚未達到創立門檻：累積消費 $1,200'); }
+  const name = prompt('輸入公會名稱'); if(!name) return;
+  state.guild.name=name; state.guild.level=1; save(); alert('公會已創立！');
+}
+function contribute(n){ if(!state.guild.name) return alert('請先創立公會'); state.guild.contribution += n; if(state.guild.contribution >= (state.guild.level*500)) { state.guild.level++; alert('公會升級！'); } save(); }
+function mockWar(){ if(!state.guild.name) return alert('先創立公會'); const add=Math.floor(Math.random()*500+100); const tr=document.createElement('tr'); tr.innerHTML=`<td>*</td><td>${state.guild.name}</td><td>你的區域</td><td>+${add}</td>`; document.getElementById('warTable').prepend(tr); }
+
+/* ===== 健檢預約（示範，本機） ===== */
+function bookVet(e){ e.preventDefault(); const f=e.target; const rec={ name:f[0].value, city:f[1].value, note:f[2].value, time:new Date().toLocaleString() }; state.vet.push(rec); save(); f.reset(); alert('已建立預約（示範，本機存檔）'); return false; }
+function renderVet(){ const box=document.getElementById('vetList'); if(!box) return; if(!state.vet.length){ box.textContent='目前無預約紀錄（示範）'; return;} box.innerHTML = '預約紀錄：<br>'+state.vet.map(v=>`${v.time}｜${v.city}｜${v.name}`).join('<br>'); }
+
+/* ===== 照片牆（本機） ===== */
+function addPhoto(e){ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ state.wall = state.wall||[]; state.wall.push(reader.result); save(); }; reader.readAsDataURL(file); }
+function renderWall(){ const wall=document.getElementById('wall'); if(!wall) return; wall.innerHTML=''; (state.wall||[]).forEach(src=>{ const img=new Image(); img.src=src; img.style.borderRadius='12px'; wall.appendChild(img); }); }
+function clearWall(){ if(confirm('清除所有本機照片？')){ state.wall=[]; save(); } }
+
+/* ===== 地圖（Leaflet + OSM） ===== */
+async function initMap(){
+  const el=document.getElementById('map'); if(!el) return;
+  const map=L.map('map').setView([25.0330,121.5654],12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+  try{
+    const res = await fetch('./data/locations.json',{cache:'no-cache'}); 
+    const points = await res.json();
+    points.forEach(p=>{
+      const m=L.marker([p.lat,p.lng]).addTo(map);
+      const gLink = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
+      const aLink = `https://maps.apple.com/?q=${p.lat},${p.lng}`;
+      m.bindPopup(`<b>${p.name}</b><br>${p.address||''}<br>
+        <a href='${gLink}' target='_blank'>Google Maps</a> ｜ 
+        <a href='${aLink}' target='_blank'>Apple Maps</a>`);
+    });
+  }catch(e){}
+}
+
+/* ===== 聯絡表單（示範） ===== */
+function submitForm(e){ e.preventDefault(); alert('已收到您的訊息（示範）'); e.target.reset(); return false; }
+
+/* ===== 啟動 ===== */
+window.addEventListener('DOMContentLoaded', () => {
+  highlight();
+  loadProducts();
+  initMap();
+  renderVet();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  }
+  save(); // 觸發所有 render*
+});
 </script>
 </body>
 </html>
