@@ -169,6 +169,28 @@ textarea{ height:120px; resize:vertical }
   .hero-art{ order: -1; }           /* 先看圖再看字（可依偏好調整） */
 }
 
+/* ===== About / Features ===== */
+.grid.g-4{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px }
+@media(max-width:900px){ .grid.g-4{ grid-template-columns:1fr 1fr } }
+@media(max-width:560px){ .grid.g-4{ grid-template-columns:1fr } }
+
+.feature{
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  padding:16px;
+  background: color-mix(in oklab, var(--bg), #fff 5%);
+}
+.feature-icon{
+  width:44px; height:44px; border-radius:12px;
+  display:grid; place-items:center;
+  background: color-mix(in oklab, var(--brand), #fff 70%);
+  color:#000; font-size:22px; font-weight:800; margin-bottom:8px;
+}
+
+/* ===== How it works ===== */
+.how-list{ margin:12px 0 0; padding-left:18px }
+.how-list li{ margin:10px 0 }
+.how-list b{ display:block; margin-bottom:2px }
 /* Table */
 .table{ width:100%; border-collapse:collapse; font-size:14px }
 .table th,.table td{ border-bottom:1px solid var(--line); padding:10px 8px; text-align:left }
