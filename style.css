@@ -239,3 +239,80 @@ section.card{ margin-block: 26px; }
 @media (min-width: 1024px){
   section.card{ margin-block: 40px; }
 }
+
+/* =========================
+   Header / Navigation
+   ========================= */
+.site-header{
+  position: sticky; top: 0; z-index: 60;
+  backdrop-filter: saturate(180%) blur(10px);
+  background: color-mix(in oklab, var(--bg), transparent 8%);
+  border-bottom: 1px solid var(--line);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; }
+.brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px }
+.logo{ width:28px; height:28px; border-radius:8px; background:var(--brand); display:grid; place-items:center; color:var(--brand-ink); font-weight:900 }
+
+/* 桌機分頁 */
+.tabs{ display:flex; gap:8px; }
+.tab{ padding:8px 14px; border:1px solid var(--line); border-radius:999px; font-weight:700; }
+.tab[aria-current="page"], .tab.active{ background:var(--brand); border-color:var(--brand); color:var(--brand-ink) }
+
+/* 手機：漢堡按鈕（置中、深/淺色描邊自動） */
+.menu-toggle{
+  display:none; /* 手機時才顯示 */
+  width:42px; height:42px; border-radius:12px;
+  border:1.5px solid var(--line); background:transparent; cursor:pointer;
+  display:grid; place-items:center;
+}
+.menu-ico{ 
+  position:relative; width:18px; height:2px; background:var(--ink);
+}
+.menu-ico::before, .menu-ico::after{
+  content:""; position:absolute; left:0; width:18px; height:2px; background:var(--ink);
+}
+.menu-ico::before{ top:-6px } .menu-ico::after{ top:6px }
+
+/* 手機：抽屜式選單 */
+.menu{
+  position:fixed; top:64px; right:12px; width:min(72vw, 280px);
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+  box-shadow:var(--shadow); padding:8px; display:none;
+}
+.menu.active{ display:block; }
+.menu a{ display:block; padding:12px 14px; border-radius:10px; color:var(--ink); }
+.menu a:hover{ background:color-mix(in oklab,var(--brand),#fff 70%); color:#000; }
+
+/* RWD：手機顯示漢堡，隱藏頂部分頁；桌機相反 */
+@media (max-width: 900px){
+  .tabs{ display:none; }
+  .menu-toggle{ display:grid; }
+}
+
+/* =========================
+   卡片橫滑 & 間距修正（產品、公會）
+   ========================= */
+.hwrap{ position:relative; }
+.hscroll{
+  display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:10px;
+}
+.hscroll > *{ scroll-snap-align:start; min-width: 82%; max-width: 82%; }
+@media (min-width: 900px){
+  .hscroll > *{ min-width: 360px; max-width: 360px; }
+}
+
+/* 左右箭頭按鈕位置微退、卡片不重疊 */
+.hbtn{ position:absolute; top:50%; transform:translateY(-50%); z-index:5;
+  width:44px; height:44px; border-radius:999px; border:1px solid var(--line);
+  background:var(--bg); display:grid; place-items:center; box-shadow:var(--shadow);
+}
+.hbtn.prev{ left:-6px } .hbtn.next{ right:-6px }
+
+/* 卡片底與外距，避免黏在一起 */
+.card{ margin-bottom:18px }
+.section-head{ margin-bottom:12px }
+
+/* =========================
+   顏色對比（深色背景白邊，淺色背景黑邊）
+   已採用 var(--line) 自動換色，無需再手動切換。
+   ========================= */
