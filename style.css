@@ -171,3 +171,71 @@ textarea{ height:120px; resize:vertical }
 
 /* Pages (router) */
 .page{ min-height: 60vh }
+
+/* ========== Nav（手機尺寸優化） ========== */
+.nav { gap: 8px; }
+.nav .tab {
+  padding: 6px 12px;               /* 原本 8~12 太鼓了，縮小 */
+  font-size: 14px;
+  border-radius: 999px;
+  line-height: 1;
+}
+@media (max-width: 420px) {
+  .nav { row-gap: 10px; }
+  .nav .tab { padding: 5px 10px; font-size: 13px; }
+}
+
+/* ========== 漢堡按鈕（置中＋自動黑白） ========== */
+/* HTML 會用 <button class="hamburger" id="menuBtn"><span></span><span></span><span></span></button> */
+.hamburger{
+  height: 42px; width: 42px;
+  display: grid; place-items: center;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid color-mix(in oklab, var(--ink), transparent 70%); /* 深色=淺線，淺色=深線 */
+  cursor: pointer;
+}
+.hamburger span{
+  display:block; width:20px; height:2px; border-radius:2px;
+  background: var(--ink);                 /* 自動黑/白 */
+  transition: transform .15s ease, opacity .15s ease;
+}
+.hamburger span + span{ margin-top:4px; }
+
+/* 開/關動畫（如果你已經有別的 class，可忽略） */
+.menu-open .hamburger span:nth-child(1){ transform: translateY(6px) rotate(45deg); }
+.menu-open .hamburger span:nth-child(2){ opacity:0 }
+.menu-open .hamburger span:nth-child(3){ transform: translateY(-6px) rotate(-45deg); }
+
+/* ========== 橫向滑動卡片（產品 & 公會） ========== */
+.carousel{
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(88vw, 360px);    /* 每張卡的寬度 */
+  gap: 16px;                               /* 卡片之間固定間距 */
+  overflow-x: auto;
+  padding: 6px 6px 18px;                   /* 底部留白避免貼到底 */
+  scroll-snap-type: x mandatory;
+}
+.carousel > *{ scroll-snap-align: start; }
+
+/* 卡片本身不要再外推距離，避免重疊 */
+.carousel .card{ margin: 0; }
+
+/* 左右箭頭（若你有）浮在容器外邊緣，避免遮住卡片 */
+.slider-arrow{
+  position: absolute; top: 50%; transform: translateY(-50%);
+  height: 42px; width: 42px; border-radius: 999px;
+  display: grid; place-items: center;
+  background: color-mix(in oklab, var(--bg), #000 5%);
+  border: 1px solid color-mix(in oklab, var(--ink), transparent 70%);
+  box-shadow: var(--shadow);
+}
+.slider-arrow.left { left: -6px; }
+.slider-arrow.right{ right: -6px; }
+
+/* ========== 區塊間距（桌機上更清楚分區） ========== */
+section.card{ margin-block: 26px; }
+@media (min-width: 1024px){
+  section.card{ margin-block: 40px; }
+}
