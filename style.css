@@ -129,3 +129,21 @@ textarea{ height:120px; resize:vertical }
 .accordion > summary{ cursor:pointer; font-weight:800; list-style:none }
 .accordion > summary::-webkit-details-marker{ display:none }
 .accordion[open]{ box-shadow:var(--shadow-strong) }
+
+/* ===== Floating Action Buttons ===== */
+.fab{ position:fixed; right:18px; bottom:18px; display:grid; gap:10px; z-index:60 }
+.fab-btn{
+  height:46px; width:46px; border-radius:14px; border:1px solid var(--line);
+  background:var(--brand); color:var(--brand-ink); font-weight:900; font-size:18px;
+  display:grid; place-items:center; cursor:pointer;
+  box-shadow: var(--shadow); transition: transform .12s var(--ease), box-shadow .25s var(--ease), opacity .2s ease;
+}
+.fab-btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow-strong) }
+.fab.hidden{ opacity:0; pointer-events:none }
+
+/* 手機避免遮擋底部內容，可略縮或自動隱藏 */
+@media (max-width:560px){ .fab{ right:12px; bottom:12px } .fab-btn{ height:42px; width:42px; border-radius:12px } }
+
+/* ===== Scroll Reveal（捲動淡入） ===== */
+.reveal{ opacity:0; transform: translateY(12px); transition: opacity .5s var(--ease), transform .5s var(--ease) }
+.revealed{ opacity:1; transform: none }
