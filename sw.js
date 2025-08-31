@@ -1,4 +1,4 @@
-const CACHE = 'purrgo-v6';
+const CACHE = 'purrgo-v7';
 const ASSETS = [
   './', './index.html', './style.css', './manifest.webmanifest',
   './data/products.json', './data/locations.json',
