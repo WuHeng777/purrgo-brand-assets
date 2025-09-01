@@ -124,3 +124,67 @@ body.menu-open{ overflow:hidden }
 .fab-btn:hover{ opacity:1; transform:translateY(-1px); box-shadow:0 12px 28px rgba(0,0,0,.28) }
 .fab-btn:active{ opacity:.75; transform:translateY(0) scale(.98) }
 .fab.hidden{ opacity:0; pointer-events:none }
+
+/* ===== Mobile nav & overlay fix ===== */
+:root{
+  --panel-bg-dark: rgba(16,16,16,.92);
+  --panel-ink-dark: #fff;
+  --panel-bg-light: rgba(255,255,255,.96);
+  --panel-ink-light: #111;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --panel-bg: var(--panel-bg-dark); --panel-ink: var(--panel-ink-dark); }
+}
+@media (prefers-color-scheme: light){
+  :root{ --panel-bg: var(--panel-bg-light); --panel-ink: var(--panel-ink-light); }
+}
+
+/* 漢堡鈕：去掉白色方塊、置中、不要藍色超連結色 */
+.menu-toggle{
+  appearance:none; -webkit-appearance:none;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--bg), #000 6%);
+  color:var(--ink);
+  width:44px; height:44px; border-radius:14px;
+  display:grid; place-items:center; cursor:pointer;
+}
+.menu-toggle:focus{ outline:none }
+.menu-ico{ position:relative; width:20px; height:2px; background:currentColor; border-radius:2px }
+.menu-ico::before,.menu-ico::after{
+  content:""; position:absolute; left:0; right:0; height:2px; background:currentColor; border-radius:2px
+}
+.menu-ico::before{ top:-6px } .menu-ico::after{ top:6px }
+
+/* 側邊選單 + 半透明背景罩（確保在地圖之上） */
+.menu-backdrop{
+  position:fixed; inset:0; background:rgba(255,127,80,.30); /* 品牌橘 30% */
+  backdrop-filter: blur(2px); z-index: 9998; display:none;
+}
+.menu{
+  position:fixed; top:70px; right:12px; width:min(92vw,380px);
+  z-index:9999; display:none; /* 預設隱藏 */
+}
+.menu.open, .menu-backdrop.open{ display:block }
+.menu a{
+  display:block; color:var(--panel-ink);
+  background:var(--panel-bg);
+  border:1px solid color-mix(in oklab, var(--panel-ink), transparent 80%);
+  border-radius:18px; padding:18px 20px; margin:12px 0; font-weight:800;
+}
+
+/* 手機：把頂端那排圓圓 tab 收起，留漢堡鈕即可 */
+@media (max-width: 900px){
+  .tabs{ display:none }
+}
+
+/* 右側圓形浮動鈕：置中、陰影、按下透明度變化 */
+.fab{ position:fixed; right:18px; bottom:18px; display:grid; gap:12px; z-index:60 }
+.fab-btn{
+  width:64px; height:64px; border-radius:999px; border:0;
+  background: radial-gradient(120% 120% at 30% 20%, #ff9966 0%, #ff7f50 60%, #d9663a 100%);
+  color:#000; font-weight:900; font-size:14px; display:grid; place-items:center;
+  box-shadow: 0 10px 24px rgba(0,0,0,.25); transition: transform .12s, opacity .12s;
+  opacity:.85;
+}
+.fab-btn:hover{ transform: translateY(-2px); opacity:1 }
+.fab-btn:active{ transform: translateY(0); opacity:.75 }
