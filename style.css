@@ -1,152 +1,112 @@
-/* ===== PurrGo Design System ===== */
+/* ===== PurrGo Design System (Public Demo) ===== */
+
+/* ---------- 色票與尺寸 ---------- */
 :root{
-  --brand:#ff7f50; --brand-ink:#000;
-  --bg:#0f0f10; --card:#18191a; --ink:#eaeaea; --muted:#9aa0a6; --line:#2a2b2d;
-  --radius:14px; --radius-lg:20px;
-  --shadow:0 10px 24px rgba(0,0,0,.25);
-  --shadow-strong:0 16px 36px rgba(0,0,0,.32);
-  --gap:16px; --container:min(1100px,92vw);
-}
-@media(prefers-color-scheme:light){
-  :root{ --bg:#fff; --card:#fafafa; --ink:#111; --muted:#666; --line:#e8e8e8; --shadow:0 10px 24px rgba(0,0,0,.06) }
+  /* brand */
+  --brand:#ff7f50;           /* 主品牌色 */
+  --brand-ink:#000;          /* 品牌色上的字色 */
+
+  /* light theme */
+  --bg:#ffffff;
+  --ink:#111111;
+  --muted:#666666;
+  --line:#eeeeee;
+  --card:#f7f7f8;
+
+  /* layout */
+  --container:min(1100px,92vw);
+  --radius:14px;
+  --radius-lg:20px;
+
+  /* shadow */
+  --shadow:0 10px 24px rgba(0,0,0,.10);
+  --shadow-strong:0 14px 30px rgba(0,0,0,.22);
+
+  /* typography */
+  --font: system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC",sans-serif;
+  --h1: clamp(28px, 4vw, 40px);
+  --h2: clamp(22px, 3vw, 28px);
+  --h3: clamp(18px, 2.4vw, 22px);
+  --p:  16px;
+
+  /* easing */
+  --ease: cubic-bezier(.22,.61,.36,1);
+
+  /* panel（行動選單）會依主題自動切色 */
+  --panel-bg: rgba(255,255,255,.96);
+  --panel-ink:#111;
 }
 
+/* 深色模式 */
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0b0b0c;
+    --ink:#eeeeee;
+    --muted:#aaaaaa;
+    --line:#222222;
+    --card:#161718;
+
+    --panel-bg: rgba(16,16,16,.92);
+    --panel-ink:#ffffff;
+
+    --shadow:0 10px 24px rgba(0,0,0,.25);
+    --shadow-strong:0 16px 36px rgba(0,0,0,.40);
+  }
+}
+
+/* ---------- Reset / Base ---------- */
 *{ box-sizing:border-box }
 html,body{ margin:0; padding:0 }
-body{
-  color:var(--ink); background:var(--bg);
-  font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC",sans-serif
-}
-a{ color:inherit; text-decoration:none }
 img{ max-width:100%; display:block }
-
-.container{ width:var(--container); margin:auto }
-
-/* Header */
-header{ position:sticky; top:0; z-index:60;
-  backdrop-filter:saturate(160%) blur(12px);
-  background:color-mix(in oklab,var(--bg),#000 6%);
-  border-bottom:1px solid var(--line)
+a{ color:inherit; text-decoration:none }
+body{
+  background:var(--bg); color:var(--ink);
+  font:16px/1.65 var(--font);
 }
-.nav{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; gap:12px }
-.brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px }
-.logo{ width:28px;height:28px; border-radius:8px; background:var(--brand); display:grid; place-items:center; color:var(--brand-ink); font-weight:900 }
+.container{ width:var(--container); margin:auto }
+main{ padding:26px 0 80px }
 
-.tabs{ display:flex; gap:6px; flex-wrap:wrap }
-.tab{ padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-weight:700 }
-.tab[aria-current="page"]{ background:var(--brand); border-color:var(--brand); color:var(--brand-ink) }
-
-/* 基本區塊 */
-main{ padding:28px 0 80px }
-.page{ margin:28px 0 }
-.card{ background:linear-gradient(180deg,color-mix(in oklab,var(--bg),#fff 6%),color-mix(in oklab,var(--bg),#000 2%));
-  border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px }
-.band{ display:block; padding:20px 0 }
-.band-alt{ background:color-mix(in oklab,var(--bg),#fff 3%); border:1px solid var(--line); border-radius:var(--radius); padding:24px }
-.section-head{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:14px }
-.section-sub{ color:var(--muted) }
-
+/* ---------- 工具類 ---------- */
+.mt-0{ margin-top:0 } .mt-1{ margin-top:8px } .mt-2{ margin-top:16px }
+.muted{ color:var(--muted) }
+.inline{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
 .grid{ display:grid; gap:16px }
 .g-2{ grid-template-columns:repeat(2,1fr) }
 .g-3{ grid-template-columns:repeat(3,1fr) }
 .gcol-2{ grid-column:1/-1 }
-@media(max-width:900px){ .g-2,.g-3{ grid-template-columns:1fr } }
-
-/* Hero */
-.hero{ display:grid; grid-template-columns:1.15fr .85fr; gap:22px; align-items:center }
-@media(max-width:900px){ .hero{ grid-template-columns:1fr } }
-.hero-title{ margin:.2em 0 .3em; font-size:clamp(28px,3.4vw,44px); line-height:1.15 }
-.hero-visual{ height:260px; border-radius:18px; background:radial-gradient(600px 200px at 60% 40%, #ffb69922, transparent 60%),
-  linear-gradient(180deg, #00000033, #00000022); display:grid; place-items:center; box-shadow:var(--shadow) }
-.hero-logo{ width:140px; height:140px; object-fit:contain }
-
-/* 元件 */
-.btn{ display:inline-grid; place-items:center; height:44px; padding:0 18px; border-radius:12px;
-  font-weight:800; border:1.5px solid #000; background:var(--brand); color:var(--brand-ink); cursor:pointer }
-.btn.secondary{ background:transparent; border-color:var(--line); color:var(--ink) }
-.btn.ghost{ background:transparent; border:1.5px dashed var(--line); color:var(--ink) }
-.pill{ display:inline-block; padding:4px 10px; border-radius:999px; background:color-mix(in oklab,var(--brand),#fff 70%); color:#000; font-weight:700; font-size:12px }
-.muted{ color:var(--muted) }
-.input,textarea,select{ width:100%; height:44px; border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:transparent; color:inherit }
-textarea{ height:120px; resize:vertical }
-.inline{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+@media (max-width:900px){ .g-2,.g-3{ grid-template-columns:1fr } }
 .list{ padding-left:18px } .list li{ margin:6px 0 }
+.empty{ text-align:center; padding:22px; border:1px dashed var(--line); border-radius:12px }
 
-/* 橫向滑動 */
-.hwrap{ position:relative; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px }
-.hscroll{ display:flex; overflow:auto hidden; gap:16px; scroll-snap-type:x mandatory; padding:6px 2px }
-.hscroll > .card{ min-width:280px; scroll-snap-align:start; margin-right:0 }
-.hbtn{ width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--ink); display:grid; place-items:center; cursor:pointer }
-
-/* 產品卡 */
-.product-img{ width:100%; height:220px; object-fit:cover; border-radius:12px; margin-bottom:8px }
-
-/* 地圖 */
-.map{ height:360px; border-radius:12px; overflow:hidden; border:1px solid var(--line) }
-
-/* Footer */
-.footer{ padding:26px 0 60px; color:var(--muted) }
-
-/* ===== Hamburger ===== */
-.menu-toggle{
-  display:none;
-  height:44px; width:44px; place-items:center; border:1px solid var(--line);
-  border-radius:12px; background:transparent; cursor:pointer; z-index:85;
+/* ---------- Header / Tabs ---------- */
+header{
+  position:sticky; top:0; z-index:50;
+  backdrop-filter:saturate(180%) blur(10px);
+  background:color-mix(in oklab, var(--bg), transparent 8%);
+  border-bottom:1px solid var(--line);
 }
-.menu-ico{ display:block; width:22px; height:2px; border-radius:2px; margin:0 auto; position:relative; background:var(--ink) }
-.menu-ico::before,.menu-ico::after{ content:""; position:absolute; left:0; right:0; height:2px; border-radius:2px; background:var(--ink) }
-.menu-ico::before{ top:-7px } .menu-ico::after{ top:7px }
+.nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0 }
+.brand{ display:flex; align-items:center; gap:10px; font-weight:900 }
+.logo{
+  width:28px; height:28px; border-radius:8px;
+  background:var(--brand); color:var(--brand-ink); display:grid; place-items:center; font-weight:900
+}
+.tabs{ display:flex; gap:6px; flex-wrap:wrap }
+.tab{
+  padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-weight:700;
+  background:transparent; transition:background .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease);
+}
+.tab:hover{ border-color:color-mix(in oklab, var(--line), var(--ink) 25%) }
+.tab[aria-current="page"]{ background:var(--brand); border-color:var(--brand); color:var(--brand-ink) }
+@media (max-width:900px){ .tabs{ display:none } }
 
-.menu{
-  position:fixed; top:0; right:0; height:100dvh; width:min(78vw,360px);
-  background:var(--card); color:var(--ink);
-  border-left:1px solid var(--line); box-shadow:-18px 0 36px rgba(0,0,0,.24);
-  transform:translateX(100%); transition:transform .28s cubic-bezier(.2,.7,.2,1);
-  padding:18px; display:flex; flex-direction:column; gap:10px; z-index:80;
-  border-top-left-radius:18px; border-bottom-left-radius:18px;
-}
-.menu a{ display:block; padding:14px 12px; border:1px solid var(--line); border-radius:12px; font-weight:700; background:color-mix(in oklab,var(--bg),#000 3%) }
-.menu.open{ transform:translateX(0) }
-.menu-backdrop{ position:fixed; inset:0; z-index:75; background:rgba(255,127,80,.30); opacity:0; pointer-events:none; transition:opacity .25s ease; backdrop-filter:saturate(120%) blur(2px) }
-.menu-backdrop.show{ opacity:1; pointer-events:auto }
-body.menu-open{ overflow:hidden }
-@media(max-width:900px){ .tabs{ display:none } .menu-toggle{ display:grid } }
-
-/* ===== FAB ===== */
-.fab{ position:fixed; right:16px; bottom:16px; display:flex; flex-direction:column; gap:12px; z-index:90 }
-.fab-btn{
-  width:56px; height:56px; border-radius:50%; border:1px solid var(--line);
-  background:color-mix(in oklab,var(--brand),#000 8%); color:#000; font-weight:800;
-  display:grid; place-items:center; box-shadow:0 8px 20px rgba(0,0,0,.22);
-  opacity:.85; transition:transform .12s ease, opacity .2s ease, box-shadow .2s ease;
-}
-.fab-btn span{ font-size:11px; font-weight:800; letter-spacing:.2px }
-.fab-btn:hover{ opacity:1; transform:translateY(-1px); box-shadow:0 12px 28px rgba(0,0,0,.28) }
-.fab-btn:active{ opacity:.75; transform:translateY(0) scale(.98) }
-.fab.hidden{ opacity:0; pointer-events:none }
-
-/* ===== Mobile nav & overlay fix ===== */
-:root{
-  --panel-bg-dark: rgba(16,16,16,.92);
-  --panel-ink-dark: #fff;
-  --panel-bg-light: rgba(255,255,255,.96);
-  --panel-ink-light: #111;
-}
-@media (prefers-color-scheme: dark){
-  :root{ --panel-bg: var(--panel-bg-dark); --panel-ink: var(--panel-ink-dark); }
-}
-@media (prefers-color-scheme: light){
-  :root{ --panel-bg: var(--panel-bg-light); --panel-ink: var(--panel-ink-light); }
-}
-
-/* 漢堡鈕：去掉白色方塊、置中、不要藍色超連結色 */
+/* ---------- 行動選單（Hamburger & Drawer） ---------- */
 .menu-toggle{
   appearance:none; -webkit-appearance:none;
+  width:44px; height:44px; border-radius:14px;
   border:1px solid var(--line);
   background:color-mix(in oklab, var(--bg), #000 6%);
-  color:var(--ink);
-  width:44px; height:44px; border-radius:14px;
-  display:grid; place-items:center; cursor:pointer;
+  color:var(--ink); display:grid; place-items:center; cursor:pointer;
 }
 .menu-toggle:focus{ outline:none }
 .menu-ico{ position:relative; width:20px; height:2px; background:currentColor; border-radius:2px }
@@ -155,36 +115,98 @@ body.menu-open{ overflow:hidden }
 }
 .menu-ico::before{ top:-6px } .menu-ico::after{ top:6px }
 
-/* 側邊選單 + 半透明背景罩（確保在地圖之上） */
 .menu-backdrop{
-  position:fixed; inset:0; background:rgba(255,127,80,.30); /* 品牌橘 30% */
-  backdrop-filter: blur(2px); z-index: 9998; display:none;
+  position:fixed; inset:0; z-index:9998;
+  background:rgba(255,127,80,.30);  /* 品牌橘 30% */
+  backdrop-filter: blur(2px);
+  display:none;
 }
 .menu{
   position:fixed; top:70px; right:12px; width:min(92vw,380px);
-  z-index:9999; display:none; /* 預設隱藏 */
+  z-index:9999; display:none;
 }
-.menu.open, .menu-backdrop.open{ display:block }
+.menu.open,.menu-backdrop.open{ display:block }
 .menu a{
-  display:block; color:var(--panel-ink);
+  display:block; color:var(--panel-ink) !important;
   background:var(--panel-bg);
   border:1px solid color-mix(in oklab, var(--panel-ink), transparent 80%);
   border-radius:18px; padding:18px 20px; margin:12px 0; font-weight:800;
 }
-
-/* 手機：把頂端那排圓圓 tab 收起，留漢堡鈕即可 */
-@media (max-width: 900px){
-  .tabs{ display:none }
+.menu a:hover{
+  border-color:color-mix(in oklab, var(--panel-ink), transparent 65%);
+  transform: translateY(-1px);
+  transition: transform .12s var(--ease), border-color .12s var(--ease);
 }
 
-/* 右側圓形浮動鈕：置中、陰影、按下透明度變化 */
+/* ---------- Hero ---------- */
+.hero{ display:grid; grid-template-columns:1.15fr .85fr; gap:22px; align-items:center; margin:10px 0 28px }
+.hero-title{ margin:.2em 0 .3em; font-size:clamp(28px,3.4vw,44px); line-height:1.15 }
+@media (max-width:900px){ .hero{ grid-template-columns:1fr } }
+
+/* ---------- 卡片、標籤、按鈕、表單 ---------- */
+.card{
+  background:linear-gradient(180deg,
+    color-mix(in oklab,var(--bg),#fff 6%),
+    color-mix(in oklab,var(--bg),#000 2%));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+}
+.pill{
+  display:inline-block; padding:6px 12px; border-radius:999px;
+  background:color-mix(in oklab,var(--brand),#fff 72%); color:#000;
+  font-weight:800; font-size:12px
+}
+.btn{
+  display:inline-grid; place-items:center; height:44px; padding:0 18px;
+  border-radius:12px; font-weight:800; cursor:pointer;
+  border:1.5px solid transparent; background:var(--brand); color:var(--brand-ink);
+  box-shadow: var(--shadow); transition: transform .12s var(--ease), opacity .12s var(--ease), box-shadow .25s var(--ease);
+}
+.btn:hover{ transform: translateY(-1px); box-shadow:var(--shadow-strong) }
+.btn:active{ transform: translateY(0); opacity:.85 }
+.btn.secondary{
+  background:transparent; border-color:var(--line); color:var(--ink)
+}
+.btn.tertiary{
+  background:transparent; border-color:transparent; color:var(--muted)
+}
+.input, textarea, select{
+  width:100%; height:44px; border:1px solid var(--line);
+  border-radius:10px; padding:10px 12px; background:transparent; color:inherit
+}
+textarea{ height:120px; resize:vertical }
+
+/* ---------- 段落帶背景（band） / 小標 ---------- */
+.band{ margin:8px 0 18px }
+.section-head .pill{ margin-bottom:8px; display:inline-block }
+
+/* ---------- 橫向滑動（產品卡） ---------- */
+.hwrap{ position:relative }
+.hscroll{
+  display:flex; gap:14px; overflow-x:auto; padding:2px 2px 12px;
+  scroll-snap-type:x mandatory;
+}
+.hscroll > *{ scroll-snap-align:start; flex:0 0 auto }
+
+/* ---------- 表格 ---------- */
+.table{ width:100%; border-collapse:collapse; font-size:14px }
+.table th,.table td{ border-bottom:1px solid var(--line); padding:10px 8px; text-align:left }
+
+/* ---------- FAB（右側圓形浮動按鈕） ---------- */
 .fab{ position:fixed; right:18px; bottom:18px; display:grid; gap:12px; z-index:60 }
 .fab-btn{
   width:64px; height:64px; border-radius:999px; border:0;
   background: radial-gradient(120% 120% at 30% 20%, #ff9966 0%, #ff7f50 60%, #d9663a 100%);
   color:#000; font-weight:900; font-size:14px; display:grid; place-items:center;
-  box-shadow: 0 10px 24px rgba(0,0,0,.25); transition: transform .12s, opacity .12s;
-  opacity:.85;
+  box-shadow: var(--shadow-strong); transition: transform .12s, opacity .12s;
+  opacity:.85; cursor:pointer;
 }
 .fab-btn:hover{ transform: translateY(-2px); opacity:1 }
 .fab-btn:active{ transform: translateY(0); opacity:.75 }
+
+/* ---------- 小螢幕微調 ---------- */
+@media (max-width:480px){
+  #page-products h2{ font-size:22px; letter-spacing:.5px; white-space:nowrap }
+}
