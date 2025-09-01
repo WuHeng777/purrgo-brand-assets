@@ -1,41 +1,26 @@
 [
   {
-    "id": "tofu-young",
+    "id": "p-young",
     "name": "幼貓專用豆腐砂",
     "spec": "2.5kg / 低粉塵",
     "price": 220,
-    "bullets": [
-      "低粉塵、溫和呵護呼吸道",
-      "含益生元，維護腸胃健康",
-      "快速結團，方便鏟屎"
-    ],
     "img": "./img/tofu-young.jpg",
-    "badge": "🍼 幼貓專用"
+    "bullets": ["升級纖維配方", "快速凝結", "日常首選"]
   },
   {
-    "id": "tofu-adult",
+    "id": "p-adult",
     "name": "成貓日常豆腐砂",
     "spec": "2.5kg / 強效除臭",
     "price": 200,
-    "bullets": [
-      "升級活性炭配方，有效除臭",
-      "快速吸水結團，清潔更省心",
-      "經濟實惠，日常首選"
-    ],
     "img": "./img/tofu-adult.jpg",
-    "badge": "🔥 熱銷"
+    "bullets": ["活性炭加強", "瞬吸結團", "經濟實惠"]
   },
   {
-    "id": "tofu-senior",
+    "id": "p-senior",
     "name": "熟齡護理豆腐砂",
-    "spec": "2.5kg / 抑菌保健",
+    "spec": "2.5kg / 溫和低敏",
     "price": 240,
-    "bullets": [
-      "添加綠茶粉，天然抗菌",
-      "舒緩熟齡貓咪敏感體質",
-      "低刺激，長效除臭"
-    ],
     "img": "./img/tofu-senior.jpg",
-    "badge": "💎 高端"
+    "bullets": ["低過敏源", "溫和無刺激", "水量監測推薦"]
   }
 ]
