@@ -1,7 +1,7 @@
 {
   "name": "PurrGo 喵來速",
   "short_name": "PurrGo",
-  "start_url": "./index.html",
+  "start_url": "/purrgo-brand-assets/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ff7f50",
