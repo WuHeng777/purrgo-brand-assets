@@ -113,19 +113,23 @@ body.menu-open #map{ pointer-events:none }
     </nav>
   </div>
 </header>
-<button class="menu-toggle" aria-label="主選單" aria-expanded="false" onclick="openMenu()"><span class="menu-ico" aria-hidden="true"></span></button>
-<nav id="menu" class="menu" aria-label="Mobile menu">
-  <a href="#home" onclick="closeMenu()">首頁</a>
-  <a href="#products" onclick="closeMenu()">產品</a>
-  <a href="#guild" onclick="closeMenu()">公會</a>
-  <a href="#kiosk" onclick="closeMenu()">據點</a>
-  <a href="#community" onclick="closeMenu()">照片牆</a>
-  <a href="#social" onclick="closeMenu()">社群</a>
-  <a href="#messages" onclick="closeMenu()">聊天</a>
-  <a href="#about" onclick="closeMenu()">理念</a>
-  <a href="#contact" onclick="closeMenu()">聯絡</a>
+<button class="menu-toggle" aria-label="開啟選單" onclick="openMenu()">
+  <span class="menu-ico" aria-hidden="true"></span>
+</button>
+
+<nav id="menu" class="menu" aria-label="行動選單">
+  <a href="#home"      onclick="go('home')">首頁</a>
+  <a href="#products"  onclick="go('products')">產品</a>
+  <a href="#guild"     onclick="go('guild')">公會</a>
+  <a href="#kiosk"     onclick="go('kiosk')">據點</a>
+  <a href="#community" onclick="go('community')">照片牆</a>
+  <a href="#social"    onclick="go('social')">社群</a>
+  <a href="#chat"      onclick="go('chat')">聊天</a>
+  <a href="#about"     onclick="go('about')">理念</a>
+  <a href="#contact"   onclick="go('contact')">聯絡</a>
 </nav>
-<div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()" aria-hidden="true"></div>
+
+<div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()"></div>
 
 <main class="container">
   <!-- Hero -->
