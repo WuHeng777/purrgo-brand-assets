@@ -1,528 +1,430 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PurrGo 喵來速｜品牌官網 Demo</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PurrGo 喵來速｜品牌官網 Demo</title>
 
-<!-- PWA / Icons（可保留你原檔） -->
-<link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" href="./logo/favicon.png">
-<link rel="apple-touch-icon" sizes="192x192" href="./logo/logo-192.png">
-<link rel="apple-touch-icon" sizes="512x512" href="./logo/logo-512.png">
-<meta name="theme-color" content="#ff7f50">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./logo/favicon.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="./logo/logo-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="./logo/logo-512.png">
+  <meta name="theme-color" content="#ff7f50">
 
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="./style.css">
 
-
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 </head>
-<body>
+<body id="top">
 
-<header>
-  <div class="container navbar">
-    <div class="brand">
-      <div class="brand-logo"><img src="./logo/logo-192.png" alt="logo"></div>
-      <div>PurrGo 喵來速</div>
-    </div>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="#home">
+      <img class="brand-logo" src="./logo/logo-192.png" alt="PurrGo" />
+      <b>PurrGo 喵來速</b>
+    </a>
 
-    <nav class="nav-links" id="desktopNav">
-      <a data-go="home" class="active">首頁</a>
-      <a data-go="products">產品</a>
-      <a data-go="guild">公會</a>
-      <a data-go="kiosk">據點</a>
-      <a data-go="community">照片牆</a>
-      <a data-go="social">社群</a>
-      <a data-go="chat">聊天</a>
-      <a data-go="shorts">短影片</a>
-      <a data-go="about">理念</a>
-      <a data-go="contact">聯絡</a>
+    <!-- 桌機：分頁導覽 -->
+    <nav class="tabs">
+      <a class="tab" data-sec="home">首頁</a>
+      <a class="tab" data-sec="products">產品</a>
+      <a class="tab" data-sec="guild">公會</a>
+      <a class="tab" data-sec="kiosk">據點</a>
+      <a class="tab" data-sec="community">照片牆</a>
+      <a class="tab" data-sec="social">社群</a>
+      <a class="tab" data-sec="chat">聊天</a>
+      <a class="tab" data-sec="video">短影片</a>
+      <a class="tab" data-sec="about">理念</a>
+      <a class="tab" data-sec="contact">聯絡</a>
     </nav>
 
-    <button class="menu-toggle" id="menuBtn" aria-label="開啟選單"><span class="menu-ico"><span></span></span></button>
+    <!-- 漢堡 -->
+    <button class="menu-toggle" aria-label="開啟選單" id="menuToggle">
+      <span class="menu-ico" aria-hidden="true"></span>
+    </button>
   </div>
 
-  <!-- Drawer -->
-  <div class="menu-backdrop" id="menuBackdrop"></div>
-  <nav class="menu" id="menu">
-    <a href="#home"      data-go="home">首頁</a>
-    <a href="#products"  data-go="products">產品</a>
-    <a href="#guild"     data-go="guild">公會</a>
-    <a href="#kiosk"     data-go="kiosk">據點</a>
-    <a href="#community" data-go="community">照片牆</a>
-    <a href="#social"    data-go="social">社群</a>
-    <a href="#chat"      data-go="chat">聊天</a>
-    <a href="#shorts"    data-go="shorts">短影片</a>
-    <a href="#about"     data-go="about">理念</a>
-    <a href="#contact"   data-go="contact">聯絡</a>
+  <!-- 手機：抽屜選單 -->
+  <nav id="menu" class="menu" aria-label="主選單" aria-hidden="true">
+    <a href="#home"        onclick="closeMenu()">首頁</a>
+    <a href="#products"    onclick="closeMenu()">產品</a>
+    <a href="#guild"       onclick="closeMenu()">公會</a>
+    <a href="#kiosk"       onclick="closeMenu()">據點</a>
+    <a href="#community"   onclick="closeMenu()">照片牆</a>
+    <a href="#social"      onclick="closeMenu()">社群</a>
+    <a href="#chat"        onclick="closeMenu()">聊天</a>
+    <a href="#video"       onclick="closeMenu()">短影片</a>
+    <a href="#about"       onclick="closeMenu()">理念</a>
+    <a href="#contact"     onclick="closeMenu()">聯絡</a>
   </nav>
+  <div id="menuBackdrop" class="menu-backdrop" hidden></div>
 </header>
 
-<main class="container">
+<main>
 
-  <!-- ========== Home ========== -->
-  <section id="page-home" class="page active">
-    <div class="section hero">
-      <div>
+  <!-- ===== 首頁 / Hero ===== -->
+  <section id="home" class="page container">
+    <article class="card hero">
+      <div class="hero-copy">
         <span class="pill">PurrGo 喵來速</span>
-        <h1 class="nowrap">便利 × 可愛 × 永續 × 共創</h1>
-        <p class="muted">用創新配送 + 公會制度，讓補給更聰明、更便宜、更好玩。把「買貓砂」變成有成就感的里程碑遊戲。</p>
-        <div class="inline">
-          <button class="btn" data-go="products">開始探索產品</button>
-          <button class="btn secondary" data-go="guild">加入貓奴公會</button>
-          <button class="btn ghost" data-go="about">了解品牌理念</button>
+        <h1 class="hero-title">便利 × 可愛 × 永續 × 共創</h1>
+        <p class="muted">
+          用創新配送 + 公會制度，讓補給更聰明、更便宜、更好玩。把「買貓砂」變成有成就感的里程碑遊戲。
+        </p>
+        <div class="inline mt-1">
+          <a class="btn" data-go="products">開始探索產品</a>
+          <a class="btn secondary" data-go="guild">加入貓奴公會</a>
+          <a class="btn tertiary" data-go="about">了解品牌理念</a>
         </div>
       </div>
-      <div class="hero-visual">
-        <img class="hero-logo" src="./img/000/tofu-adult.jpg" alt="Hero artwork">
+      <div class="hero-art">
+        <div class="hero-visual">
+          <img src="./logo/logo-512.png" alt="PurrGo Logo" class="hero-logo radius-xl"/>
+        </div>
       </div>
-    </div>
+    </article>
 
-    <div class="section">
-      <div class="section-head"><h2 class="nowrap">建立主子角色</h2><span class="badge">不限數量</span></div>
-      <form id="catForm" class="grid g2">
-        <label class="kv"><b>暱稱</b><input class="input" name="name" required></label>
-        <label class="kv"><b>性別</b>
-          <select class="input" name="sex">
-            <option>公</option><option>母</option><option>未知</option>
+    <!-- 登入 / 註冊（本機 Demo） -->
+    <article class="card">
+      <span class="pill">Account</span>
+      <h2 class="mt-0">註冊 / 登入</h2>
+      <p class="muted">Demo 僅在本機儲存（localStorage）。未登入狀態可預覽，但無法新增主子、上傳等互動。</p>
+      <form class="grid g-3" onsubmit="return doLogin(event)">
+        <div><label>帳號（ID / 暱稱）<input id="loginId" class="input" required placeholder="例如：mimiDad"></label></div>
+        <div><label>電子郵件（示意）<input id="loginMail" type="email" class="input" placeholder="demo@example.com"></label></div>
+        <div class="inline"><button class="btn" type="submit">登入 / 註冊</button>
+          <span class="muted" id="loginStatus"></span>
+          <button class="btn secondary" type="button" onclick="logout()">登出</button>
+        </div>
+      </form>
+    </article>
+
+    <!-- 主子角色 -->
+    <article class="card">
+      <span class="pill">主子</span>
+      <h2 class="mt-0">建立主子角色</h2>
+
+      <form id="catForm" class="grid g-3" onsubmit="return addCat(event)">
+        <div><label>暱稱<input class="input" id="catName" required></label></div>
+        <div><label>性別
+          <select class="input" id="catGender">
+            <option>公</option><option>母</option>
           </select>
-        </label>
-        <label class="kv"><b>生日</b><input class="input" name="birthday" type="date" required></label>
-        <label class="kv"><b>品種</b>
-          <select class="input" name="breed" id="breedSel"><option value="">讀取中…</option></select>
-        </label>
-        <label class="kv g2"><b>大頭照</b><input class="input" name="avatar" type="file" accept="image/*"></label>
+        </label></div>
+        <div><label>生日
+          <input class="input" id="catBirth" type="date" required>
+        </label></div>
+        <div class="gcol-2"><label>品種
+          <select id="catBreed" class="input"></select>
+        </label></div>
+        <div class="gcol-2"><label>大頭照
+          <input type="file" accept="image/*" id="catAvatar" class="input">
+        </label></div>
         <div class="inline"><button class="btn" type="submit">新增主子</button></div>
       </form>
-      <div id="catStrip" class="cat-strip mt-1"></div>
-    </div>
-  </section>
 
-  <!-- ========== Products ========== -->
-  <section id="page-products" class="page">
-    <div class="section">
-      <div class="section-head"><div><span class="pill">Products</span><h2 class="nowrap">熱銷與方案</h2></div></div>
-      <p class="muted">橫向滑動卡片，支援產品照片、詳情彈窗與加入購物車。</p>
-
-      <div class="hwrap">
-        <div id="productRow" class="hscroll"></div>
+      <div class="mt-2">
+        <h3 class="mt-0">我的主子</h3>
+        <div id="catsRow" class="hscroll cards-row"></div>
       </div>
+    </article>
+  </section>
 
-      <div class="section mt-2">
-        <h3 class="mt-0">購物車（示範）</h3>
-        <div id="cartList" class="muted">尚無商品</div>
-        <div class="inline mt-1">
-          <button class="btn" id="checkoutBtn">結帳（示範）</button>
-          <button class="btn secondary" id="clearCartBtn">清空</button>
-        </div>
+  <!-- ===== 產品 ===== -->
+  <section id="products" class="page container">
+    <header class="section-head">
+      <div>
+        <span class="pill">Products</span>
+        <h2 class="mt-0">熱銷與方案</h2>
+        <p class="section-sub">橫向滑動卡片，支援產品照片、詳情彈窗與加入購物車。</p>
       </div>
+    </header>
+
+    <div class="hwrap">
+      <button class="hbtn prev" aria-label="上一排" data-row="#productRow">‹</button>
+      <div id="productRow" class="hscroll cards-row"></div>
+      <button class="hbtn next" aria-label="下一排" data-row="#productRow">›</button>
     </div>
-  </section>
 
-  <!-- ========== Guild ========== -->
-  <section id="page-guild" class="page">
-    <div class="section">
-      <div class="section-head"><div><span class="pill">Guild</span><h2 class="nowrap">公會制度：一起成長、一起更省</h2></div></div>
-      <p class="muted">建立門檻、VIP 等級、貢獻條、每日任務…（Demo 版）</p>
-
-      <div class="section">
-        <h3 class="mt-0">加入 / 綁定</h3>
-        <div id="guildStatus" class="notice">尚未加入公會</div>
-        <div class="inline mt-1">
-          <input class="input" id="bindPhone" placeholder="輸入手機（示意）" style="width:220px">
-          <button class="btn" id="joinGuildBtn">加入公會</button>
-        </div>
+    <article class="card">
+      <h3 class="mt-0">購物車（示範）</h3>
+      <div id="cartList" class="muted">尚無商品</div>
+      <div class="inline mt-1">
+        <button class="btn">結帳（示範）</button>
+        <button class="btn secondary" onclick="clearCart()">清空</button>
       </div>
+    </article>
+  </section>
 
-      <div class="section">
-        <h3 class="mt-0">免費貓咪健檢（每隻主子一年 1 次）</h3>
-        <div class="kv">
-          <b>城市</b>
-          <select class="input" id="citySel"></select>
-        </div>
-        <div class="kv">
-          <b>合作獸醫</b>
-          <select class="input" id="hospitalSel"></select>
-        </div>
-        <div id="reportArea" class="grid g2 mt-1"></div>
+  <!-- ===== 公會 ===== -->
+  <section id="guild" class="page container">
+    <header class="section-head">
+      <div><span class="pill">Guild</span><h2 class="mt-0">公會制度：一起成長、一起更省</h2>
+      <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務（示範）。</p></div>
+    </header>
+
+    <article class="card">
+      <h3 class="mt-0">身分綁定 / VIP</h3>
+      <div class="grid g-3">
+        <div><label>手機號碼（示意）<input class="input" placeholder="09xxxxxxxx"></label></div>
+        <div class="inline"><button class="btn">綁定（示意）</button></div>
       </div>
-    </div>
-  </section>
+      <div class="muted mt-1">VIP 等級：<b id="vipLv">V0</b></div>
+      <div class="progress"><span id="vipProg" style="width:10%"></span></div>
+    </article>
 
-  <!-- ========== Kiosk ========== -->
-  <section id="page-kiosk" class="page">
-    <div class="section">
-      <div class="section-head"><div><span class="pill">Kiosk</span><h2 class="nowrap">販賣機點位</h2></div></div>
-      <div id="kioskMap" style="height:380px"></div>
-      <p class="muted">點標記可開啟 Google/Apple Maps 導航。</p>
-    </div>
-  </section>
-
-  <!-- ========== Community (Photo wall) ========== -->
-  <section id="page-community" class="page">
-    <div class="section">
-      <div class="section-head"><div><span class="pill">Community</span><h2 class="nowrap">照片牆</h2></div></div>
-      <div class="inline">
-        <input type="file" id="photoInput" accept="image/*" multiple>
-        <label class="toggle"><input type="checkbox" id="photoPublic" checked> 公開</label>
-        <button class="btn secondary" id="clearWallBtn">清除（本機）</button>
-      </div>
-      <div id="wall" class="wall mt-1"></div>
-    </div>
-  </section>
-
-  <!-- ========== Social / Friends ========== -->
-  <section id="page-social" class="page">
-    <div class="section">
-      <div class="section-head"><div><span class="pill">Social</span><h2 class="nowrap">社群（Demo）</h2></div></div>
-      <div class="grid g2">
-        <div class="section">
-          <h3 class="mt-0">註冊 / 登入（本機示範）</h3>
-          <div class="inline">
-            <input class="input" id="loginId" placeholder="設定你的社群 ID" style="width:240px">
-            <button class="btn" id="loginBtn">登入</button>
-          </div>
-          <div id="loginState" class="notice mt-1">目前為訪客模式</div>
+    <article class="card">
+      <h3 class="mt-0">免費健檢（每年一次）</h3>
+      <p class="muted">需登入並加入公會。選擇主子 → 上傳健檢報告 PDF/圖片 → 加計貢獻。</p>
+      <form class="grid g-3" onsubmit="return uploadCheckup(event)">
+        <div>
+          <label>選擇主子
+            <select class="input" id="checkupCat"></select>
+          </label>
         </div>
-        <div class="section">
-          <h3 class="mt-0">新增好友</h3>
-          <div class="inline">
-            <input class="input" id="friendId" placeholder="輸入對方 ID" style="width:240px">
-            <button class="btn secondary" id="addFriendBtn">新增</button>
-          </div>
-          <div id="friendList" class="mt-1 muted">尚無好友</div>
+        <div class="gcol-2">
+          <label>上傳健檢報告
+            <input id="checkupFile" type="file" accept=".pdf,image/*" class="input" required />
+          </label>
         </div>
+        <div class="inline"><button class="btn" type="submit">上傳（Demo）</button></div>
+      </form>
+      <div id="checkupList" class="mt-1"></div>
+    </article>
+  </section>
+
+  <!-- ===== 據點地圖 ===== -->
+  <section id="kiosk" class="page container">
+    <header class="section-head">
+      <div><span class="pill">Kiosk</span><h2 class="mt-0">販賣機點位</h2></div>
+    </header>
+    <div id="map" class="map"></div>
+    <p class="muted mt-1">地圖互動在選單開啟時會暫停，避免蓋層問題。</p>
+  </section>
+
+  <!-- ===== 照片牆 ===== -->
+  <section id="community" class="page container">
+    <header class="section-head">
+      <div><span class="pill">Community</span><h2 class="mt-0">照片牆（本機示範）</h2></div>
+    </header>
+    <div class="inline">
+      <input type="file" accept="image/*" multiple id="photoInput">
+      <button class="btn secondary" onclick="clearWall()">清除所有照片（本機）</button>
+    </div>
+    <div id="wall" class="grid g-3 mt-2"></div>
+  </section>
+
+  <!-- ===== 社群 ===== -->
+  <section id="social" class="page container">
+    <header class="section-head">
+      <div><span class="pill">Social</span><h2 class="mt-0">社群（Demo）</h2></div>
+    </header>
+    <article class="card">
+      <h3 class="mt-0">好友 / 追蹤（示意）</h3>
+      <div class="grid g-3">
+        <div><label>輸入好友 ID <input class="input" id="friendId" placeholder="ex: catlover77"></label></div>
+        <div class="inline"><button class="btn" onclick="addFriend()">新增好友（本機）</button></div>
       </div>
-    </div>
+      <div id="friendList" class="mt-1 muted">尚無好友</div>
+    </article>
   </section>
 
-  <!-- ========== Chat ========== -->
-  <section id="page-chat" class="page">
-    <div class="section">
-      <div class="section-head"><div><span class="pill">Chat</span><h2 class="nowrap">聊天（Demo，本機）</h2></div></div>
-      <div class="grid g2">
-        <div class="section">
-          <h3 class="mt-0">選擇好友</h3>
-          <div id="chatPeers" class="muted">請先至「社群」新增好友</div>
-        </div>
-        <div class="section">
-          <h3 class="mt-0">訊息</h3>
-          <div id="chatThread" class="notice" style="height:220px;overflow:auto">尚未選擇好友</div>
-          <div class="inline mt-1">
-            <input class="input" id="chatText" placeholder="輸入訊息">
-            <button class="btn" id="sendMsgBtn">送出</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- ===== 聊天 & 影片（占位） ===== -->
+  <section id="chat" class="page container">
+    <header class="section-head"><div><span class="pill">Chat</span><h2 class="mt-0">聊天（示範占位）</h2></div></header>
+    <article class="card"><div class="empty">之後接訊息服務 / WebSocket。</div></article>
   </section>
 
-  <!-- ========== Shorts ========== -->
-  <section id="page-shorts" class="page">
-    <div class="section">
-      <div class="section-head"><div><span class="pill">Shorts</span><h2 class="nowrap">短影片（Demo）</h2></div></div>
-      <div class="inline">
-        <input type="file" accept="video/*" id="shortInput" multiple>
-        <span class="muted">建議 30 秒內，示範僅於本機瀏覽。</span>
-      </div>
-      <div id="shortList" class="wall mt-1"></div>
-    </div>
+  <section id="video" class="page container">
+    <header class="section-head"><div><span class="pill">Shorts</span><h2 class="mt-0">短影片（示範占位）</h2></div></header>
+    <article class="card"><div class="empty">之後接上傳 / 播放清單（30 秒）</div></article>
   </section>
 
-  <!-- ========== About ========== -->
-  <section id="page-about" class="page">
-    <div class="section">
-      <div class="section-head"><div><span class="pill">About</span><h2 class="nowrap">我們的理念</h2></div></div>
-      <p>便利 × 可愛 × 永續 × 共創。用科技與社群，把日常補給變成好玩又有成就的參與。</p>
-    </div>
+  <!-- ===== 理念 / 聯絡 ===== -->
+  <section id="about" class="page container">
+    <header class="section-head"><div><span class="pill">About</span><h2 class="mt-0">品牌理念</h2></div></header>
+    <article class="card"><p class="muted">便利、可愛、永續、共創。</p></article>
   </section>
 
-  <!-- ========== Contact ========== -->
-  <section id="page-contact" class="page">
-    <div class="section">
-      <div class="section-head"><div><span class="pill">Contact</span><h2 class="nowrap">聯絡我們</h2></div></div>
-      <form id="contactForm" class="grid g2">
-        <label class="kv"><b>稱呼</b><input class="input" required></label>
-        <label class="kv"><b>Email</b><input class="input" type="email" required></label>
-        <label class="kv g2"><b>訊息</b><textarea class="input" required></textarea></label>
+  <section id="contact" class="page container">
+    <header class="section-head"><div><span class="pill">Contact</span><h2 class="mt-0">聯絡我們</h2></div></header>
+    <article class="card">
+      <form class="grid g-2" onsubmit="return submitForm(event)">
+        <div><label>您的稱呼<input class="input" required></label></div>
+        <div><label>Email<input type="email" class="input" required></label></div>
+        <div class="gcol-2"><label>訊息<textarea class="input" required></textarea></label></div>
         <div class="inline"><button class="btn" type="submit">送出</button></div>
       </form>
       <p class="muted mt-1">也可來信：<a href="mailto:hello@purrgo.tw">hello@purrgo.tw</a></p>
-    </div>
+    </article>
   </section>
 
 </main>
 
-<footer class="container footer">© PurrGo 喵來速 ｜ 公開 Demo（不含投資人資訊）</footer>
+<footer class="container" style="padding:26px 0 90px;color:var(--muted)">
+  © PurrGo 喵來速 ｜ 公開 Demo（不含投資人資訊）
+</footer>
 
-<!-- Product Modal -->
-<div id="productModal" class="modal" role="dialog" aria-modal="true">
-  <div class="sheet">
-    <div class="inline" style="justify-content:space-between">
-      <h3 id="pmTitle" class="mt-0">商品詳情</h3>
-      <button class="btn secondary" id="pmClose">關閉</button>
-    </div>
-    <img id="pmImg" class="cover" src="" alt="" style="height:280px;margin-bottom:10px;object-fit:cover;border-radius:12px">
-    <div id="pmBody" class="muted"></div>
-  </div>
+<!-- 單顆 FAB：Top -->
+<div class="fab-col">
+  <button class="fab" id="toTopBtn" aria-label="回到頂端">Top</button>
 </div>
 
+<!-- 產品詳情 Modal -->
+<dialog id="prodDlg" class="dlg">
+  <div class="dlg-body card">
+    <button class="dlg-close" onclick="closeProd()">✕</button>
+    <div id="prodContent"></div>
+  </div>
+</dialog>
+
 <!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 
 <script>
-/* =========================================================
-   State & Helpers (LocalStorage Demo)
-========================================================= */
-const LS = {
-  load:(k,def)=>{ try{ return JSON.parse(localStorage.getItem(k)) ?? def }catch{ return def } },
-  save:(k,v)=>localStorage.setItem(k,JSON.stringify(v))
-};
-const S = LS.load('purrgoState',{
-  user:{ id:"guest-"+Math.random().toString(36).slice(2,7), guild:false },
-  cats:[],
-  products:[],
-  cart:[],
-  photos:[],   // {src, public, likes, comments:[]}
-  friends:[],  // ids
-  chats:{},    // { peerId: [ {from,text,time} ] }
-  shorts:[]
-});
+/* ===== Global State ===== */
+const LS_KEY = 'purrgoState';
+const state = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+state.user  ||= null;             // {id, mail}
+state.cats  ||= [];               // [{id,name,gender,birth,ageStr,breed,avatar}]
+state.cart  ||= [];               // products
+state.check ||= [];               // checkup records
+state.friends ||= [];             // friend ids
 
-/* Router */
-const PAGES = ["home","products","guild","kiosk","community","social","chat","shorts","about","contact"];
-function go(page){
-  PAGES.forEach(p=>document.getElementById("page-"+p).classList.toggle("active", p===page));
-  [...document.querySelectorAll('.nav-links a')].forEach(a=>a.classList.toggle('active', a.dataset.go===page));
-  history.replaceState({}, "", "#"+page);
-  // 收起 drawer
-  closeMenu();
-  // lazy init
-  if(page==="kiosk" && !window._mapInited) initMap();
-}
-function current(){ return (location.hash||"#home").replace("#","") }
-function bindNav(){
-  document.getElementById('desktopNav').addEventListener('click',e=>{
-    if(e.target.dataset.go) go(e.target.dataset.go);
-  });
-  document.getElementById('menu').addEventListener('click',e=>{
-    if(e.target.dataset.go){ go(e.target.dataset.go) }
-  });
-  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+/* ===== Helpers ===== */
+const $ = sel => document.querySelector(sel);
+function go(id){ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); }
+function yyyymmdd(d){ return d.toISOString().slice(0,10); }
+function ageFromBirth(dt){
+  const b = new Date(dt), now = new Date();
+  let y = now.getFullYear()-b.getFullYear();
+  let m = now.getMonth()-b.getMonth();
+  if(m<0){ y--; m+=12; }
+  return `${y}歲${m}月`;
 }
 
-/* Drawer */
-const menu = document.getElementById('menu');
-const backdrop = document.getElementById('menuBackdrop');
-const menuBtn = document.getElementById('menuBtn');
-function openMenu(){ menu.classList.add('open'); backdrop.classList.add('show'); document.body.classList.add('menu-open') }
-function closeMenu(){ menu.classList.remove('open'); backdrop.classList.remove('show'); document.body.classList.remove('menu-open') }
-menuBtn.addEventListener('click', openMenu);
-backdrop.addEventListener('click', closeMenu);
-window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeMenu() });
-
-/* FAB */
-document.body.insertAdjacentHTML('beforeend', `
-  <div class="fab" id="fab">
-    <button data-go="home">Top</button>
-    <button data-go="products">Shop</button>
-    <button data-go="guild">Guild</button>
-    <button data-go="kiosk">Map</button>
-    <button data-go="chat">Msg</button>
-  </div>
-`);
-document.getElementById('fab').addEventListener('click', e=>{
-  if(e.target.tagName==='BUTTON' && e.target.dataset.go) go(e.target.dataset.go)
-});
-
-/* ========== Home: breeds + cats ========== */
-async function loadBreeds(){
-  try{
-    const res = await fetch('./data/breeds.json',{cache:'no-cache'});
-    const list = await res.json();
-    const sel = document.getElementById('breedSel'); sel.innerHTML='';
-    list.forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; sel.appendChild(o) })
-  }catch{ document.getElementById('breedSel').innerHTML='<option>家貓</option>' }
-}
-function ageFromBirthday(iso){
-  const b = new Date(iso), now=new Date();
-  let y=now.getFullYear()-b.getFullYear();
-  let m=now.getMonth()-b.getMonth();
-  if(m<0){ y--; m+=12 }
-  return `${y} 歲 ${m} 月`;
-}
-function renderCats(){
-  const wrap = document.getElementById('catStrip'); wrap.innerHTML='';
-  if(!S.cats.length) wrap.innerHTML='<div class="notice">尚未建立主子</div>';
-  S.cats.forEach((c,i)=>{
-    const el = document.createElement('div'); el.className='cat-card';
-    el.innerHTML = `
-      <img src="${c.avatar||'./logo/logo-192.png'}" alt="">
-      <div>
-        <div><b>${c.name}</b>｜${c.breed||'家貓'}</div>
-        <div class="muted">${c.sex}｜${ageFromBirthday(c.birthday)}</div>
-        <div class="inline mt-1">
-          <button class="btn secondary" data-edit="${i}">編輯</button>
-          <button class="btn secondary" data-del="${i}">刪除</button>
-        </div>
-      </div>`;
-    wrap.appendChild(el);
-  });
-}
-document.getElementById('catForm').addEventListener('submit', async e=>{
+/* ===== Auth (Demo) ===== */
+function doLogin(e){
   e.preventDefault();
-  const fd = new FormData(e.target);
-  const obj = Object.fromEntries(fd.entries());
-  if(fd.get('avatar')?.size){
-    obj.avatar = await fileToDataURL(fd.get('avatar'));
-  }
-  S.cats.push(obj); LS.save('purrgoState',S); e.target.reset(); renderCats(); seedFirstAvatarToWall();
-});
-document.getElementById('catStrip').addEventListener('click', async e=>{
-  const i = e.target.dataset.edit ?? e.target.dataset.del;
-  if(i==null) return;
-  if(e.target.dataset.del!=null){
-    if(confirm('確定刪除此主子？')){ S.cats.splice(Number(i),1); LS.save('purrgoState',S); renderCats(); renderReportArea(); }
-    return;
-  }
-  // 編輯
-  const c = S.cats[i];
-  const name = prompt('主子暱稱', c.name); if(name==null) return;
-  const sex = prompt('性別（公/母/未知）', c.sex) ?? c.sex;
-  const birthday = prompt('生日（YYYY-MM-DD）', c.birthday) ?? c.birthday;
-  const breed = prompt('品種', c.breed) ?? c.breed;
-  S.cats[i] = {...c, name, sex, birthday, breed};
-  LS.save('purrgoState',S); renderCats(); renderReportArea();
-});
-async function fileToDataURL(file){ return new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(file) })}
-
-/* 把第一張主子頭貼自動帶入照片牆一次（若牆上還沒有） */
-function seedFirstAvatarToWall(){
-  if(!S.photos.length && S.cats[0]?.avatar){
-    S.photos.push({src:S.cats[0].avatar, public:true, likes:0, comments:[]});
-    LS.save('purrgoState',S); renderWall();
-  }
+  const id = $('#loginId').value.trim();
+  if(!id) return false;
+  state.user = { id, mail: $('#loginMail').value.trim()||'' };
+  save(); renderAuth();
+  return false;
 }
+function logout(){
+  state.user = null; save(); renderAuth();
+}
+function renderAuth(){
+  $('#loginStatus').textContent = state.user ? `已登入：${state.user.id}` : '（未登入）';
+  document.body.classList.toggle('locked', menuOpen); // 保持
+  // 權限提示（未登入時鎖互動）
+  document.querySelectorAll('[data-need-login]').forEach(el=>{
+    el.toggleAttribute('disabled', !state.user);
+    el.classList.toggle('disabled', !state.user);
+  });
+}
+renderAuth();
 
-/* ========== Products ========== */
+/* ===== Hamburger ===== */
+let menuOpen = false;
+const menu = $('#menu'), backdrop = $('#menuBackdrop'), toggle = $('#menuToggle');
+function openMenu(){
+  menuOpen = true;
+  menu.setAttribute('aria-hidden','false');
+  backdrop.hidden = false;
+  document.body.classList.add('noscroll');
+}
+function closeMenu(){
+  menuOpen = false;
+  menu.setAttribute('aria-hidden','true');
+  backdrop.hidden = true;
+  document.body.classList.remove('noscroll');
+}
+toggle.addEventListener('click', ()=> menuOpen?closeMenu():openMenu());
+backdrop.addEventListener('click', closeMenu);
+
+/* ===== Top FAB ===== */
+$('#toTopBtn').addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
+
+/* ===== Tabs (desktop) & hero buttons ===== */
+document.querySelectorAll('.tab,[data-go]').forEach(a=>{
+  a.addEventListener('click', ()=>{
+    const id = a.dataset.sec || a.dataset.go;
+    if(id){ go(id); }
+  });
+});
+
+/* ===== Products ===== */
 async function loadProducts(){
   try{
     const res = await fetch('./data/products.json',{cache:'no-cache'});
-    S.products = await res.json();
+    const list = await res.json();
+    renderProducts(list);
   }catch{
-    S.products = [
-      {id:1, name:'幼貓專用豆腐砂', spec:'2.5kg / 低粉塵', price:220, bullets:['高纖低塵','瞬吸結團'], img:'./img/tofu-young.jpg', detail:'幼貓配方示意'},
-      {id:2, name:'成貓日常豆腐砂', spec:'2.5kg / 強效除臭', price:200, bullets:['活性炭除臭','結團強'], img:'./img/tofu-adult.jpg', detail:'成貓配方示意'},
-      {id:3, name:'熟齡關節豆腐砂', spec:'2.5kg / 溫和', price:240, bullets:['抑味加強','溫和不刺激'], img:'./img/tofu-senior.jpg', detail:'熟齡配方示意'},
-    ];
+    renderProducts([
+      {id:1,name:'幼貓豆腐砂',spec:'2.5kg / 低粉塵',price:220,img:'./img/tofu-young.jpg',bullets:['好鏟','快凝結']},
+      {id:2,name:'成貓日常豆腐砂',spec:'2.5kg / 強效除臭',price:200,img:'./img/tofu-adult.jpg',bullets:['不易帶砂','高CP']},
+      {id:3,name:'熟齡溫和豆腐砂',spec:'2.5kg / 護敏',price:230,img:'./img/tofu-senior.jpg',bullets:['溫和','親膚']}
+    ]);
   }
-  renderProducts();
 }
-function renderProducts(){
-  const row = document.getElementById('productRow'); row.innerHTML='';
-  S.products.forEach(p=>{
-    const el = document.createElement('div'); el.className='card';
+function renderProducts(list){
+  const row = $('#productRow'); row.innerHTML='';
+  list.forEach(p=>{
+    const el = document.createElement('div'); el.className='pro-card';
     el.innerHTML = `
-      <img class="cover" src="${p.img||'./img/000/tofu-adult.jpg'}" alt="">
-      <h3 class="mt-1">${p.name}</h3>
-      <div class="muted">${p.spec||''}</div>
-      <div class="mt-1"><b>NT$ ${Number(p.price||0).toLocaleString()}</b></div>
-      <ul style="margin:10px 0 0 18px">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
-      <div class="inline mt-1">
-        <button class="btn" data-add="${p.id}">加入購物車</button>
-        <button class="btn secondary" data-detail="${p.id}">查看詳情</button>
+      <figure class="pro-img"><img src="${p.img||'./img/000'}" alt="${p.name}"></figure>
+      <div class="pro-body">
+        <h3 class="mt-0">${p.name}</h3>
+        <div class="muted">${p.spec||''}</div>
+        <div class="mt-1"><b>NT$ ${Number(p.price||0).toLocaleString()}</b></div>
+        <ul class="list">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
+        <div class="inline mt-1">
+          <button class="btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>加入購物車</button>
+          <button class="btn secondary" onclick='openProd(${JSON.stringify(p).replace(/'/g,"&#39;")})'>查看詳情</button>
+        </div>
       </div>`;
     row.appendChild(el);
   });
 }
-document.getElementById('productRow').addEventListener('click', e=>{
-  const id = e.target.dataset.add ?? e.target.dataset.detail;
-  if(!id) return;
-  const p = S.products.find(x=>x.id==id);
-  if(e.target.dataset.add){
-    S.cart.push({id:p.id, name:p.name, price:p.price}); LS.save('purrgoState',S); renderCart();
-  }else{
-    openProductModal(p);
-  }
-});
+function addToCart(p){
+  state.cart.push({id:p.id,name:p.name,price:p.price});
+  save(); renderCart();
+}
+function clearCart(){ state.cart=[]; save(); renderCart(); }
 function renderCart(){
-  const box=document.getElementById('cartList');
-  if(!S.cart.length){ box.textContent='尚無商品'; return }
-  box.innerHTML = S.cart.map((c,i)=>`<div class="inline" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 0">
-    <div>${c.name}</div><div>NT$ ${c.price}</div><button class="btn secondary" data-rm="${i}">移除</button></div>`).join('');
+  const box = $('#cartList');
+  if(!state.cart.length){ box.textContent='尚無商品'; return; }
+  box.innerHTML = state.cart.map(i=>`<div class="cart-line">${i.name} — NT$ ${i.price}</div>`).join('');
 }
-document.getElementById('cartList').addEventListener('click',e=>{
-  if(e.target.dataset.rm){ S.cart.splice(Number(e.target.dataset.rm),1); LS.save('purrgoState',S); renderCart() }
-});
-document.getElementById('checkoutBtn').addEventListener('click',()=>alert('示範：送出訂單（未串金流）'));
-document.getElementById('clearCartBtn').addEventListener('click',()=>{ S.cart=[]; LS.save('purrgoState',S); renderCart() });
-function openProductModal(p){
-  document.getElementById('pmTitle').textContent = p.name;
-  document.getElementById('pmImg').src = p.img||'./img/000/tofu-adult.jpg';
-  document.getElementById('pmBody').innerHTML = `
-    <div class="muted">${p.spec||''}</div><hr class="sep">
-    <div>售價：<b>NT$ ${p.price}</b></div>
-    <ul style="margin:10px 0 0 18px">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>`;
-  document.getElementById('productModal').classList.add('show');
-}
-document.getElementById('pmClose').addEventListener('click',()=>document.getElementById('productModal').classList.remove('show'));
-document.getElementById('productModal').addEventListener('click',e=>{ if(e.target.id==='productModal') e.currentTarget.classList.remove('show') });
-
-/* ========== Guild / Hospitals / Reports ========== */
-async function loadHospitals(){
-  try{
-    const res = await fetch('./data/hospitals.json',{cache:'no-cache'});
-    const all = await res.json(); // {city:[{name,lat,lng}]}
-    const citySel = document.getElementById('citySel');
-    const hospSel = document.getElementById('hospitalSel');
-    citySel.innerHTML = Object.keys(all).map(c=>`<option>${c}</option>`).join('');
-    function fill(){ hospSel.innerHTML = (all[citySel.value]||[]).map(h=>`<option>${h.name}</option>`).join('') }
-    citySel.onchange = fill; fill();
-  }catch{
-    document.getElementById('citySel').innerHTML='<option>台北</option><option>台中</option><option>高雄</option>';
-    document.getElementById('hospitalSel').innerHTML='<option>示範動物醫院</option>';
-  }
-}
-function renderGuild(){
-  document.getElementById('guildStatus').textContent = S.user.guild ? `已加入公會（ID: ${S.user.id}）` : '尚未加入公會';
-}
-document.getElementById('joinGuildBtn').addEventListener('click',()=>{
-  if(!document.getElementById('bindPhone').value) return alert('請輸入手機（示意）');
-  S.user.guild = true; LS.save('purrgoState',S); renderGuild(); renderReportArea();
-});
-function renderReportArea(){
-  const area = document.getElementById('reportArea'); if(!area) return;
-  area.innerHTML='';
-  if(!S.user.guild){ area.innerHTML='<div class="notice">請先加入公會後方可上傳健檢報告。</div>'; return }
-  if(!S.cats.length){ area.innerHTML='<div class="notice">請先在首頁建立主子。</div>'; return }
-  S.cats.forEach((c,idx)=>{
-    const uploaded = c.report?.year === (new Date()).getFullYear();
-    const el = document.createElement('div'); el.className='card';
-    el.innerHTML = `
-      <div class="inline" style="justify-content:space-between">
-        <h4 class="mt-0">${c.name}｜${ageFromBirthday(c.birthday)}</h4>
-        <span class="badge">${uploaded?'已上傳':''}</span>
+function openProd(p){
+  const d = $('#prodDlg'), body = $('#prodContent');
+  body.innerHTML = `
+    <div class="grid g-2">
+      <img class="radius-xl" src="${p.img||''}" alt="${p.name}">
+      <div>
+        <h3 class="mt-0">${p.name}</h3>
+        <div class="muted">${p.spec||''}</div>
+        <ul class="list">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
+        <div class="inline mt-1">
+          <button class="btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")});closeProd()'>加入購物車</button>
+        </div>
       </div>
-      <div class="muted">項目：血檢</div>
-      <div class="inline mt-1">
-        <input type="file" accept="image/*,application/pdf" ${uploaded?'disabled':''} id="r${idx}">
-        <button class="btn" ${uploaded?'disabled':''} data-report="${idx}">上傳報告</button>
-      </div>`;
-    area.appendChild(el);
-  });
+    </div>`;
+  d.showModal();
 }
-document.getElementById('reportArea')?.addEventListener('click', async e=>{
-  const i = e.target.dataset.report; if(i==null) return;
-  const inp = document.getElementById('r'+i);
-  if(!inp.files?.length) return alert('請選擇檔案');
-  S.cats[i].report = { year:(new Date()).getFullYear(), time:Date.now() };
-  LS.save('purrgoState',S); renderReportArea(); alert('上傳完成！已登錄公會貢獻（示意）');
-});
+function closeProd(){ $('#prodDlg').close(); }
 
-/* ========== Kiosk Map ========== */
+/* ===== Map ===== */
+let map;
 async function initMap(){
-  window._mapInited = true;
-  const map = L.map('kioskMap',{scrollWheelZoom:false}).setView([25.033,121.5654],12);
+  map = L.map('map', {zoomControl:true, scrollWheelZoom:true}).setView([25.0330,121.5654], 12);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© OpenStreetMap'}).addTo(map);
   try{
     const res = await fetch('./data/locations.json',{cache:'no-cache'});
@@ -530,116 +432,165 @@ async function initMap(){
     pts.forEach(p=>{
       const m = L.marker([p.lat,p.lng]).addTo(map);
       const g = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
-      const a = `https://maps.apple.com/?q=${p.lat},${p.lng}`;
-      m.bindPopup(`<b>${p.name}</b><br>${p.address||''}<br><a target=_blank href="${g}">Google Maps</a> ｜ <a target=_blank href="${a}">Apple Maps</a>`);
-    })
+      m.bindPopup(`<b>${p.name}</b><br>${p.address||''}<br><a target="_blank" href="${g}">Google Maps</a>`);
+    });
+  }catch{}
+}
+// 選單開啟時禁止地圖互動
+const stopMap = (on)=>{ if(!map) return; on ? map.dragging.disable() : map.dragging.enable(); };
+backdrop.addEventListener('click', ()=> stopMap(false));
+toggle.addEventListener('click', ()=> stopMap(menuOpen));
+
+/* ===== Breeds ===== */
+async function loadBreeds(){
+  const sel = $('#catBreed');
+  try{
+    const res = await fetch('./data/breeds.json',{cache:'no-cache'});
+    const list = await res.json();
+    sel.innerHTML = list.map(b=>`<option>${b}</option>`).join('');
   }catch{
-    L.marker([25.033,121.5654]).addTo(map).bindPopup('示範位置');
+    sel.innerHTML = ['米克斯','英短','美短','蘇格蘭摺耳貓'].map(b=>`<option>${b}</option>`).join('');
   }
 }
 
-/* ========== Photo Wall ========== */
-function renderWall(){
-  const wall=document.getElementById('wall'); if(!wall) return; wall.innerHTML='';
-  S.photos.forEach((p,idx)=>{
-    const el = document.createElement('div'); el.className='ph';
+/* ===== Cats ===== */
+function addCat(e){
+  e.preventDefault();
+  if(!state.user){ alert('請先登入'); return false; }
+  const f = e.target;
+  const file = $('#catAvatar').files[0];
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const c = {
+      id: crypto.randomUUID(),
+      name: $('#catName').value.trim(),
+      gender: $('#catGender').value,
+      birth: $('#catBirth').value,
+      ageStr: ageFromBirth($('#catBirth').value),
+      breed: $('#catBreed').value,
+      avatar: reader.result || ''
+    };
+    state.cats.push(c); save(); f.reset(); renderCats(); refreshCheckupCats(); primeWall();
+  };
+  if(file) reader.readAsDataURL(file); else reader.onload();
+  return false;
+}
+function renderCats(){
+  const row = $('#catsRow'); row.innerHTML='';
+  state.cats.forEach(c=>{
+    const el = document.createElement('div'); el.className='cat-card';
     el.innerHTML = `
-      <img src="${p.src}" alt="">
-      <div class="ph-bar">
-        <div class="toggle"><input type="checkbox" ${p.public?'checked':''} data-pub="${idx}"><span>${p.public?'公開':'私人'}</span></div>
-        <div class="ph-acts">
-          <button data-like="${idx}">🐾 ${p.likes||0}</button>
-          <button data-cmt="${idx}">留言</button>
-          <button data-delphoto="${idx}">刪除</button>
-        </div>
+      <img src="${c.avatar||'./logo/logo-192.png'}" class="cat-avatar" alt="${c.name}">
+      <div class="cat-meta">
+        <div class="cat-name">${c.name}</div>
+        <div class="muted">${c.breed}｜${c.gender}｜${c.ageStr}</div>
       </div>
-      <div style="padding:8px 10px"><div class="muted">${(p.comments||[]).map(c=>`<div>💬 ${c}</div>`).join('')}</div></div>`;
-    wall.appendChild(el);
+      <div class="inline">
+        <button class="btn secondary" onclick="editCat('${c.id}')">編輯</button>
+        <button class="btn tertiary" onclick="delCat('${c.id}')">刪除</button>
+      </div>`;
+    row.appendChild(el);
   });
 }
-document.getElementById('photoInput')?.addEventListener('change', async e=>{
-  for(const f of e.target.files){
-    const src = await fileToDataURL(f);
-    S.photos.unshift({src, public:document.getElementById('photoPublic').checked, likes:0, comments:[]});
-  }
-  LS.save('purrgoState',S); renderWall();
-});
-document.getElementById('wall')?.addEventListener('click', e=>{
-  if(e.target.dataset.like){ const i=e.target.dataset.like; S.photos[i].likes=(S.photos[i].likes||0)+1; LS.save('purrgoState',S); renderWall(); }
-  if(e.target.dataset.cmt){ const i=e.target.dataset.cmt; const t=prompt('留下你的留言'); if(t){ (S.photos[i].comments??=[]).push(t); LS.save('purrgoState',S); renderWall(); } }
-  if(e.target.dataset.delphoto){ const i=e.target.dataset.delphoto; if(confirm('刪除此照片？')){ S.photos.splice(i,1); LS.save('purrgoState',S); renderWall(); } }
-});
-document.getElementById('wall')?.addEventListener('change', e=>{
-  if(e.target.dataset.pub){ const i=e.target.dataset.pub; S.photos[i].public = e.target.checked; LS.save('purrgoState',S); renderWall(); }
-});
-document.getElementById('clearWallBtn')?.addEventListener('click',()=>{ if(confirm('清除所有照片（本機）？')){ S.photos=[]; LS.save('purrgoState',S); renderWall(); }});
+function editCat(id){
+  const c = state.cats.find(x=>x.id===id); if(!c) return;
+  const name = prompt('主子暱稱', c.name); if(name===null) return;
+  c.name = name; save(); renderCats(); refreshCheckupCats();
+}
+function delCat(id){
+  if(!confirm('刪除這位主子？')) return;
+  state.cats = state.cats.filter(c=>c.id!==id); save(); renderCats(); refreshCheckupCats();
+}
 
-/* ========== Social / Chat ========== */
-function renderLogin(){ document.getElementById('loginState').textContent = S.user?.id ? `目前登入：${S.user.id}` : '目前為訪客模式'; }
-document.getElementById('loginBtn')?.addEventListener('click',()=>{
-  const id = document.getElementById('loginId').value?.trim(); if(!id) return alert('請輸入 ID');
-  S.user.id = id; LS.save('purrgoState',S); renderLogin(); renderFriends();
+/* ===== Checkup ===== */
+function refreshCheckupCats(){
+  const sel = $('#checkupCat'); sel.innerHTML = state.cats.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+function uploadCheckup(e){
+  e.preventDefault();
+  if(!state.user){ alert('請先登入'); return false; }
+  const id = $('#checkupCat').value, file = $('#checkupFile').files[0];
+  if(!id || !file) return false;
+  state.check.push({ id, name:(state.cats.find(c=>c.id===id)?.name||''), file:file.name, at: new Date().toLocaleString() });
+  save(); renderCheckups(); e.target.reset();
+  return false;
+}
+function renderCheckups(){
+  const box = $('#checkupList');
+  if(!state.check.length){ box.innerHTML='<div class="muted">尚無紀錄</div>'; return; }
+  box.innerHTML = state.check.map(r=>`<div class="check-line">✔ ${r.name} 上傳「${r.file}」於 ${r.at}</div>`).join('');
+}
+
+/* ===== Photos ===== */
+function primeWall(){
+  // 若照片牆為空，先放第一隻主子的頭像
+  const wall = JSON.parse(localStorage.getItem('purrWall')||'[]');
+  if(!wall.length && state.cats[0]?.avatar){
+    wall.push({url: state.cats[0].avatar, pub:true, ts: Date.now()});
+    localStorage.setItem('purrWall', JSON.stringify(wall));
+    renderWall();
+  }
+}
+function clearWall(){
+  localStorage.removeItem('purrWall'); renderWall();
+}
+function renderWall(){
+  const wall = JSON.parse(localStorage.getItem('purrWall')||'[]');
+  const grid = $('#wall'); grid.innerHTML='';
+  wall.forEach((p,i)=>{
+    const el = document.createElement('figure'); el.className='wall-item';
+    el.innerHTML = `<img src="${p.url}" alt="photo ${i}" onclick="preview('${encodeURIComponent(p.url)}')">`;
+    grid.appendChild(el);
+  });
+}
+$('#photoInput').addEventListener('change', (e)=>{
+  if(!state.user){ alert('請先登入'); e.target.value=''; return; }
+  const files = [...e.target.files];
+  const reader = new FileReader();
+  const wall = JSON.parse(localStorage.getItem('purrWall')||'[]');
+  (function next(i){
+    if(i>=files.length){ localStorage.setItem('purrWall', JSON.stringify(wall)); renderWall(); e.target.value=''; return; }
+    reader.onload = ()=>{ wall.push({url:reader.result,pub:true, ts:Date.now()}); next(i+1); };
+    reader.readAsDataURL(files[i]);
+  })(0);
 });
-document.getElementById('addFriendBtn')?.addEventListener('click',()=>{
-  const id = document.getElementById('friendId').value?.trim(); if(!id) return;
-  if(!S.friends.includes(id)) S.friends.push(id);
-  LS.save('purrgoState',S); renderFriends(); renderPeers();
-});
+function preview(url){
+  const d = $('#prodDlg'), body=$('#prodContent');
+  body.innerHTML = `<img class="radius-xl" src="${decodeURIComponent(url)}" alt="preview">`;
+  d.showModal();
+}
+
+/* ===== Friends (Demo) ===== */
+function addFriend(){
+  if(!state.user){ alert('請先登入'); return; }
+  const id = $('#friendId').value.trim(); if(!id) return;
+  if(!state.friends.includes(id)) state.friends.push(id);
+  save(); renderFriends(); $('#friendId').value='';
+}
 function renderFriends(){
-  const box = document.getElementById('friendList'); if(!box) return;
-  box.innerHTML = S.friends.length ? S.friends.map(i=>`<span class="badge">${i}</span>`).join(' ') : '尚無好友';
+  const box = $('#friendList');
+  box.textContent = state.friends.length ? '好友：' + state.friends.join('、') : '尚無好友';
 }
-function renderPeers(){
-  const box = document.getElementById('chatPeers'); if(!box) return;
-  box.innerHTML = S.friends.length ? S.friends.map(i=>`<button class="btn secondary" data-peer="${i}">${i}</button>`).join(' ') : '請先至「社群」新增好友';
-}
-let CUR_PEER=null;
-document.getElementById('chatPeers')?.addEventListener('click',e=>{
-  if(e.target.dataset.peer){ CUR_PEER=e.target.dataset.peer; renderThread() }
-});
-function renderThread(){
-  const box = document.getElementById('chatThread'); if(!box) return;
-  const list = S.chats[CUR_PEER]||[]; box.innerHTML = list.map(m=>`<div style="margin:6px 0"><b>${m.from}：</b>${m.text}</div>`).join('') || '尚無訊息';
-}
-document.getElementById('sendMsgBtn')?.addEventListener('click',()=>{
-  if(!CUR_PEER) return alert('請先選擇好友');
-  const t = document.getElementById('chatText').value.trim(); if(!t) return;
-  (S.chats[CUR_PEER]??=[]).push({from:S.user.id,text:t,time:Date.now()});
-  LS.save('purrgoState',S); document.getElementById('chatText').value=''; renderThread();
-});
 
-/* ========== Shorts ========== */
-document.getElementById('shortInput')?.addEventListener('change', async e=>{
-  for(const f of e.target.files){
-    const url = await fileToDataURL(f);
-    S.shorts.unshift({src:url});
+/* ===== init ===== */
+window.addEventListener('DOMContentLoaded', ()=>{
+  loadProducts();
+  initMap();
+  loadBreeds();
+  renderCats(); renderCart(); renderCheckups(); refreshCheckupCats(); renderFriends(); renderWall(); primeWall();
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
   }
-  LS.save('purrgoState',S); renderShorts();
-});
-function renderShorts(){
-  const wall=document.getElementById('shortList'); if(!wall) return; wall.innerHTML='';
-  S.shorts.forEach(v=>{
-    const el=document.createElement('div'); el.className='ph';
-    el.innerHTML=`<video src="${v.src}" controls muted playsinline></video>`;
-    wall.appendChild(el);
+
+  // 橫滑左右鍵
+  document.querySelectorAll('.hbtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const row = document.querySelector(btn.dataset.row);
+      row.scrollBy({left: btn.classList.contains('next')? +360 : -360, behavior:'smooth'});
+    });
   });
-}
-
-/* =========================================================
-   Boot
-========================================================= */
-function boot(){
-  bindNav();
-  go(PAGES.includes(current())? current() : 'home');
-  loadBreeds(); renderCats(); seedFirstAvatarToWall();
-  loadProducts(); renderCart();
-  loadHospitals(); renderGuild(); renderReportArea();
-  renderWall(); renderLogin(); renderFriends(); renderPeers(); renderShorts();
-}
-boot();
-
-/* Service Worker（可留可刪） */
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}) }
+});
 </script>
 </body>
 </html>
