@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>PurrGo 喵來速｜品牌官網 Demo</title>
 
   <!-- PWA / Icons -->
@@ -28,7 +28,7 @@
       <span class="logo">G</span><span class="brand-name">PurrGo 喵來速</span>
     </a>
 
-    <!-- 桌面 Tabs -->
+    <!-- 桌面 Tabs（手機隱藏） -->
     <nav class="tabs hide-on-mobile" aria-label="主選單">
       <a class="tab" data-sec="home"      href="#home">首頁</a>
       <a class="tab" data-sec="products"  href="#products">產品</a>
@@ -61,7 +61,6 @@
 </header>
 
 <main>
-
   <!-- ===== Home ===== -->
   <section id="home" class="page container">
     <div class="hero card">
@@ -80,10 +79,10 @@
       </div>
     </div>
 
-    <!-- 建立貓主子（多貓家庭支援） -->
+    <!-- 建立貓主子 -->
     <div class="card mt-2">
       <h3 class="mt-0">建立貓主子</h3>
-      <p class="muted">可新增多隻主子。上傳大頭照、選擇品種與基本資料；與健檢、照片牆串接。</p>
+      <p class="muted">支援多隻主子；將串接健檢與照片牆。</p>
       <form class="grid g-2" onsubmit="return addCat(event)">
         <input class="input" id="catName" placeholder="主子名字" required>
         <select class="input" id="catBreed">
@@ -101,9 +100,7 @@
       </form>
 
       <!-- 主子列表（橫向卡片） -->
-      <div class="hwrap mt-2">
-        <div id="catRow" class="hscroll cards"></div>
-      </div>
+      <div class="hwrap mt-2"><div id="catRow" class="hscroll cards"></div></div>
     </div>
   </section>
 
@@ -112,12 +109,9 @@
     <header class="section-head">
       <span class="pill">Products</span>
       <h2>熱銷與方案</h2>
-      <p class="section-sub">橫向滑動卡片，支援產品照片、詳情與加入購物車。</p>
+      <p class="section-sub">橫向滑動卡片，產品照片＋詳情＋加入購物車。</p>
     </header>
-
-    <div class="hwrap">
-      <div id="productRow" class="hscroll cards"></div>
-    </div>
+    <div class="hwrap"><div id="productRow" class="hscroll cards"></div></div>
 
     <div class="card mt-2">
       <h3 class="mt-0">購物車（示範）</h3>
@@ -134,7 +128,7 @@
     <header class="section-head">
       <span class="pill">Guild</span>
       <h2>公會制度：一起成長、一起更省</h2>
-      <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務、健檢貢獻…</p>
+      <p class="section-sub">創立門檻、VIP、每日任務、健檢貢獻…</p>
     </header>
 
     <div class="grid g-2">
@@ -166,24 +160,12 @@
     <!-- 健檢預約（本機示範） -->
     <div class="card mt-2">
       <h3 class="mt-0">免費健檢（示範）</h3>
-      <p class="muted">加入公會後可預約年度一次免費健檢。選地區 → 顯示合作院所 → 上傳報告可得公會貢獻（示意流程）。</p>
-
-      <!-- Gate：未加入公會提示 -->
+      <p class="muted">加入公會後可預約年度一次免費健檢；上傳檢查報告獲取公會貢獻。</p>
       <div id="guildGate" class="empty" style="display:none">請先「創立公會」或加入既有公會後，再使用健檢服務。</div>
 
       <form id="vetForm" class="grid g-2" onsubmit="return bookVet(event)">
-        <div>
-          <label>選擇主子
-            <select class="input" id="vetCatSelect"></select>
-          </label>
-        </div>
-        <div>
-          <label>城市
-            <select class="input" id="vetCity">
-              <option>台北</option><option>台中</option><option>高雄</option>
-            </select>
-          </label>
-        </div>
+        <div><label>選擇主子<select class="input" id="vetCatSelect"></select></label></div>
+        <div><label>城市<select class="input" id="vetCity"><option>台北</option><option>台中</option><option>高雄</option></select></label></div>
         <div class="gcol-2"><label>備註<textarea class="input" id="vetNote"></textarea></label></div>
         <div class="inline gcol-2">
           <input class="input" id="vetReport" type="file" accept="image/*,.pdf">
@@ -213,25 +195,21 @@
     <div id="map" class="map"></div>
   </section>
 
-  <!-- ===== Community / 照片牆（本機示範） ===== -->
+  <!-- ===== Community / 照片牆 ===== -->
   <section id="community" class="page container">
     <header class="section-head">
       <span class="pill">Community</span>
       <h2>照片牆（按主子分相簿）</h2>
-      <p class="section-sub">上傳只儲存在本機 localStorage；清除後不可復原。</p>
+      <p class="section-sub">上傳只儲存在本機 localStorage。</p>
     </header>
 
-    <!-- 依主子切換相簿 -->
     <div class="inline">
       <select class="input" id="wallCatSelect" style="max-width:220px"></select>
       <input type="file" accept="image/*" onchange="addPhoto(event)">
-      <button class="btn secondary" onclick="clearWall()">清除此主子的所有照片（本機）</button>
+      <button class="btn secondary" onclick="clearWall()">清除此主子所有照片</button>
     </div>
 
-    <!-- 橫向相簿卡 -->
-    <div class="hwrap mt-2">
-      <div id="wallRow" class="hscroll cards"></div>
-    </div>
+    <div class="hwrap mt-2"><div id="wallRow" class="hscroll cards"></div></div>
   </section>
 
   <!-- ===== About / Contact ===== -->
@@ -270,17 +248,17 @@
   <button class="fab-btn" title="Msg"  onclick="route('contact')">Msg</button>
 </div>
 
-<!-- ===== Script（整合原功能＋主子/相簿） ===== -->
+<!-- ===== Script ===== -->
 <script>
-/* ===== 狀態 ===== */
+/* ===== 全域狀態 ===== */
 const LS_KEY='purrgoState';
 const state=JSON.parse(localStorage.getItem(LS_KEY)||'{}');
 state.user   ||= { phone:'', line:false, vipXp:0, lifetimeSpend:0, energy:0, lastCheckin:'' };
 state.guild  ||= { name:'', level:0, contribution:0 };
 state.cart   ||= [];
 state.vet    ||= [];
-state.cats   ||= [];   // 主子清單：[{id,name,breed,sex,age,avatarDataUrl}]
-state.albums ||= {};   // 相簿：{catId: [dataUrl,...]}
+state.cats   ||= [];   // 主子列表
+state.albums ||= {};   // {catId: [dataUrl,...]}
 save();
 
 /* ===== 路由（分頁顯示） ===== */
@@ -340,7 +318,7 @@ function renderGuild(){
   $('guildLevel', state.guild.level||'–');
   $('guildContrib', state.guild.contribution|0);
 
-  // 健檢入口 Gate
+  // Gate：未加入公會不顯示健檢表單
   const gate=document.getElementById('guildGate');
   const form=document.getElementById('vetForm');
   if(gate && form){
@@ -408,8 +386,7 @@ function renderCats(){
   const row=document.getElementById('catRow'); if(!row) return;
   row.innerHTML='';
   if(!state.cats.length){
-    const empty=document.createElement('div');
-    empty.className='empty'; empty.textContent='尚未建立主子';
+    const empty=document.createElement('div'); empty.className='empty'; empty.textContent='尚未建立主子';
     row.appendChild(empty); return;
   }
   state.cats.forEach(c=>{
@@ -430,7 +407,7 @@ function selectVetCat(id){
   sel.value=id;
 }
 
-/* ===== 相簿 / 照片牆（依主子） ===== */
+/* ===== 相簿 / 照片牆 ===== */
 function renderWallSelectors(){
   const sel=document.getElementById('wallCatSelect'); if(!sel) return;
   const opts = state.cats.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
