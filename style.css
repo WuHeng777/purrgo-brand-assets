@@ -180,3 +180,38 @@ textarea{height:120px;resize:vertical}
 
 /* 讓 #home 起始就可見（預防空白首屏） */
 #home.page{ display:block; }
+
+/* ===== Mobile menu / 漢堡選單 ===== */
+.menu-toggle{ position:relative; z-index:1100; width:48px; height:48px;
+  border:1px solid var(--line); border-radius:14px; background:color-mix(in oklab,var(--bg),#fff 4%);
+  display:grid; place-items:center; cursor:pointer; }
+.menu-ico, .menu-ico::before, .menu-ico::after{
+  content:""; display:block; width:22px; height:2px; border-radius:2px;
+  background: color-mix(in oklab,#000,#fff 92%); /* 深色底顯白、淺色底顯黑 */
+}
+.menu-ico::before{ transform:translateY(-6px) }
+.menu-ico::after { transform:translateY( 6px) }
+
+.menu{ position:fixed; inset:0 0 0 auto; width:min(86vw,360px); height:100dvh;
+  background:color-mix(in oklab,var(--bg),#000 8%); color:var(--ink);
+  border-left:1px solid var(--line); transform:translateX(100%); transition:transform .22s ease;
+  z-index:1050; padding:18px; overflow:auto; }
+.menu a{ display:block; padding:14px 16px; margin-bottom:12px; border:1px solid var(--line);
+  border-radius:14px; font-weight:700; color:inherit; background:color-mix(in oklab,var(--bg),#fff 3%); }
+
+.menu-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter:blur(2px);
+  opacity:0; pointer-events:none; z-index:1040; transition:opacity .18s ease; }
+
+.menu-open #menu{ transform:translateX(0) }
+.menu-open .menu-backdrop{ opacity:1; pointer-events:auto }
+
+/* ===== FAB（右下圓形） ===== */
+.fab{ position:fixed; right:18px; bottom:18px; display:grid; gap:12px; z-index:1020 }
+.fab-btn{
+  width:84px; height:84px; border-radius:999px; border:1px solid color-mix(in oklab,var(--brand),#000 20%);
+  background: linear-gradient(180deg,var(--brand),color-mix(in oklab,var(--brand),#000 18%));
+  color:#000; font-weight:900; box-shadow:0 10px 24px rgba(0,0,0,.28); cursor:pointer;
+  transition:transform .12s ease, filter .12s ease, opacity .12s ease;
+}
+.fab-btn:active{ transform:translateY(1px); filter:saturate(1.05) }
+.menu-open .fab{ opacity:.35; pointer-events:none } /* 開選單時關閉 FAB 點擊，避免誤觸 */
