@@ -40,25 +40,26 @@
       <a class="tab" data-sec="contact"   href="#contact">聯絡</a>
     </nav>
 
-    <!-- 手機：漢堡 -->
-    <button class="menu-toggle show-on-mobile" aria-label="展開選單" onclick="toggleMenu()">
-      <span class="menu-ico" aria-hidden="true"></span>
-    </button>
+   <!-- 漢堡按鈕 -->
+<button id="menuBtn" class="menu-toggle" aria-label="開啟選單">
+  <span class="menu-ico" aria-hidden="true"></span>
+</button>
   </div>
 
-  <!-- 手機：抽屜選單 + 遮罩 -->
-  <nav id="drawer" class="drawer" aria-label="抽屜選單" role="dialog" aria-modal="true">
-    <div class="drawer-body">
-      <a href="#home"      class="drawer-item" onclick="jump('home')">首頁</a>
-      <a href="#products"  class="drawer-item" onclick="jump('products')">產品</a>
-      <a href="#guild"     class="drawer-item" onclick="jump('guild')">公會</a>
-      <a href="#kiosk"     class="drawer-item" onclick="jump('kiosk')">據點</a>
-      <a href="#community" class="drawer-item" onclick="jump('community')">照片牆</a>
-      <a href="#about"     class="drawer-item" onclick="jump('about')">理念</a>
-      <a href="#contact"   class="drawer-item" onclick="jump('contact')">聯絡</a>
-    </div>
-  </nav>
-  <div id="backdrop" class="backdrop" onclick="closeMenu()" aria-hidden="true"></div>
+  <!-- 側邊選單 -->
+<nav id="menu" class="menu" aria-label="主選單">
+  <a href="#home">首頁</a>
+  <a href="#products">產品</a>
+  <a href="#guild">公會</a>
+  <a href="#kiosk">據點</a>
+  <a href="#community">照片牆</a>
+  <a href="#social">社群</a>
+  <a href="#chat">聊天</a>
+  <a href="#about">理念</a>
+  <a href="#contact">聯絡</a>
+</nav>
+<!-- 遮罩（點空白處關閉選單） -->
+<div id="menuBackdrop" class="menu-backdrop"></div>
 </header>
 
 <main>
@@ -243,13 +244,13 @@
 
 <footer class="container footer">© PurrGo 喵來速 ｜ 公開 Demo（不含投資人資訊）</footer>
 
-<!-- ===== FAB ===== -->
+<!-- 右下 FAB -->
 <div class="fab" id="fab">
-  <button class="fab-btn" title="Top"  onclick="route('home')">Top</button>
-  <button class="fab-btn" title="Shop" onclick="route('products')">Shop</button>
-  <button class="fab-btn" title="Guild" onclick="route('guild')">Guild</button>
-  <button class="fab-btn" title="Map"  onclick="route('kiosk')">Map</button>
-  <button class="fab-btn" title="Msg"  onclick="route('contact')">Msg</button>
+  <button class="fab-btn" data-target="home">Top</button>
+  <button class="fab-btn" data-target="products">Shop</button>
+  <button class="fab-btn" data-target="guild">Guild</button>
+  <button class="fab-btn" data-target="kiosk">Map</button>
+  <button class="fab-btn" data-target="contact">Msg</button>
 </div>
 
 <!-- ===== 產品詳情 Modal ===== -->
