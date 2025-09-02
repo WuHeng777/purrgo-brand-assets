@@ -121,3 +121,68 @@ textarea{ height:120px; resize:vertical }
 .muted{ color:var(--muted) }
 .empty{ text-align:center; padding:22px; border:1px dashed var(--line); border-radius:12px }
 .list{ padding-left:18px } .list li{ margin:6px 0 }
+
+/* ===== Drawer / Overlay 修補 ===== */
+.menu-backdrop{
+  position: fixed; inset: 0;
+  background: color-mix(in oklab, var(--brand) 30%, #000 15%);
+  backdrop-filter: blur(2px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s var(--ease);
+  z-index: 9980;
+}
+.menu-panel{
+  position: fixed; top: 0; right: 0; height: 100dvh; width: min(84vw, 360px);
+  background: var(--card); border-left: 1px solid var(--line);
+  transform: translateX(100%); transition: transform .22s var(--ease);
+  z-index: 9990; padding: 16px;
+  overflow: auto;
+  box-shadow: -10px 0 30px rgba(0,0,0,.35);
+}
+.menu-panel a{ display:block; padding:14px 12px; margin:8px 0; border:1px solid var(--line); border-radius:14px; }
+
+/* 開啟狀態 */
+.menu-open .menu-backdrop{ opacity:.98; pointer-events:auto; }
+.menu-open .menu-panel{ transform: translateX(0); }
+.menu-open, .menu-open body{ overflow: hidden; } /* 鎖捲動 */
+
+/* 讓任何互動區在抽屜開啟時不可點（避免 Leaflet/影片吃走點擊） */
+.menu-open #map,
+.menu-open .hwrap,
+.menu-open .page,
+.menu-open .fab { pointer-events: none; }
+.menu-open .menu-panel,
+.menu-open .menu-backdrop { pointer-events: auto; }
+
+/* ===== 漢堡 icon 修補（用 currentColor） ===== */
+.menu-toggle{
+  width: 46px; height: 46px; border-radius: 12px;
+  border: 1px solid var(--line); background: rgba(255,255,255,.06);
+  display:grid; place-items:center; cursor:pointer; z-index:9995;
+  color: #fff; /* 深色背景預設白線 */
+}
+.menu-toggle .bar{
+  width: 22px; height: 2px; background: currentColor; border-radius: 2px; display:block;
+}
+.menu-toggle .bar + .bar{ margin-top: 5px; }
+
+/* 抽屜面板是淺色底，icon 切為黑線；也可依你的 header theme 切換 */
+.menu-open .menu-toggle{ color:#111; background: #fff; border-color: #eee; }
+
+/* ===== 右下只留一顆 Top FAB ===== */
+.fab{ position: fixed; right: 18px; bottom: 18px; z-index: 60; }
+.fab-btn{
+  height: 54px; width: 54px; border-radius: 999px;
+  border: 1px solid var(--line);
+  background: radial-gradient(120% 120% at 30% 20%, #ff9a6a 0%, #ff7f50 60%, #e9683c 100%);
+  color: #111; font-weight: 900; font-size: 14px;
+  display:grid; place-items:center; cursor:pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.22);
+  transition: transform .1s var(--ease), box-shadow .2s var(--ease), opacity .2s ease;
+}
+.fab-btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,.32), 0 3px 10px rgba(0,0,0,.25); }
+.fab-btn:active{ transform: translateY(0); opacity:.85; }
+
+/* 讓 header 之下的內容不會蓋到抽屜（保險，再墊一層） */
+header{ position: relative; z-index: 30; }
+main, .page, .band{ position: relative; z-index: 1; }
