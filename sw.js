@@ -1,9 +1,13 @@
 // 超精簡：確保相對路徑在 GitHub Pages 正常
-self.addEventListener('install', e => self.skipWaiting());
-self.addEventListener('activate', e => self.clients.claim());
-
-// 只做最基本的快取優先 (可依需要擴充)
-const CACHE = 'purrgo-v1';
+self.addEventListener('install',e=>{
+  e.waitUntil(caches.open('purrgo-v1').then(c=>c.addAll([
+    './','./index.html','./style.css','./logo/logo-192.png','./logo/logo-512.png'
+  ])));
+});
+self.addEventListener('fetch',e=>{
+  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
+});// 只做最基本的快取優先 (可依需要擴充)
+const CACHE = 'purrgo-v2';
 const ASSETS = [
   './',
   './index.html',
