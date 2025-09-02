@@ -1,98 +1,195 @@
-/* ===== PurrGo Design System (Public Demo) ===== */
+/* ===== PurrGo Design（打包版） ===== */
 :root{
-  --brand:#ff7f50; --brand-ink:#000;
-  --bg:#fff; --ink:#111; --muted:#666; --line:#eee; --card:#f7f7f8;
-  --container:min(1100px,92vw);
-  --radius:14px; --radius-lg:20px;
-  --shadow:0 10px 24px rgba(0,0,0,.10);
-  --shadow-strong:0 16px 36px rgba(0,0,0,.40);
+  /* 色票 */
+  --brand:#ff7f50;
+  --brand-ink:#111;
+  --bg:#0f0f10;
+  --card:#171819;
+  --ink:#eaeaea;
+  --muted:#9aa0a6;
+  --line:#252627;
+
+  /* 排版 */
   --font: system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC",sans-serif;
-  --h1: clamp(28px, 4vw, 40px); --h2: clamp(22px, 3vw, 28px); --h3: clamp(18px, 2.4vw, 22px);
-  --p:16px; --ease:cubic-bezier(.22,.61,.36,1);
-  --panel-bg: rgba(255,255,255,.96); --panel-ink:#111;
+  --h1: clamp(28px,3.8vw,40px);
+  --h2: clamp(22px,3vw,28px);
+  --p:  16px;
+
+  /* UI */
+  --radius:16px;
+  --radius-lg:22px;
+  --shadow: 0 10px 24px rgba(0,0,0,.25);
+  --shadow-strong: 0 16px 36px rgba(0,0,0,.38);
+  --container:min(1100px,92vw);
+  --ease:cubic-bezier(.22,1,.36,1);
 }
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#0b0b0c; --ink:#eee; --muted:#aaa; --line:#222; --card:#161718;
-    --panel-bg: rgba(16,16,16,.92); --panel-ink:#fff;
-    --shadow:0 10px 24px rgba(0,0,0,.25);
-  }
+
+/* 暗色為主；若系統為亮色也能看 */
+@media (prefers-color-scheme: light){
+  :root{ --bg:#fff; --ink:#111; --muted:#666; --card:#f8f8f8; --line:#e8e8e8; --brand-ink:#000 }
 }
-*{ box-sizing:border-box } html,body{ margin:0; padding:0 }
-body{ background:var(--bg); color:var(--ink); font:16px/1.65 var(--font) }
-a{ color:inherit; text-decoration:none } img{ max-width:100%; display:block }
-.container{ width:var(--container); margin:auto }
-main{ padding:26px 0 80px }
-.mt-0{ margin-top:0 } .mt-1{ margin-top:8px } .mt-2{ margin-top:16px }
-.muted{ color:var(--muted) } .inline{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
-.grid{ display:grid; gap:16px } .g-2{ grid-template-columns:repeat(2,1fr) } .g-3{ grid-template-columns:repeat(3,1fr) }
-.gcol-2{ grid-column:1/-1 } @media (max-width:900px){ .g-2,.g-3{ grid-template-columns:1fr } }
-.list{ padding-left:18px } .list li{ margin:6px 0 }
 
-/* 分頁 */
-.page{ display:none } .page.active{ display:block }
+/* 基礎 */
+*{ box-sizing:border-box }
+html,body{ margin:0; padding:0 }
+body{
+  background:var(--bg); color:var(--ink);
+  font:16px/1.65 var(--font);
+}
+.container{ width:var(--container); margin:auto; }
+a{ color:inherit; text-decoration:none }
+img{ max-width:100%; display:block }
 
-/* Header */
-header{ position:sticky; top:0; z-index:50; backdrop-filter:saturate(180%) blur(10px);
-  background:color-mix(in oklab, var(--bg), transparent 8%); border-bottom:1px solid var(--line) }
-.nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0 }
-.brand{ display:flex; align-items:center; gap:10px; font-weight:900 }
-.logo{ width:28px; height:28px; border-radius:8px; background:var(--brand); color:var(--brand-ink);
-  display:grid; place-items:center; font-weight:900 }
-.tabs{ display:flex; gap:6px; flex-wrap:wrap }
-.tab{ padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-weight:700; background:transparent;
-  transition:background .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease) }
-.tab:hover{ border-color:color-mix(in oklab, var(--line), var(--ink) 25%) }
-.tab[aria-current="page"]{ background:var(--brand); border-color:var(--brand); color:var(--brand-ink) }
-@media (max-width:900px){ .tabs{ display:none } }
+/* 鎖捲動（抽屜開啟時） */
+body.menu-open{ height:100vh; overflow:hidden }
 
-/* Mobile Menu */
-.menu-toggle{ appearance:none;-webkit-appearance:none; width:44px;height:44px;border-radius:14px;border:1px solid var(--line);
-  background:color-mix(in oklab,var(--bg),#000 6%); color:var(--ink); display:grid;place-items:center; cursor:pointer }
-.menu-ico{ position:relative;width:20px;height:2px;background:currentColor;border-radius:2px }
-.menu-ico::before,.menu-ico::after{ content:""; position:absolute; left:0; right:0; height:2px; background:currentColor; border-radius:2px }
-.menu-ico::before{ top:-6px } .menu-ico::after{ top:6px }
-.menu-backdrop{ position:fixed; inset:0; z-index:9998; background:rgba(255,127,80,.30); backdrop-filter: blur(2px); display:none }
-.menu{ position:fixed; top:70px; right:12px; width:min(92vw,380px); z-index:9999; display:none }
-.menu.open,.menu-backdrop.open{ display:block }
-.menu a{ display:block; color:var(--panel-ink)!important; background:var(--panel-bg); border:1px solid color-mix(in oklab,var(--panel-ink),transparent 80%);
-  border-radius:18px; padding:18px 20px; margin:12px 0; font-weight:800 }
-.menu a:hover{ border-color:color-mix(in oklab,var(--panel-ink),transparent 65%); transform:translateY(-1px);
-  transition: transform .12s var(--ease), border-color .12s var(--ease) }
+/* ------ Header ------ */
+.site-header{
+  position:sticky; top:0; z-index:1000;
+  backdrop-filter:saturate(160%) blur(8px);
+  background:color-mix(in oklab, var(--bg), transparent 8%);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 0; gap:12px;
+}
+.brand{ display:flex; align-items:center; gap:10px; font-weight:800 }
+.logo{ width:28px;height:28px; border-radius:8px; background:var(--brand);
+  display:grid; place-items:center; color:var(--brand-ink); font-weight:900 }
+.brand-name{ letter-spacing:.5px }
+
+/* Tabs（桌面用） */
+.tabs{ display:flex; gap:10px; flex-wrap:wrap }
+.tab{
+  padding:8px 12px; border:1px solid var(--line);
+  border-radius:999px; font-weight:700; opacity:.9
+}
+.tab[aria-current="page"]{
+  background:var(--brand); color:var(--brand-ink); border-color:var(--brand)
+}
+.hide-on-mobile{ display:none }
+.show-on-mobile{ display:inline-flex }
+@media(min-width:980px){
+  .hide-on-mobile{ display:flex }
+  .show-on-mobile{ display:none }
+}
+
+/* 漢堡 */
+.menu-toggle{
+  height:44px; width:52px; border-radius:12px;
+  display:grid; place-items:center; border:1px solid var(--line);
+  background:color-mix(in oklab,var(--bg),#fff 6%); cursor:pointer;
+}
+.menu-ico{ position:relative; width:22px; height:2px; background:currentColor; display:block }
+.menu-ico::before,.menu-ico::after{
+  content:""; position:absolute; left:0; right:0; height:2px; background:currentColor;
+}
+.menu-ico::before{ top:-7px } .menu-ico::after{ top:7px }
+
+/* 抽屜 + 遮罩 */
+.drawer{
+  position:fixed; inset:0 0 0 auto; width:min(88vw,380px);
+  background:var(--card); color:var(--ink);
+  transform:translateX(100%); transition:transform .28s var(--ease);
+  z-index:1100; box-shadow:var(--shadow-strong);
+}
+.drawer.open{ transform:none }
+.drawer-body{ padding:16px }
+.drawer-item{
+  display:block; padding:16px 18px; border-radius:14px;
+  border:1px solid var(--line); margin:10px 0; font-weight:800;
+  background:color-mix(in oklab,var(--bg),#fff 6%);
+}
+.drawer-item:active{ transform:translateY(1px) }
+
+.backdrop{
+  position:fixed; inset:0; background:rgba(0,0,0,.35);
+  opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:1090;
+  backdrop-filter: blur(2px);
+}
+.backdrop.open{ opacity:1; pointer-events:auto }
+
+/* Page 通用 */
+main{ padding:22px 0 84px }
+.page{ padding:18px 0 }
+.card{
+  background:linear-gradient(180deg,color-mix(in oklab,var(--card),#fff 4%),color-mix(in oklab,var(--card),#000 2%));
+  border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px;
+}
+.mt-1{ margin-top:10px } .mt-2{ margin-top:18px }
+.inline{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+.input, textarea, select{
+  width:100%; height:44px; border:1px solid var(--line);
+  background:transparent; color:inherit; border-radius:12px; padding:10px 12px;
+}
+textarea{ height:120px; resize:vertical }
+.pill{ display:inline-block; padding:4px 10px; border-radius:999px; background:color-mix(in oklab,var(--brand),#fff 70%); color:#000; font-weight:800; font-size:12px }
+.section-head{ margin:6px 0 14px }
+.section-head h2{ margin:.2em 0 }
+.section-sub{ color:var(--muted) }
+
+.grid{ display:grid; gap:16px }
+.g-2{ grid-template-columns:repeat(2,1fr) }
+.g-3{ grid-template-columns:repeat(3,1fr) }
+.gcol-2{ grid-column:1/-1 }
+@media(max-width:900px){ .g-2,.g-3{ grid-template-columns:1fr } }
+
+.btn{
+  height:44px; padding:0 18px; border-radius:12px; font-weight:900;
+  border:1.5px solid #000; background:var(--brand); color:var(--brand-ink);
+  display:inline-grid; place-items:center; cursor:pointer;
+  box-shadow:var(--shadow); transition:transform .12s var(--ease), box-shadow .25s var(--ease), opacity .2s ease;
+}
+.btn:hover{ transform:translateY(-1px); box-shadow:var(--shadow-strong) }
+.btn:active{ transform:translateY(0) }
+.btn.secondary{ background:transparent; color:var(--ink); border-color:var(--line) }
+.btn.tertiary{ background:transparent; color:var(--muted); border-color:var(--line) }
 
 /* Hero */
-.hero{ display:grid; grid-template-columns:1.15fr .85fr; gap:22px; align-items:center; margin:10px 0 28px }
-.hero-title{ margin:.2em 0 .3em; font-size:clamp(28px,3.4vw,44px); line-height:1.15 }
-@media (max-width:900px){ .hero{ grid-template-columns:1fr } }
+.hero{ display:grid; grid-template-columns:1.1fr .9fr; gap:22px; align-items:center }
+@media(max-width:900px){ .hero{ grid-template-columns:1fr } }
+.hero-title{ font-size:clamp(28px,3.2vw,42px); margin:.2em 0 .3em }
+.hero-visual{ height:240px; border-radius:18px; background:
+  radial-gradient(120px 120px at 80% 20%, rgba(255,127,80,.28), transparent 60%),
+  radial-gradient(160px 160px at 20% 80%, rgba(0,0,0,.35), transparent 60%),
+  #0c0c0d; display:grid; place-items:center; }
+.hero-logo{ width:120px; height:120px; border-radius:18px; background:var(--brand);
+  display:grid; place-items:center; color:var(--brand-ink); font-weight:900; font-size:48px }
 
-/* Cards / Buttons */
-.card{ background:linear-gradient(180deg,color-mix(in oklab,var(--bg),#fff 6%),color-mix(in oklab,var(--bg),#000 2%));
-  border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px }
-.pill{ display:inline-block; padding:6px 12px; border-radius:999px; background:color-mix(in oklab,var(--brand),#fff 72%); color:#000; font-weight:800; font-size:12px }
-.btn{ display:inline-grid; place-items:center; height:44px; padding:0 18px; border-radius:12px; font-weight:800; cursor:pointer;
-  border:1.5px solid transparent; background:var(--brand); color:var(--brand-ink);
-  box-shadow:var(--shadow); transition: transform .12s var(--ease), opacity .12s var(--ease), box-shadow .25s var(--ease) }
-.btn:hover{ transform: translateY(-2px); box-shadow:var(--shadow-strong) } .btn:active{ transform: translateY(0); opacity:.85 }
-.btn.secondary{ background:transparent; border-color:var(--line); color:var(--ink) } .btn.tertiary{ background:transparent; border-color:transparent; color:var(--muted) }
-.input,textarea,select{ width:100%; height:44px; border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:transparent; color:inherit }
-textarea{ height:120px; resize:vertical }
+/* 橫向滑動 */
+.hwrap{ position:relative }
+.hscroll{ display:flex; gap:16px; overflow:auto; scroll-snap-type:x mandatory; padding:6px 2px }
+.hscroll > *{ scroll-snap-align:start; min-width:280px }
+.cards .card{ width:min(360px,76vw) }
 
-/* Bands & headers */
-.band{ margin:8px 0 18px } .section-head .pill{ margin-bottom:8px; display:inline-block }
+/* 商品卡片 */
+.product-photo{ height:180px; border-radius:14px; background:
+  linear-gradient(180deg, rgba(255,127,80,.18), transparent 50%),
+  #0c0c0d; border:1px solid var(--line); margin-bottom:10px }
+.price{ font-weight:900; margin-top:6px }
 
-/* Horizontal scroll */
-.hwrap{ position:relative } .hscroll{ display:flex; gap:14px; overflow-x:auto; padding:2px 2px 12px; scroll-snap-type:x mandatory }
-.hscroll>*{ scroll-snap-align:start; flex:0 0 auto }
+/* 地圖 */
+.map{ height:360px; border-radius:16px; overflow:hidden; border:1px solid var(--line); }
+.leaflet-container{ z-index:0 } /* 不壓抽屜 */
 
-/* Table */
-.table{ width:100%; border-collapse:collapse; font-size:14px }
-.table th,.table td{ border-bottom:1px solid var(--line); padding:10px 8px; text-align:left }
+/* 照片牆示意 */
+.photo{ height:160px }
 
 /* FAB */
-.fab{ position:fixed; right:18px; bottom:18px; display:grid; gap:12px; z-index:60 }
-.fab-btn{ width:64px;height:64px;border-radius:999px;border:0; background: radial-gradient(120% 120% at 30% 20%, #ff9966 0%, #ff7f50 60%, #d9663a 100%);
-  color:#000; font-weight:900; font-size:14px; display:grid; place-items:center; box-shadow:var(--shadow-strong); transition: transform .12s, opacity .12s; opacity:.85; cursor:pointer }
-.fab-btn:hover{ transform:translateY(-2px); opacity:1 } .fab-btn:active{ transform:translateY(0); opacity:.75 }
+.fab{
+  position:fixed; right:18px; bottom:18px; display:grid; gap:10px; z-index:1050;
+}
+.fab.hidden{ opacity:0; pointer-events:none }
+.fab-btn{
+  width:66px; height:66px; border-radius:50%; border:1px solid color-mix(in oklab,var(--brand),#000 12%);
+  background:radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,.15), transparent),
+             linear-gradient(180deg, color-mix(in oklab,var(--brand),#fff 12%), color-mix(in oklab,var(--brand),#000 6%));
+  color:#1b1b1b; font-weight:900; box-shadow:var(--shadow-strong); cursor:pointer;
+  display:grid; place-items:center; transition:transform .12s var(--ease), opacity .2s ease, box-shadow .2s ease;
+}
+.fab-btn:hover{ transform:translateY(-2px) }
+.fab-btn:active{ opacity:.75; transform:translateY(0) }
 
-/* 小螢幕微調 */
-@media (max-width:480px){ #page-products h2{ font-size:22px; white-space:nowrap } }
+/* 頁尾 */
+.footer{ padding:26px 0 60px; color:var(--muted) }
