@@ -5,74 +5,84 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PurrGo 喵來速｜品牌官網 Demo</title>
 
-  <!-- PWA / Icons（相對路徑） -->
+  <!-- PWA / Icons -->
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./logo/favicon.png">
   <link rel="apple-touch-icon" sizes="192x192" href="./logo/logo-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="./logo/logo-512.png">
   <meta name="theme-color" content="#ff7f50">
 
-  <!-- 站台樣式（你既有的 style.css） -->
   <link rel="stylesheet" href="./style.css">
 
-  <!-- 這段只補「抽屜選單 / 漢堡 / FAB / 防穿透」相關樣式，其他維持外部 style.css -->
   <style>
-    /* ===== Drawer / Overlay 強化 ===== */
-    .menu-backdrop{
-      position:fixed; inset:0;
-      background:color-mix(in oklab, var(--brand) 30%, #000 15%);
-      backdrop-filter: blur(2px);
-      opacity:0; pointer-events:none; transition: opacity .2s ease; z-index:9980;
-    }
-    .menu-backdrop.show{ opacity:.98; pointer-events:auto; }
+    /* ===== 針對抽屜/背板/漢堡/FAB 的穩定覆蓋 ===== */
+    :root { --brand:#ff7f50; --bg:#0e0e0f; --card:#161718; --muted:#9aa0a6; }
+    body { background:var(--bg); }
 
-    .menu{
-      position:fixed; top:0; right:0; height:100dvh; width:min(84vw,360px);
-      background:var(--card); border-left:1px solid var(--line);
-      transform:translateX(100%); transition: transform .22s ease; z-index:9990;
-      padding:16px; overflow:auto;
-      box-shadow:-10px 0 30px rgba(0,0,0,.35);
-    }
-    .menu.open{ transform:translateX(0); }
-    .menu a{ display:block; padding:14px 12px; margin:8px 0;
-      border:1px solid var(--line); border-radius:14px; }
-
-    /* 抽屜開啟時，全頁禁止互動，避免地圖/影片吃走點擊 */
-    html.menu-open, body.menu-open{ overflow:hidden; }
-    html.menu-open #map,
-    html.menu-open main,
-    html.menu-open .fab{ pointer-events:none; }
-    html.menu-open .menu,
-    html.menu-open .menu-backdrop{ pointer-events:auto; }
-
-    /* ===== 漢堡按鈕樣式（currentColor 自動換線色） ===== */
+    /* 右上漢堡 */
     .menu-toggle{
-      width:46px; height:46px; border-radius:12px; border:1px solid var(--line);
-      background:rgba(255,255,255,.06);
-      display:grid; place-items:center; cursor:pointer; z-index:9995;
-      color:#fff;   /* 深色底時白線 */
+      width:48px;height:40px;border-radius:12px;padding:0 10px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+      color:#fff; cursor:pointer;
     }
-    .menu-toggle .bar{ width:22px; height:2px; background:currentColor; border-radius:2px; display:block }
-    .menu-toggle .bar + .bar{ margin-top:5px }
-    /* 打開後（抽屜是淺底）讓 icon 變黑線、按鈕白底 */
-    html.menu-open .menu-toggle{ color:#111; background:#fff; border-color:#eee; }
+    .menu-toggle .menu-ico,
+    .menu-toggle .menu-ico::before,
+    .menu-toggle .menu-ico::after{
+      display:block; width:22px; height:2px; background:currentColor; content:"";
+      border-radius:2px; position:relative;
+    }
+    .menu-toggle .menu-ico::before{ top:-6px; position:absolute;}
+    .menu-toggle .menu-ico::after{ top:6px; position:absolute;}
+    html.menu-open .menu-toggle{ background:#fff; color:#111; }
 
-    /* ===== 右下只保留 Top FAB（把你原本其餘 FAB 移除） ===== */
-    .fab{ position:fixed; right:18px; bottom:18px; z-index:60 }
+    /* 手機抽屜（放在 body 最底；以視窗為基準） */
+    .menu{ position:fixed; inset:0 auto 0 100%; width:min(84vw,360px); height:100dvh;
+      background:#1b1c1e; border-left:1px solid rgba(255,255,255,.1);
+      box-shadow:-20px 0 40px rgba(0,0,0,.35);
+      transition:transform .28s ease; transform:translateX(0);
+      z-index:9999; padding:16px; overflow:auto;
+    }
+    .menu a{
+      display:block; padding:16px 14px; margin:12px 0; border-radius:14px;
+      background:#101112; color:#fff; text-decoration:none; font-weight:700;
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .menu.open { transform:translateX(-100%); /* 由右滑入 */ }
+
+    .menu-backdrop{
+      position:fixed; inset:0; background:rgba(0,0,0,.5);
+      backdrop-filter:blur(2px); opacity:0; pointer-events:none;
+      transition:opacity .2s ease; z-index:9998;
+    }
+    .menu-backdrop.show{ opacity:1; pointer-events:auto; }
+
+    /* 抽屜開啟時，主畫面與地圖/FAB 不吃點擊、禁止滾動 */
+    html.menu-open, body.menu-open{ overflow:hidden; }
+    html.menu-open main, html.menu-open .fab, html.menu-open #map { pointer-events:none; }
+    html.menu-open .leaflet-pane, html.menu-open .leaflet-control-container{ pointer-events:none!important; }
+    html.menu-open .fab{ opacity:.0; transition:opacity .2s; }
+
+    /* 右下只留 Top FAB */
+    .fab{ position:fixed; right:16px; bottom:16px; z-index:50; }
     .fab-btn{
-      height:54px; width:54px; border-radius:999px; border:1px solid var(--line);
-      background:radial-gradient(120% 120% at 30% 20%, #ff9a6a 0%, #ff7f50 60%, #e9683c 100%);
-      color:#111; font-weight:900; font-size:14px;
-      display:grid; place-items:center; cursor:pointer;
-      box-shadow:0 6px 18px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.22);
-      transition: transform .1s ease, box-shadow .2s ease, opacity .2s ease;
+      width:86px;height:86px;border-radius:999px;background:linear-gradient(160deg,#ff9966,#ff7f50);
+      box-shadow:0 12px 28px rgba(0,0,0,.35); color:#111; font-weight:900;border:none;
     }
-    .fab-btn:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(0,0,0,.32), 0 3px 10px rgba(0,0,0,.25) }
-    .fab-btn:active{ transform:translateY(0); opacity:.86 }
 
-    /* 保險：主要內容層級較低，避免覆蓋抽屜 */
-    header{ position:relative; z-index:30 }
-    main, .page, .band{ position:relative; z-index:1 }
+    /* 頁首小型登入膠囊 */
+    .auth-pill{
+      display:flex; gap:10px; align-items:center;
+      padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.16); color:#fff; font-weight:700;
+    }
+    .auth-pill button{ background:transparent; border:none; color:#fff; font-weight:700; }
+    .auth-pill .sep{ opacity:.4; }
+
+    /* 註冊/登入 Modal（用 <dialog> ） */
+    dialog::backdrop{ background:rgba(0,0,0,.55); backdrop-filter:blur(2px); }
+    dialog.auth article{ background:var(--card); color:#fff; min-width:min(92vw,500px); border-radius:16px; padding:18px; }
+    dialog.auth h3{ margin:0 0 8px 0; }
   </style>
 </head>
 <body>
@@ -84,7 +94,7 @@
       <span>PurrGo 喵來速</span>
     </a>
 
-    <!-- 桌面：分頁籤（手機以漢堡為主） -->
+    <!-- 桌面 tabs -->
     <nav class="tabs hide-mobile">
       <a class="tab" data-sec="home"     onclick="showPage('home')">首頁</a>
       <a class="tab" data-sec="products" onclick="showPage('products')">產品</a>
@@ -98,10 +108,18 @@
       <a class="tab" data-sec="contact"  onclick="showPage('contact')">聯絡</a>
     </nav>
 
-    <!-- 手機：漢堡（三線置中） -->
-    <button class="menu-toggle" aria-label="開啟選單" id="menuBtn">
-      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-    </button>
+    <!-- 右側：登入膠囊 + 漢堡 -->
+    <div class="inline" style="gap:12px">
+      <div id="authPill" class="auth-pill">
+        <span id="authText">訪客</span>
+        <span class="sep">|</span>
+        <button onclick="openAuth()">登入</button>
+      </div>
+
+      <button class="menu-toggle" aria-label="開啟選單" onclick="openMenu()">
+        <span class="menu-ico" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -269,7 +287,7 @@
         <label>主子
           <select class="input" id="photoPet" onchange="renderWall()"></select>
         </label>
-        <input type="file" accept="image/*" onchange="addPhoto(event)">
+        <input type="file" accept="image/*" multiple onchange="addPhoto(event)">
         <button class="btn secondary" onclick="clearWall()">清除本機照片</button>
       </div>
       <div id="wall" class="grid g-3 mt-2"></div>
@@ -361,27 +379,12 @@
   © PurrGo 喵來速 ｜ 公開 Demo（不含投資人資訊）
 </footer>
 
- <!-- 手機：抽屜選單＋背景遮罩（保留你原本項目） -->
-  <nav id="menu" class="menu" aria-label="主選單">
-    <a href="#home"     onclick="navTo('home')">首頁</a>
-    <a href="#products" onclick="navTo('products')">產品</a>
-    <a href="#guild"    onclick="navTo('guild')">公會</a>
-    <a href="#kiosk"    onclick="navTo('kiosk')">據點</a>
-    <a href="#photos"   onclick="navTo('photos')">照片牆</a>
-    <a href="#social"   onclick="navTo('social')">社群</a>
-    <a href="#chat"     onclick="navTo('chat')">聊天</a>
-    <a href="#video"    onclick="navTo('video')">短影片</a>
-    <a href="#about"    onclick="navTo('about')">理念</a>
-    <a href="#contact"  onclick="navTo('contact')">聯絡</a>
-  </nav>
-  <div id="menuBackdrop" class="menu-backdrop"></div>
-  
-<!-- 右下 FAB（僅 Top 一顆） -->
+<!-- 右下 FAB：只留 Top -->
 <div class="fab" id="fab" aria-label="快速導覽">
-  <button class="fab-btn" title="回頂端" id="fabTop">Top</button>
+  <button class="fab-btn" id="fabTop" title="回頂端"  onclick="showPage('home')">Top</button>
 </div>
 
-<!-- ===== 產品詳情 Modal ===== -->
+<!-- 產品詳情 Modal -->
 <dialog id="modal">
   <article>
     <header>
@@ -396,32 +399,63 @@
   </article>
 </dialog>
 
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+<!-- 註冊/登入 Modal -->
+<dialog id="authDialog" class="auth">
+  <article>
+    <h3>註冊 / 登入</h3>
+    <p class="muted" style="margin:6px 0 12px">本機示範：輸入暱稱即可體驗完整功能。</p>
+    <div class="inline" style="gap:8px">
+      <input class="input" id="authName" placeholder="輸入暱稱…" style="min-width:240px">
+      <button class="btn" onclick="doLogin()">開始使用</button>
+      <button class="btn secondary" onclick="closeAuth()">取消</button>
+    </div>
+  </article>
+</dialog>
 
-<!-- ===== Main Script（功能邏輯與前版相容） ===== -->
+<!-- 抽屜選單（放在 body 最底，避免 header 造成 fixed 參考點錯誤） -->
+<nav id="menu" class="menu" aria-label="主選單">
+  <a href="#home"     onclick="navTo('home')">首頁</a>
+  <a href="#products" onclick="navTo('products')">產品</a>
+  <a href="#guild"    onclick="navTo('guild')">公會</a>
+  <a href="#kiosk"    onclick="navTo('kiosk')">據點</a>
+  <a href="#photos"   onclick="navTo('photos')">照片牆</a>
+  <a href="#social"   onclick="navTo('social')">社群</a>
+  <a href="#chat"     onclick="navTo('chat')">聊天</a>
+  <a href="#video"    onclick="navTo('video')">短影片</a>
+  <a href="#about"    onclick="navTo('about')">理念</a>
+  <a href="#contact"  onclick="navTo('contact')">聯絡</a>
+</nav>
+<div id="menuBackdrop" class="menu-backdrop"></div>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+
 <script>
-/* ===== 全域狀態（localStorage） ===== */
+/* ===== 狀態 ===== */
 const LS_KEY = 'purrgoState';
 const state = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+state.auth ||= { name:'' }; // 未登入 name=""
 state.user ||= { phone:'', line:false, vipXp:0, lifetimeSpend:0, energy:0, lastCheckin:'' };
 state.guild ||= { name:'', level:0, contribution:0 };
 state.cart  ||= [];
 state.pets  ||= [];             // {id,name,sex,age,breed,avatar}
 state.vet   ||= [];             // {petId, city, hospital, fileName, time}
-state.photos ||= {};            // petId -> [{src, likes, comments:[{text,time}]}]
-state.friends ||= [];           // ["name", ...]
-state.blocks  ||= [];           // ["name", ...]
-state.chats   ||= {};           // name -> [{text, me:true/false, time}]
-state.videos  ||= [];           // [{src, time}]
+state.photos ||= {};            // petId -> [{src, likes, comments:[]}]
+state.friends ||= [];
+state.blocks  ||= [];
+state.chats   ||= {};
+state.videos  ||= [];
 save();
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
-function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); renderAll(); }
-
-/* ===== SPA 分頁 ===== */
+/* ===== SPA 分頁 & 權限 ===== */
 const pages = ["home","products","guild","kiosk","photos","social","chat","video","about","contact"];
+const PUBLIC_PAGES = new Set(["home","products","kiosk","about","contact"]);
 function showPage(sec){
+  // 未登入：不在公開頁，就彈登入
+  if(!state.auth.name && !PUBLIC_PAGES.has(sec)){ openAuth(); sec = "home"; }
+
   pages.forEach(id=>{
     const el = document.getElementById('page-'+id);
     if(el) el.hidden = (id!==sec);
@@ -429,60 +463,66 @@ function showPage(sec){
       a.setAttribute('aria-current', id===sec? 'page':'false');
     });
   });
-  closeMenu(); // 確保手機抽屜關閉
+  closeMenu();
   location.hash = '#'+sec;
-  // 地圖大小校正
-  if(sec==='kiosk'){ setTimeout(initMap, 50); }
-  // 預設主子選單刷新
-  if(sec==='photos') { renderWall(); }
-  if(sec==='guild')  { renderVet(); }
-  if(sec==='chat')   { renderChatSelectors(); renderChat(); }
+  if(sec==='kiosk'){ setTimeout(initMap, 60); }
+  if(sec==='photos'){ renderWall(); }
+  if(sec==='guild'){ renderVet(); }
+  if(sec==='chat'){ renderChatSelectors(); renderChat(); }
 }
-
 function navTo(id){ closeMenu(); showPage(id); return false; }
 function restorePage(){ const h=(location.hash||'#home').slice(1); showPage(pages.includes(h)?h:'home'); }
 
-/* ===== 手機選單（覆寫成新版：含 backdrop / Esc / 防穿透） ===== */
-(function(){
-  const html = document.documentElement;
-  const btn  = document.getElementById('menuBtn');
-  const menu = document.getElementById('menu');
-  const backdrop = document.getElementById('menuBackdrop');
+/* ===== 手機選單 ===== */
+function openMenu(){
+  document.getElementById('menu').classList.add('open');
+  document.getElementById('menuBackdrop').classList.add('show');
+  document.documentElement.classList.add('menu-open');
+  document.body.classList.add('menu-open');
+}
+function closeMenu(){
+  document.getElementById('menu').classList.remove('open');
+  document.getElementById('menuBackdrop').classList.remove('show');
+  document.documentElement.classList.remove('menu-open');
+  document.body.classList.remove('menu-open');
+}
+document.getElementById('menuBackdrop').addEventListener('click', closeMenu);
+window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeMenu(); });
 
-  function _open(){ menu.classList.add('open'); backdrop.classList.add('show'); html.classList.add('menu-open'); }
-  function _close(){ menu.classList.remove('open'); backdrop.classList.remove('show'); html.classList.remove('menu-open'); }
-
-  // 對外接口（讓舊呼叫不報錯）
-  window.openMenu = _open;
-  window.closeMenu = _close;
-
-  btn?.addEventListener('click', ()=> html.classList.contains('menu-open') ? _close() : _open());
-  backdrop?.addEventListener('click', _close);
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape') _close(); });
-
-  // 抽屜內點連結：平滑跳頁 + 關閉抽屜
-  menu?.addEventListener('click', e=>{
-    const a = e.target.closest('a[href^="#"]'); if(!a) return;
-    e.preventDefault();
-    const id = a.getAttribute('href').replace('#','');
-    if (id) showPage(id);
-    _close();
-  });
-})();
+/* ===== 註冊/登入 ===== */
+function openAuth(){ document.getElementById('authDialog').showModal(); }
+function closeAuth(){ document.getElementById('authDialog').close(); }
+function doLogin(){
+  const name = (document.getElementById('authName').value||'').trim();
+  if(!name) return;
+  state.auth.name = name;
+  save(); renderAuth(); closeAuth();
+}
+function logout(){
+  if(confirm('確定要登出？')){ state.auth.name=''; save(); renderAuth(); showPage('home'); }
+}
+function renderAuth(){
+  const pill = document.getElementById('authPill');
+  if(state.auth.name){
+    pill.innerHTML = `<span id="authText">${state.auth.name}</span><span class="sep">|</span><button onclick="logout()">登出</button>`;
+  }else{
+    pill.innerHTML = `<span id="authText">訪客</span><span class="sep">|</span><button onclick="openAuth()">登入</button>`;
+  }
+}
 
 /* ===== 公用：水平捲動 ===== */
 function scrollH(id,dir){ const el=document.getElementById(id); if(!el) return; el.scrollBy({left: dir*(el.clientWidth*0.9), behavior:'smooth'}); }
 
 /* ===== 身份 / VIP ===== */
-function bindPhone(v){ state.user.phone=v||''; save(); }
-function toggleLine(){ state.user.line=!state.user.line; save(); }
+function bindPhone(v){ state.user.phone=v||''; save(); renderIdentity(); }
+function toggleLine(){ state.user.line=!state.user.line; save(); renderIdentity(); }
 function vipLevelByXp(x){ if(x>=5000) return 5; if(x>=3000) return 4; if(x>=1500) return 3; if(x>=600) return 2; if(x>=200) return 1; return 0; }
 function nextVipNeed(x){ const br=[200,600,1500,3000,5000]; for(const b of br){ if(x<b) return b-x; } return 0; }
 function dailyCheckin(){
   const today = new Date().toISOString().slice(0,10);
   if(state.user.lastCheckin===today){ document.getElementById('checkinInfo').textContent='今天已簽到'; return; }
   state.user.lastCheckin=today; state.user.energy+=10; state.user.vipXp+=10;
-  document.getElementById('checkinInfo').textContent='簽到成功：+10 能量、+10 VIP XP'; save();
+  document.getElementById('checkinInfo').textContent='簽到成功：+10 能量、+10 VIP XP'; save(); renderIdentity();
 }
 function renderIdentity(){
   const u=state.user;
@@ -512,13 +552,12 @@ function addPet(e){
     avatar: ''
   };
   const file = f.avatar.files[0];
+  const done=()=>{ state.pets.push(p); save(); renderPets(); f.reset(); };
   if(file){
     const rd=new FileReader();
-    rd.onload=()=>{ p.avatar=rd.result; state.pets.push(p); save(); f.reset(); };
+    rd.onload=()=>{ p.avatar=rd.result; done(); };
     rd.readAsDataURL(file);
-  }else{
-    state.pets.push(p); save(); f.reset();
-  }
+  }else{ done(); }
   return false;
 }
 function renderPets(){
@@ -528,19 +567,16 @@ function renderPets(){
     card.className='p-card';
     card.innerHTML = `
       <img src="${pt.avatar || './logo/logo-192.png'}" alt="" class="p-avatar">
-      <div class="p-meta">
-        <b>${pt.name}</b>｜${pt.breed||'未知'}｜${pt.sex==='M'?'公':'母'}｜${pt.age||0}歲
-      </div>`;
+      <div class="p-meta"><b>${pt.name}</b>｜${pt.breed||'未知'}｜${pt.sex==='M'?'公':'母'}｜${pt.age||0}歲</div>`;
     row.appendChild(card);
   });
-  // 同步下拉
   ['vetPet','photoPet'].forEach(id=>{
-    const s=el(id); if(!s) return; s.innerHTML=''; 
+    const s=el(id); if(!s) return; s.innerHTML='';
     state.pets.forEach(pt=>{ const o=document.createElement('option'); o.value=pt.id; o.textContent=pt.name; s.appendChild(o); });
   });
 }
 
-/* ===== 健檢（需加入公會/有主子） ===== */
+/* ===== 健檢 ===== */
 function renderHospitals(){
   const city = el('vetCity').value;
   fetch('./data/hospitals.json').then(r=>r.json()).then(list=>{
@@ -555,7 +591,7 @@ function uploadVet(){
   const f=el('vetFile').files[0]; if(!f) return alert('請選擇檔案');
   state.vet.push({ petId: pid, city, hospital:hosp, fileName:f.name, time:new Date().toLocaleString() });
   state.guild.contribution+=200;
-  save();
+  save(); renderVet();
   alert('已上傳（示範）並獲得 +200 公會貢獻');
 }
 function renderVet(){
@@ -577,9 +613,9 @@ function renderGuild(){
 function createGuild(){
   if((state.user.lifetimeSpend||0) < GUILD_CREATE_NEED){ return alert('尚未達到創立門檻：累積消費 $1,200'); }
   const name = prompt('輸入公會名稱'); if(!name) return;
-  state.guild.name=name; state.guild.level=1; save(); alert('公會已創立！');
+  state.guild.name=name; state.guild.level=1; save(); renderGuild(); alert('公會已創立！');
 }
-function contribute(n){ if(!state.guild.name) return alert('請先創立公會'); state.guild.contribution += n; if(state.guild.contribution>= (state.guild.level*500)) { state.guild.level++; alert('公會升級！'); } save(); }
+function contribute(n){ if(!state.guild.name) return alert('請先創立公會'); state.guild.contribution += n; if(state.guild.contribution>= (state.guild.level*500)) { state.guild.level++; alert('公會升級！'); } save(); renderGuild(); }
 function mockWar(){ if(!state.guild.name) return alert('先創立公會'); const add=Math.floor(Math.random()*500+100); const tr=document.createElement('tr'); tr.innerHTML=`<td>*</td><td>${state.guild.name}</td><td>你的區域</td><td>+${add}</td>`; el('warTable').prepend(tr); }
 
 /* ===== 產品 / 購物車 ===== */
@@ -602,8 +638,8 @@ async function loadProducts(){
     });
   }catch(e){ el('productRow').innerHTML='<div class="empty">讀取產品失敗</div>'; }
 }
-function addToCart(p){ const item = state.cart.find(i=>i.id===p.id) || (state.cart.push({...p,qty:0}), state.cart.find(i=>i.id===p.id)); item.qty++; save(); }
-function clearCart(){ state.cart=[]; save(); }
+function addToCart(p){ const item = state.cart.find(i=>i.id===p.id) || (state.cart.push({...p,qty:0}), state.cart.find(i=>i.id===p.id)); item.qty++; save(); renderCart(); }
+function clearCart(){ state.cart=[]; save(); renderCart(); }
 function renderCart(){
   const box = el('cartItems'); if(!box) return;
   if(state.cart.length===0){ box.textContent='尚無商品'; return; }
@@ -617,7 +653,7 @@ function checkout(){
   state.user.vipXp += Math.round(sum/10);
   state.user.energy += Math.round(sum/20);
   state.cart=[]; alert(`結帳成功！累積消費 +$${sum.toLocaleString()}，VIP XP 與能量已增加`);
-  save();
+  save(); renderCart(); renderIdentity();
 }
 function openDetail(p){
   const m=el('modal'); el('mTitle').textContent=p.name;
@@ -629,17 +665,22 @@ function closeModal(){ el('modal').close(); }
 
 /* ===== 照片牆 ===== */
 function addPhoto(e){
-  const pid=el('photoPet').value; if(!pid){ alert('請先建立主子'); return; }
-  const file=e.target.files[0]; if(!file) return;
-  const rd=new FileReader(); rd.onload=()=>{ (state.photos[pid]=state.photos[pid]||[]).push({src:rd.result, likes:0, comments:[]}); save(); }; rd.readAsDataURL(file);
+  const pid=el('photoPet').value || (state.pets[0]?.id||'');
+  if(!pid){ alert('請先建立主子'); e.target.value=''; return; }
+  const files=[...e.target.files]; if(!files.length) return;
+  const pushOne = (file, cb)=>{
+    const rd=new FileReader(); rd.onload=()=>{ (state.photos[pid]=state.photos[pid]||[]).push({src:rd.result, likes:0, comments:[]}); cb&&cb(); }; rd.readAsDataURL(file);
+  };
+  let i=0; (function loop(){ if(i>=files.length){ save(); renderWall(); e.target.value=''; return; } pushOne(files[i++], loop); })();
 }
-function likePhoto(pid, idx){ (state.photos[pid][idx].likes++); save(); }
+function likePhoto(pid, idx){ (state.photos[pid][idx].likes++); save(); renderWall(); }
 function commentPhoto(pid, idx){
-  const t=prompt('留言'); if(!t) return; (state.photos[pid][idx].comments.push({text:t, time:new Date().toLocaleString()})); save();
+  const t=prompt('留言'); if(!t) return; (state.photos[pid][idx].comments.push({text:t, time:new Date().toLocaleString()})); save(); renderWall();
 }
 function renderWall(){
-  const pid=el('photoPet').value || (state.pets[0]?.id||'');
-  if(el('photoPet').value!==pid) el('photoPet').value=pid;
+  const s=el('photoPet'); if(!state.pets.length){ s.innerHTML=''; el('wall').innerHTML='<div class="muted">請先建立主子</div>'; return; }
+  if(!s.value){ s.value = state.pets[0].id; }
+  const pid=s.value;
   const wall=el('wall'); wall.innerHTML='';
   (state.photos[pid]||[]).forEach((ph,idx)=>{
     const d=document.createElement('div'); d.className='card';
@@ -647,25 +688,23 @@ function renderWall(){
     wall.appendChild(d);
   });
 }
-function clearWall(){ const pid=el('photoPet').value; if(confirm('清除本機照片？')){ state.photos[pid]=[]; save(); }}
+function clearWall(){ const pid=el('photoPet').value; if(confirm('清除本機照片？')){ state.photos[pid]=[]; save(); renderWall(); }}
 
 /* ===== 社群 / 聊天 ===== */
 function addFriend(){
   const n=el('friendName').value.trim(); if(!n) return;
   if(state.friends.includes(n)) return alert('已存在');
-  state.friends.push(n); save(); el('friendName').value='';
+  state.friends.push(n); save(); el('friendName').value=''; renderSocial(); renderChatSelectors();
 }
-function removeFriend(n){ state.friends=state.friends.filter(x=>x!==n); delete state.chats[n]; save(); }
-function blockFriend(n){ if(!state.blocks.includes(n)) state.blocks.push(n); save(); }
-function unblock(n){ state.blocks=state.blocks.filter(x=>x!==n); save(); }
+function removeFriend(n){ state.friends=state.friends.filter(x=>x!==n); delete state.chats[n]; save(); renderSocial(); renderChatSelectors(); }
+function blockFriend(n){ if(!state.blocks.includes(n)) state.blocks.push(n); save(); renderSocial(); renderChatSelectors(); }
+function unblock(n){ state.blocks=state.blocks.filter(x=>x!==n); save(); renderSocial(); renderChatSelectors(); }
 function renderSocial(){
-  // friends
   const fl=el('friendList'); fl.innerHTML='';
   state.friends.forEach(n=>{
     const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="blockFriend('${n}')">封鎖</button> <button class="btn secondary" onclick="removeFriend('${n}')">刪除</button>`;
     fl.appendChild(li);
   });
-  // blocks
   const bl=el('blockList'); bl.innerHTML='';
   state.blocks.forEach(n=>{
     const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="unblock('${n}')">解除</button>`;
@@ -691,8 +730,8 @@ function sendMsg(){
   const withN=el('chatWith').value; if(!withN) return;
   const t=el('chatMsg').value.trim(); if(!t) return;
   (state.chats[withN]=state.chats[withN]||[]).push({text:t, me:true, time:new Date().toLocaleTimeString()});
-  el('chatMsg').value=''; save();
-  setTimeout(()=>{ (state.chats[withN]=state.chats[withN]||[]).push({text:'（自動回覆）喵喵～', me:false, time:new Date().toLocaleTimeString()}); save(); }, 500);
+  el('chatMsg').value=''; save(); renderChat();
+  setTimeout(()=>{ (state.chats[withN]=state.chats[withN]||[]).push({text:'（自動回覆）喵喵～', me:false, time:new Date().toLocaleTimeString()}); save(); renderChat(); }, 500);
 }
 
 /* ===== 短影片 ===== */
@@ -702,7 +741,7 @@ function addVideo(e){
   const v=document.createElement('video'); v.src=url; v.onloadedmetadata=()=>{
     if(v.duration>30){ URL.revokeObjectURL(url); alert('超過 30 秒'); return; }
     const rd=new FileReader();
-    rd.onload=()=>{ state.videos.push({src:rd.result, time:new Date().toLocaleString()}); save(); };
+    rd.onload=()=>{ state.videos.push({src:rd.result, time:new Date().toLocaleString()}); save(); renderVideos(); };
     rd.readAsDataURL(f);
   }
 }
@@ -742,6 +781,7 @@ function el(id){ return document.getElementById(id); }
 
 /* ===== 初始 ===== */
 async function renderAll(){
+  renderAuth();
   renderIdentity();
   renderGuild();
   renderPets();
@@ -752,15 +792,12 @@ async function renderAll(){
   renderWall();
 }
 function boot(){
+  // 確保抽屜默認關閉
+  closeMenu();
   restorePage();
   loadBreeds();
   loadProducts();
-
-  // Top FAB
-  document.getElementById('fabTop')?.addEventListener('click', ()=>{
-    window.scrollTo({ top:0, behavior:'smooth' });
-  });
-
+  renderAll();
   if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
 }
 window.addEventListener('hashchange', restorePage);
