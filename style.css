@@ -186,3 +186,28 @@ textarea{ height:120px; resize:vertical }
 /* 讓 header 之下的內容不會蓋到抽屜（保險，再墊一層） */
 header{ position: relative; z-index: 30; }
 main, .page, .band{ position: relative; z-index: 1; }
+
+/* 讓抽屜與背板永遠以視窗為基準，不受祖先影響 */
+.menu, .menu-backdrop { position: fixed; }
+
+/* 背板全幅覆蓋（你已有 inset:0；這裡確保層級最高且不被其他層遮） */
+.menu-backdrop{ inset:0; z-index: 9998; }
+
+/* 抽屜在背板之上 */
+.menu{ top:0; right:0; height:100dvh; z-index: 9999; }
+
+/* 開啟抽屜時，主畫面與地圖完全不吃點擊也不滾動 */
+html.menu-open, body.menu-open { overflow: hidden; }
+html.menu-open main,
+html.menu-open #map,
+html.menu-open .fab { pointer-events: none; }
+
+/* Leaflet 控制與圖層也一併遮住（避免穿透） */
+html.menu-open .leaflet-pane,
+html.menu-open .leaflet-control-container { pointer-events: none !important; }
+
+/* 抽屜開啟時，右下 Top 按鈕淡出，避免視覺干擾 */
+html.menu-open .fab { opacity: 0; }
+
+
+header, header * { transform: none !important; }
