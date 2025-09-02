@@ -25,3 +25,40 @@ self.addEventListener('fetch', (e) => {
     )
   );
 });
+document.addEventListener('DOMContentLoaded', () => {
+  // ====== Hamburger menu ======
+  const body = document.body;
+  const menuBtn = document.getElementById('menuBtn');
+  const menu    = document.getElementById('menu');
+  const backdrop= document.getElementById('menuBackdrop');
+
+  const toggleMenu = (open) => {
+    const willOpen = (open === undefined) ? !body.classList.contains('menu-open') : open;
+    body.classList.toggle('menu-open', willOpen);
+    if (willOpen) { menuBtn.setAttribute('aria-expanded','true'); }
+    else { menuBtn.setAttribute('aria-expanded','false'); }
+  };
+
+  if(menuBtn){ menuBtn.addEventListener('click', () => toggleMenu()); }
+  if(backdrop){ backdrop.addEventListener('click', () => toggleMenu(false)); }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') toggleMenu(false); });
+  menu?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => toggleMenu(false));
+  });
+
+  // ====== FAB buttons ======
+  document.querySelectorAll('.fab-btn').forEach(btn=>{
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.target;
+      if(!id) return;
+      const el = document.getElementById(id);
+      if(!el) return;
+      // 平滑滾動 + 觸發你的高亮邏輯
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+      setTimeout(() => {
+        history.replaceState(null, '', `#${id}`);
+        if(typeof highlight === 'function') highlight();
+      }, 300);
+    });
+  });
+});
