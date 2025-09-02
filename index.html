@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>PurrGo 喵來速｜品牌官網 Demo</title>
 
-  <!-- PWA / Icons -->
+  <!-- PWA / Icons（相對路徑） -->
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./logo/favicon.png">
   <link rel="apple-touch-icon" sizes="192x192" href="./logo/logo-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="./logo/logo-512.png">
   <meta name="theme-color" content="#ff7f50">
 
-  <!-- Styles -->
+  <!-- CSS -->
   <link rel="stylesheet" href="./style.css"/>
 
   <!-- Leaflet -->
@@ -25,7 +25,8 @@
 <header class="site-header">
   <div class="nav container">
     <a class="brand" href="#home" onclick="route('home');return false;">
-      <span class="logo">G</span><span class="brand-name">PurrGo 喵來速</span>
+      <img class="logo-img" src="./logo/logo-192.png" alt="PurrGo" />
+      <span class="brand-name">PurrGo 喵來速</span>
     </a>
 
     <!-- 桌面 Tabs（手機隱藏） -->
@@ -61,6 +62,7 @@
 </header>
 
 <main>
+
   <!-- ===== Home ===== -->
   <section id="home" class="page container">
     <div class="hero card">
@@ -75,7 +77,9 @@
         </div>
       </div>
       <div class="hero-art">
-        <div class="hero-visual"><div class="hero-logo">G</div></div>
+        <div class="hero-visual">
+          <img class="hero-logo-img" src="./logo/logo-512.png" alt="PurrGo Logo">
+        </div>
       </div>
     </div>
 
@@ -248,6 +252,15 @@
   <button class="fab-btn" title="Msg"  onclick="route('contact')">Msg</button>
 </div>
 
+<!-- ===== 產品詳情 Modal ===== -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-panel" role="dialog" aria-modal="true">
+    <button class="modal-close" aria-label="關閉" onclick="closeModal()">×</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
 <!-- ===== Script ===== -->
 <script>
 /* ===== 全域狀態 ===== */
@@ -264,21 +277,39 @@ save();
 /* ===== 路由（分頁顯示） ===== */
 function route(id){ location.hash='#'+id; renderRoute(); }
 function renderRoute(){
+  // 沒有 hash 時預設回 home，避免整頁被隱藏
+  if(!location.hash){ location.hash = '#home'; }
   const hash=(location.hash||'#home').replace('#','');
   document.querySelectorAll('.page').forEach(sec=>{ sec.style.display=sec.id===hash?'block':'none'; });
   document.querySelectorAll('.tab').forEach(a=>{ a.setAttribute('aria-current', a.dataset.sec===hash?'page':'false'); });
+
+  // 切到地圖頁時，讓地圖正確重算尺寸
+  if(hash==='kiosk' && window._mapInstance && typeof window._mapInstance.invalidateSize==='function'){
+    setTimeout(()=>window._mapInstance.invalidateSize(), 120);
+  }
   window.scrollTo({top:0,behavior:'instant'});
 }
 window.addEventListener('hashchange', renderRoute);
-window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeMenu(); });
+window.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeMenu(); closeModal(); }});
 window.addEventListener('DOMContentLoaded', renderRoute);
 
-/* ===== 漢堡 / 抽屜 ===== */
+/* ===== 漢堡 / 抽屜（綁到 window，保證 onclick 可用） ===== */
 const drawer=document.getElementById('drawer');
 const backdrop=document.getElementById('backdrop');
-function toggleMenu(){ const open=drawer.classList.toggle('open'); backdrop.classList.toggle('open',open); document.body.classList.toggle('menu-open',open); }
-function closeMenu(){ drawer.classList.remove('open'); backdrop.classList.remove('open'); document.body.classList.remove('menu-open'); }
-function jump(id){ closeMenu(); setTimeout(()=>route(id),10); }
+window.toggleMenu = function(){
+  const open = drawer.classList.toggle('open');
+  backdrop.classList.toggle('open', open);
+  document.body.classList.toggle('menu-open', open);
+};
+window.closeMenu = function(){
+  drawer.classList.remove('open');
+  backdrop.classList.remove('open');
+  document.body.classList.remove('menu-open');
+};
+window.jump = function(id){
+  closeMenu();
+  setTimeout(()=>route(id),10);
+};
 
 /* ===== 儲存＋重繪 ===== */
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state));
@@ -455,27 +486,35 @@ function commentPhoto(){ alert('留言功能將在正式版提供'); }
 
 /* ===== 產品 / 購物車 ===== */
 async function loadProducts(){
+  const fallback = [
+    {id:1,name:'礦砂 經典款 10L',spec:'凝結力強｜低粉塵',price:199, img:'./logo/logo-192.png', bullets:['單包優惠','台中快配','社群熱銷']},
+    {id:2,name:'豆腐砂 輕量 6L',spec:'可溶水｜低粉塵',price:239, img:'./logo/logo-192.png', bullets:['可沖馬桶','低過敏','多口味']},
+    {id:3,name:'矽晶砂 長效 5L',spec:'除臭長效｜輕巧',price:179, img:'./logo/logo-192.png', bullets:['旅居首選','低維護','不結塊']}
+  ];
   try{
     const res = await fetch('./data/products.json',{cache:'no-cache'});
     const list = await res.json();
-    const row = document.getElementById('productRow'); row.innerHTML='';
-    list.forEach(p=>{
-      const el=document.createElement('article'); el.className='card product';
-      el.innerHTML = `
-        <div class="product-photo" style="${p.img?`background-image:url('${p.img}');background-size:cover;background-position:center;`:''}"></div>
-        <h3 class="mt-0">${p.name}</h3>
-        <div class="muted">${p.spec||''}</div>
-        <div class="price">NT$ ${p.price.toLocaleString()}</div>
-        <ul class="list">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
-        <div class="inline mt-1">
-          <button class="btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>加入購物車</button>
-          <button class="btn secondary">查看詳情</button>
-        </div>`;
-      row.appendChild(el);
-    });
+    renderProducts(Array.isArray(list)&&list.length?list:fallback);
   }catch(e){
-    document.getElementById('productRow').innerHTML = '<div class="card">讀取產品失敗</div>';
+    renderProducts(fallback);
   }
+}
+function renderProducts(list){
+  const row = document.getElementById('productRow'); row.innerHTML='';
+  list.forEach(p=>{
+    const el=document.createElement('article'); el.className='card product';
+    el.innerHTML = `
+      <div class="product-photo" style="${p.img?`background-image:url('${p.img}');background-size:cover;background-position:center;`:''}"></div>
+      <h3 class="mt-0">${p.name}</h3>
+      <div class="muted">${p.spec||''}</div>
+      <div class="price">NT$ ${p.price.toLocaleString()}</div>
+      <ul class="list">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
+      <div class="inline mt-1">
+        <button class="btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>加入購物車</button>
+        <button class="btn secondary" onclick='openModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>查看詳情</button>
+      </div>`;
+    row.appendChild(el);
+  });
 }
 function addToCart(p){ const item = state.cart.find(i=>i.id===p.id) || (state.cart.push({...p,qty:0}), state.cart.find(i=>i.id===p.id)); item.qty++; save(); }
 function clearCart(){ state.cart=[]; save(); }
@@ -496,10 +535,30 @@ function checkout(){
   save();
 }
 
+/* ===== 產品詳情 Modal ===== */
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modalBody');
+function openModal(p){
+  modalBody.innerHTML = `
+    <div class="modal-hero" style="${p.img?`background-image:url('${p.img}')`:''}"></div>
+    <h3 class="mt-1">${p.name}</h3>
+    <div class="muted">${p.spec||''}</div>
+    <div class="price mt-1">NT$ ${p.price.toLocaleString()}</div>
+    <ul class="list">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
+    <div class="inline mt-1">
+      <button class="btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>加入購物車</button>
+      <button class="btn secondary" onclick="closeModal()">關閉</button>
+    </div>
+  `;
+  modal.setAttribute('data-open','1');
+}
+function closeModal(){ modal.removeAttribute('data-open'); }
+
 /* ===== 地圖（Leaflet + OSM） ===== */
 async function initMap(){
   if(!window.L) return;
   const map=L.map('map',{zoomControl:true}).setView([25.0330,121.5654],12);
+  window._mapInstance = map;
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
   try{
     const res = await fetch('./data/locations.json',{cache:'no-cache'}); const points = await res.json();
@@ -517,6 +576,8 @@ function submitForm(e){ e.preventDefault(); alert('已收到您的訊息（示�
 
 /* ===== 啟動 ===== */
 window.addEventListener('DOMContentLoaded',()=>{
+  // 沒有 hash 時導回 home，避免整頁被隱藏
+  if(!location.hash){ location.hash='#home'; }
   loadProducts(); initMap(); renderRoute();
   if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
 });
