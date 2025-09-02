@@ -279,15 +279,22 @@ function route(id){ location.hash='#'+id; renderRoute(); }
 function renderRoute(){
   // 沒有 hash 時預設回 home，避免整頁被隱藏
   if(!location.hash){ location.hash = '#home'; }
-  const hash=(location.hash||'#home').replace('#','');
-  document.querySelectorAll('.page').forEach(sec=>{ sec.style.display=sec.id===hash?'block':'none'; });
-  document.querySelectorAll('.tab').forEach(a=>{ a.setAttribute('aria-current', a.dataset.sec===hash?'page':'false'); });
 
-  // 切到地圖頁時，讓地圖正確重算尺寸
+  const hash = (location.hash||'#home').slice(1);
+
+  // 用 class 控制顯示，避免 inline style 互撞
+  document.querySelectorAll('.page').forEach(sec=>{
+    sec.classList.toggle('is-active', sec.id === hash);
+  });
+
+  document.querySelectorAll('.tab').forEach(a=>{
+    a.setAttribute('aria-current', a.dataset.sec===hash ? 'page' : 'false');
+  });
+
   if(hash==='kiosk' && window._mapInstance && typeof window._mapInstance.invalidateSize==='function'){
     setTimeout(()=>window._mapInstance.invalidateSize(), 120);
   }
-  window.scrollTo({top:0,behavior:'instant'});
+  window.scrollTo({top:0, behavior:'instant'});
 }
 window.addEventListener('hashchange', renderRoute);
 window.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeMenu(); closeModal(); }});
