@@ -2,204 +2,304 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PurrGo 喵來速｜品牌官網 Demo</title>
 
-  <!-- PWA / Icons -->
+  <!-- PWA / Icons（相對路徑） -->
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./logo/favicon.png">
   <link rel="apple-touch-icon" sizes="192x192" href="./logo/logo-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="./logo/logo-512.png">
   <meta name="theme-color" content="#ff7f50">
 
-  <!-- Styles -->
+  <!-- 站台樣式（下一步我會給你完整 style.css） -->
   <link rel="stylesheet" href="./style.css">
-
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin="anonymous">
 </head>
 <body>
 
-<!-- ===== Header ===== -->
-<header class="site-header">
-  <div class="container nav">
-    <a class="brand" href="#home" onclick="scrollToHash('home')">
-      <img class="brand-logo" src="./logo/logo-192.png" alt="PurrGo" onerror="this.src='./logo/favicon.png'">
-      <span class="brand-name">PurrGo 喵來速</span>
+<header class="container">
+  <div class="nav">
+    <a class="brand" href="#home" onclick="showPage('home');return false;">
+      <img src="./logo/logo-192.png" alt="PurrGo" style="width:28px;height:28px;border-radius:8px;object-fit:cover">
+      <span>PurrGo 喵來速</span>
     </a>
 
-    <!-- Hamburger -->
-    <button id="menuBtn" class="menu-toggle" aria-label="開啟選單">
+    <!-- 桌面：分頁籤（手機以漢堡為主） -->
+    <nav class="tabs hide-mobile">
+      <a class="tab" data-sec="home"     onclick="showPage('home')">首頁</a>
+      <a class="tab" data-sec="products" onclick="showPage('products')">產品</a>
+      <a class="tab" data-sec="guild"    onclick="showPage('guild')">公會</a>
+      <a class="tab" data-sec="kiosk"    onclick="showPage('kiosk')">據點</a>
+      <a class="tab" data-sec="photos"   onclick="showPage('photos')">照片牆</a>
+      <a class="tab" data-sec="social"   onclick="showPage('social')">社群</a>
+      <a class="tab" data-sec="chat"     onclick="showPage('chat')">聊天</a>
+      <a class="tab" data-sec="video"    onclick="showPage('video')">短影片</a>
+      <a class="tab" data-sec="about"    onclick="showPage('about')">理念</a>
+      <a class="tab" data-sec="contact"  onclick="showPage('contact')">聯絡</a>
+    </nav>
+
+    <!-- 手機：漢堡 -->
+    <button class="menu-toggle" aria-label="開啟選單" onclick="openMenu()">
       <span class="menu-ico" aria-hidden="true"></span>
     </button>
   </div>
 
-  <!-- Drawer Menu -->
+  <!-- 手機：抽屜選單＋背景遮罩 -->
   <nav id="menu" class="menu" aria-label="主選單">
-    <a href="#home"      onclick="closeMenu();scrollToHash('home')">首頁</a>
-    <a href="#products"  onclick="closeMenu();scrollToHash('products')">產品</a>
-    <a href="#guild"     onclick="closeMenu();scrollToHash('guild')">公會</a>
-    <a href="#kiosk"     onclick="closeMenu();scrollToHash('kiosk')">據點</a>
-    <a href="#community" onclick="closeMenu();scrollToHash('community')">照片牆</a>
-    <a href="#social"    onclick="closeMenu();scrollToHash('social')">社群</a>
-    <a href="#chat"      onclick="closeMenu();scrollToHash('chat')">聊天</a>
-    <a href="#about"     onclick="closeMenu();scrollToHash('about')">理念</a>
-    <a href="#contact"   onclick="closeMenu();scrollToHash('contact')">聯絡</a>
+    <a href="#home"     onclick="navTo('home')">首頁</a>
+    <a href="#products" onclick="navTo('products')">產品</a>
+    <a href="#guild"    onclick="navTo('guild')">公會</a>
+    <a href="#kiosk"    onclick="navTo('kiosk')">據點</a>
+    <a href="#photos"   onclick="navTo('photos')">照片牆</a>
+    <a href="#social"   onclick="navTo('social')">社群</a>
+    <a href="#chat"     onclick="navTo('chat')">聊天</a>
+    <a href="#video"    onclick="navTo('video')">短影片</a>
+    <a href="#about"    onclick="navTo('about')">理念</a>
+    <a href="#contact"  onclick="navTo('contact')">聯絡</a>
   </nav>
   <div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()"></div>
 </header>
 
-<main>
+<main class="container">
 
-  <!-- ===== Hero ===== -->
-  <section id="home" class="page container">
-    <div class="hero card">
+  <!-- ============ 首頁 ============ -->
+  <section id="page-home" class="page">
+    <section class="hero card">
       <div class="hero-copy">
         <span class="pill">PurrGo 喵來速</span>
         <h1 class="hero-title">便利 × 可愛 × 永續 × 共創</h1>
         <p class="muted">
-          創新配送 + 公會制度，讓補給更聰明、更便宜、更好玩。<br>
-          把「買貓砂」變成有成就感的里程碑遊戲。
+          用創新配送＋公會制度，讓補給更聰明、更便宜、更好玩。把「買貓砂」變成有成就感的里程碑遊戲。
         </p>
         <div class="inline mt-1">
-          <a class="btn"           href="#products" onclick="scrollToHash('products')">開始探索產品</a>
-          <a class="btn secondary" href="#guild"    onclick="scrollToHash('guild')">加入貓奴公會</a>
-          <a class="btn ghost"     href="#about"    onclick="scrollToHash('about')">了解品牌理念</a>
+          <a class="btn" onclick="showPage('products')">開始探索產品</a>
+          <a class="btn secondary" onclick="showPage('guild')">加入貓奴公會</a>
+          <a class="btn tertiary" onclick="showPage('about')">了解品牌理念</a>
         </div>
       </div>
       <div class="hero-art">
         <div class="hero-visual">
-          <img src="./logo/logo-512.png" alt="PurrGo Logo" class="hero-logo"
-               onerror="this.src='./logo/logo-192.png'">
+          <img src="./logo/logo-512.png" alt="PurrGo Logo" style="width:100%;border-radius:18px;object-fit:cover">
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- 建立主子角色（多貓家庭） -->
+    <section class="card">
+      <span class="pill">主子</span>
+      <h2 class="mt-0">建立主子角色</h2>
+      <form class="grid g-2" onsubmit="return addPet(event)">
+        <div><label>暱稱<input class="input" name="name" required></label></div>
+        <div><label>性別<select class="input" name="sex"><option value="M">公</option><option value="F">母</option></select></label></div>
+        <div><label>年齡（歲）<input class="input" name="age" type="number" min="0" step="0.1" required></label></div>
+        <div><label>品種<select class="input" id="breedSelect" name="breed"></select></label></div>
+        <div class="gcol-2"><label>大頭照<input class="input" name="avatar" type="file" accept="image/*"></label></div>
+        <div class="inline"><button class="btn" type="submit">新增主子</button></div>
+      </form>
+      <div id="petRow" class="hscroll mt-2"></div>
+    </section>
   </section>
 
-  <!-- ===== Products ===== -->
-  <section id="products" class="page container">
-    <header class="section-head">
-      <span class="pill">Products</span>
-      <h2 class="mt-0">熱銷與方案</h2>
-      <p class="section-sub">橫向滑動卡片，支援產品照片、詳情彈窗與加入購物車。</p>
-    </header>
+  <!-- ============ 產品 ============ -->
+  <section id="page-products" class="page" hidden>
+    <section class="band">
+      <header class="section-head"><div>
+        <span class="pill">Products</span>
+        <h2 class="mt-0">熱銷與方案</h2>
+        <p class="section-sub">橫向滑動卡片，支援產品照片、詳情彈窗與加入購物車。</p>
+      </div></header>
 
-    <!-- Horizontal carousel -->
-    <div class="hwrap">
-      <button class="hbtn prev" aria-label="上一組" onclick="scrollRow('productRow',-1)">‹</button>
-      <div id="productRow" class="hscroll"></div>
-      <button class="hbtn next" aria-label="下一組" onclick="scrollRow('productRow',1)">›</button>
-    </div>
-
-    <div class="card mt-2">
-      <h3 class="mt-0">購物車（示範）</h3>
-      <div id="cartItems" class="muted">尚無商品</div>
-      <div class="inline mt-1">
-        <button class="btn" onclick="checkout()">結帳（示範）</button>
-        <button class="btn secondary" onclick="clearCart()">清空</button>
+      <div class="hwrap">
+        <button class="hbtn prev" aria-label="上一個" onclick="scrollH('productRow',-1)">‹</button>
+        <div id="productRow" class="hscroll"></div>
+        <button class="hbtn next" aria-label="下一個" onclick="scrollH('productRow',1)">›</button>
       </div>
-    </div>
+
+      <section class="card mt-2">
+        <h3 class="mt-0">購物車（示範）</h3>
+        <div id="cartItems" class="muted">尚無商品</div>
+        <div class="inline mt-1">
+          <button class="btn" onclick="checkout()">結帳（示範）</button>
+          <button class="btn secondary" onclick="clearCart()">清空</button>
+        </div>
+      </section>
+    </section>
   </section>
 
-  <!-- ===== Guild ===== -->
-  <section id="guild" class="page container">
-    <header class="section-head">
-      <span class="pill">Guild</span>
-      <h2 class="mt-0">公會制度：一起成長、一起更省</h2>
-      <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務…</p>
-    </header>
+  <!-- ============ 公會 / 健檢 ============ -->
+  <section id="page-guild" class="page" hidden>
+    <section class="band">
+      <header class="section-head"><div>
+        <span class="pill">Guild</span>
+        <h2 class="mt-0">公會制度：一起成長、一起更省</h2>
+        <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務…</p>
+      </div></header>
 
-    <div class="grid g-2">
-      <div class="card">
+      <!-- 身分綁定 / VIP -->
+      <section class="card">
         <h3 class="mt-0">身份綁定 / VIP</h3>
-        <input class="input" id="phoneInput" placeholder="輸入手機號碼" oninput="bindPhone(this.value)">
-        <div id="identityInfo" class="muted mt-1">尚未綁定手機</div>
-
-        <div class="inline mt-1">
-          <button class="btn" onclick="toggleLine()" id="lineBtn">綁定 LINE（示意）</button>
-          <button class="btn secondary" onclick="dailyCheckin()">每日簽到 + 能量 / XP</button>
+        <div class="grid g-2">
+          <div>
+            <label>輸入手機號碼<input class="input" id="phoneInput" placeholder="09xxxxxxxx"></label>
+            <div class="inline mt-1">
+              <button class="btn" onclick="bindPhone(document.getElementById('phoneInput').value)">綁定手機（示意）</button>
+              <button id="lineBtn" class="btn secondary" onclick="toggleLine()">綁定 LINE（示意）</button>
+            </div>
+            <div id="identityInfo" class="muted mt-1"></div>
+          </div>
+          <div>
+            <div>累積消費：<b id="lifetimeSpend">$0</b></div>
+            <div class="mt-1">VIP 等級：<b id="vipLevel">V0</b> ｜ 下一級還差：<b id="vipNext">$0</b></div>
+            <div class="inline mt-1">
+              <button class="btn" onclick="dailyCheckin()">每日簽到 + 能量 / XP</button>
+              <span id="checkinInfo" class="muted"></span>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div class="mt-1">
-          累積消費：<b id="lifetimeSpend">$0</b> ｜ VIP 等級：<b id="vipLevel">V0</b> ｜ 下一级還差：<b id="vipNext">$0</b>
+      <!-- 健檢報告上傳（需先有主子） -->
+      <section class="card">
+        <h3 class="mt-0">免費健檢（每年 1 次 / 需加入公會）</h3>
+        <div class="grid g-3">
+          <div>
+            <label>選擇主子
+              <select class="input" id="vetPet"></select>
+            </label>
+          </div>
+          <div>
+            <label>選擇城市
+              <select class="input" id="vetCity" onchange="renderHospitals()">
+                <option>台北</option><option>台中</option><option>高雄</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label>合作醫院
+              <select class="input" id="vetHospital"></select>
+            </label>
+          </div>
+          <div class="gcol-2">
+            <label>上傳健檢報告（圖片 / PDF）
+              <input class="input" id="vetFile" type="file" accept="image/*,.pdf">
+            </label>
+          </div>
+          <div class="inline"><button class="btn" onclick="uploadVet()">送出並獲取公會貢獻</button></div>
         </div>
-      </div>
+        <div id="vetList" class="muted mt-1">目前無健檢紀錄</div>
+      </section>
 
-      <div class="card">
-        <h3 class="mt-0">公會面板</h3>
-        <div>名稱：<b id="guildName">（尚未創立）</b> ｜ 等級：<b id="guildLevel">–</b> ｜ 貢獻：<b id="guildContrib">0</b></div>
-        <div class="inline mt-1">
-          <button class="btn" onclick="createGuild()">創立公會</button>
-          <button class="btn secondary" onclick="contribute(50)">捐 50</button>
-          <button class="btn secondary" onclick="mockWar()">模擬戰報</button>
+      <!-- 公會基本：創立 / 貢獻條 -->
+      <section class="card">
+        <div class="inline">
+          <button class="btn" onclick="createGuild()">創立門檻（示意）</button>
+          <button class="btn secondary" onclick="contribute(100)">貢獻 +100（示意）</button>
+          <button class="btn secondary" onclick="mockWar()">展開：區域戰（示意）</button>
         </div>
-        <table class="table mt-1">
-          <thead><tr><th>敵方</th><th>我方公會</th><th>區域</th><th>貢獻</th></tr></thead>
-          <tbody id="warTable"></tbody>
+        <div class="mt-1">公會：<b id="guildName">（尚未創立）</b> ｜ 等級：<b id="guildLevel">–</b> ｜ 貢獻值：<b id="guildContrib">0</b></div>
+        <table class="table mt-2">
+          <thead><tr><th>名次</th><th>公會</th><th>區域</th><th>分數</th></tr></thead>
+          <tbody id="warTable"><tr><td>1</td><td>台北抓抓隊</td><td>台北</td><td>12,340</td></tr></tbody>
         </table>
-      </div>
-    </div>
+      </section>
+    </section>
   </section>
 
-  <!-- ===== Kiosk / Map ===== -->
-  <section id="kiosk" class="page container">
-    <header class="section-head">
+  <!-- ============ 據點 / 地圖 ============ -->
+  <section id="page-kiosk" class="page" hidden>
+    <section class="card">
       <span class="pill">Kiosk</span>
       <h2 class="mt-0">販賣機點位</h2>
-      <p class="section-sub">點擊標記可開啟 Google/Apple Maps 導航。</p>
-    </header>
-
-    <div id="map" style="height:360px;border-radius:12px;overflow:hidden"></div>
+      <div id="map" style="height:360px;border-radius:12px;overflow:hidden"></div>
+      <div class="muted mt-1">點擊標記可開啟 Google/Apple Maps 導航。</div>
+    </section>
   </section>
 
-  <!-- ===== Community (local demo) ===== -->
-  <section id="community" class="page container">
-    <header class="section-head">
-      <span class="pill">Community</span>
-      <h2 class="mt-0">照片牆（本機示範）</h2>
-    </header>
-
-    <div class="card">
+  <!-- ============ 照片牆 ============ -->
+  <section id="page-photos" class="page" hidden>
+    <section class="card">
+      <span class="pill">Photos</span>
+      <h2 class="mt-0">照片牆（依主子分相簿）</h2>
       <div class="inline">
+        <label>主子
+          <select class="input" id="photoPet" onchange="renderWall()"></select>
+        </label>
         <input type="file" accept="image/*" onchange="addPhoto(event)">
-        <button class="btn secondary" onclick="clearWall()">清除所有照片（本機）</button>
+        <button class="btn secondary" onclick="clearWall()">清除本機照片</button>
       </div>
       <div id="wall" class="grid g-3 mt-2"></div>
-    </div>
+    </section>
   </section>
 
-  <!-- ===== Social / Chat 區塊預留（Demo 版） ===== -->
-  <section id="social" class="page container">
-    <header class="section-head"><span class="pill">Social</span><h2 class="mt-0">社群（Demo）</h2></header>
-    <div class="card muted">此區為後續擴充預留（貼文、按讚、分享、留言等）。</div>
+  <!-- ============ 社群（好友名單 / 追蹤） ============ -->
+  <section id="page-social" class="page" hidden>
+    <section class="card">
+      <span class="pill">Social</span>
+      <h2 class="mt-0">社群</h2>
+      <div class="grid g-2">
+        <div>
+          <h3 class="mt-0">好友</h3>
+          <div class="inline">
+            <input class="input" id="friendName" placeholder="輸入好友暱稱">
+            <button class="btn" onclick="addFriend()">新增</button>
+          </div>
+          <ul id="friendList" class="list mt-1"></ul>
+        </div>
+        <div>
+          <h3 class="mt-0">封鎖</h3>
+          <ul id="blockList" class="list"></ul>
+        </div>
+      </div>
+    </section>
   </section>
 
-  <section id="chat" class="page container">
-    <header class="section-head"><span class="pill">Chat</span><h2 class="mt-0">聊天（Demo）</h2></header>
-    <div class="card muted">此區為後續擴充預留（好友、私訊、封鎖、30 秒短影片…）。</div>
+  <!-- ============ 聊天 ============ -->
+  <section id="page-chat" class="page" hidden>
+    <section class="card">
+      <span class="pill">Chat</span>
+      <h2 class="mt-0">私訊聊天（示範）</h2>
+      <div class="grid g-2">
+        <div>
+          <label>選擇好友
+            <select class="input" id="chatWith" onchange="renderChat()"></select>
+          </label>
+          <div id="chatBox" class="chatbox mt-1"></div>
+          <div class="inline mt-1">
+            <input class="input" id="chatMsg" placeholder="輸入訊息…">
+            <button class="btn" onclick="sendMsg()">送出</button>
+          </div>
+        </div>
+        <div class="muted">示範用途：所有內容僅存本機，不會上傳。</div>
+      </div>
+    </section>
   </section>
 
-  <!-- ===== About ===== -->
-  <section id="about" class="page container">
-    <header class="section-head">
+  <!-- ============ 短影片 ============ -->
+  <section id="page-video" class="page" hidden>
+    <section class="card">
+      <span class="pill">Video</span>
+      <h2 class="mt-0">短影片（≤ 30 秒）</h2>
+      <div class="inline">
+        <input type="file" accept="video/mp4" onchange="addVideo(event)">
+      </div>
+      <div id="videoGrid" class="grid g-3 mt-2"></div>
+    </section>
+  </section>
+
+  <!-- ============ 品牌理念 ============ -->
+  <section id="page-about" class="page" hidden>
+    <section class="card">
       <span class="pill">About</span>
       <h2 class="mt-0">我們相信「便利 × 可愛 × 永續 × 共創」</h2>
-    </header>
-    <div class="grid g-4">
-      <div class="feature card"><h3 class="mt-0">便利</h3><p class="muted">快速到貨、預購/訂閱、在地販賣機補點。</p></div>
-      <div class="feature card"><h3 class="mt-0">可愛</h3><p class="muted">公會化玩法與角色養成，補給更有成就感。</p></div>
-      <div class="feature card"><h3 class="mt-0">永續</h3><p class="muted">減少包材、集中配送、鼓勵回收。</p></div>
-      <div class="feature card"><h3 class="mt-0">共創</h3><p class="muted">與社群共同研發、投票、同樂。</p></div>
-    </div>
+      <p class="muted">用「創新配送」結合「公會化社群」；永續思維，和貓奴們一起把日常消耗品變成參與式里程碑。</p>
+    </section>
   </section>
 
-  <!-- ===== Contact ===== -->
-  <section id="contact" class="page container">
-    <header class="section-head"><span class="pill">Contact</span><h2 class="mt-0">聯絡我們</h2></header>
-    <div class="card">
+  <!-- ============ 聯絡我們 ============ -->
+  <section id="page-contact" class="page" hidden>
+    <section class="card">
+      <span class="pill">Contact</span>
+      <h2 class="mt-0">聯絡我們</h2>
       <form class="grid g-2" onsubmit="return submitForm(event)">
         <div><label>您的稱呼<input class="input" required></label></div>
         <div><label>Email<input type="email" class="input" required></label></div>
@@ -207,112 +307,192 @@
         <div class="inline"><button class="btn" type="submit">送出</button></div>
       </form>
       <p class="muted mt-1">也可來信：<a href="mailto:hello@purrgo.tw">hello@purrgo.tw</a></p>
-    </div>
+    </section>
   </section>
 
 </main>
 
-<footer class="container footer muted">
+<footer class="container" style="padding:26px 0 60px;color:var(--muted)">
   © PurrGo 喵來速 ｜ 公開 Demo（不含投資人資訊）
 </footer>
 
-<!-- FAB -->
-<div class="fab" id="fab">
-  <button class="fab-btn" data-target="home">Top</button>
-  <button class="fab-btn" data-target="products">Shop</button>
-  <button class="fab-btn" data-target="guild">Guild</button>
-  <button class="fab-btn" data-target="kiosk">Map</button>
-  <button class="fab-btn" data-target="contact">Msg</button>
+<!-- 右下 FAB -->
+<div class="fab" id="fab" aria-label="快速導覽">
+  <button class="fab-btn" title="回頂端"  onclick="showPage('home')">Top</button>
+  <button class="fab-btn" title="看產品"  onclick="showPage('products')">Shop</button>
+  <button class="fab-btn" title="看公會"  onclick="showPage('guild')">Guild</button>
+  <button class="fab-btn" title="看據點"  onclick="showPage('kiosk')">Map</button>
+  <button class="fab-btn" title="聯絡我們" onclick="showPage('contact')">Msg</button>
 </div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin="anonymous"></script>
+<!-- ===== 產品詳情 Modal ===== -->
+<dialog id="modal">
+  <article>
+    <header>
+      <h3 id="mTitle">產品詳情</h3>
+      <button class="close" onclick="closeModal()">×</button>
+    </header>
+    <div id="mBody"></div>
+    <footer class="inline">
+      <button class="btn" id="mAddBtn">加入購物車</button>
+      <button class="btn secondary" onclick="closeModal()">關閉</button>
+    </footer>
+  </article>
+</dialog>
 
-<!-- ===== Main Script ===== -->
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+
+<!-- ===== Main Script（功能邏輯與前版相容） ===== -->
 <script>
-/* ---------- State (localStorage) ---------- */
+/* ===== 全域狀態（localStorage） ===== */
 const LS_KEY = 'purrgoState';
 const state = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
-state.user  ||= { phone:'', line:false, vipXp:0, lifetimeSpend:0, energy:0, lastCheckin:'' };
+state.user ||= { phone:'', line:false, vipXp:0, lifetimeSpend:0, energy:0, lastCheckin:'' };
 state.guild ||= { name:'', level:0, contribution:0 };
 state.cart  ||= [];
-state.vet   ||= [];
-state.wall  ||= [];
+state.pets  ||= [];             // {id,name,sex,age,breed,avatar}
+state.vet   ||= [];             // {petId, city, hospital, fileName, time}
+state.photos ||= {};            // petId -> [{src, likes, comments:[{text,time}]}]
+state.friends ||= [];           // ["name", ...]
+state.blocks  ||= [];           // ["name", ...]
+state.chats   ||= {};           // name -> [{text, me:true/false, time}]
+state.videos  ||= [];           // [{src, time}]
 save();
-function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); renderIdentity(); renderVIP(); renderGuild(); renderCart(); renderWall(); }
 
-/* ---------- Header / Menu ---------- */
-const $ = s=>document.querySelector(s);
-const $$= s=>document.querySelectorAll(s);
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); renderAll(); }
 
-function openMenu(){ document.body.classList.add('menu-open'); }
-function closeMenu(){ document.body.classList.remove('menu-open'); }
-
-function scrollToHash(id){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.scrollIntoView({behavior:'smooth',block:'start'});
-  setTimeout(highlight, 300);
-}
-
-function highlight(){
-  const id=(location.hash||'#home').replace('#','');
-  $$('.tab').forEach(a=>a.setAttribute('aria-current',a.dataset.sec===id?'page':'false'));
-}
-
-window.addEventListener('DOMContentLoaded',()=>{
-  $('#menuBtn')?.addEventListener('click',()=>document.body.classList.toggle('menu-open'));
-  $('#menuBackdrop')?.addEventListener('click', closeMenu);
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeMenu(); });
-
-  // FAB
-  $$('.fab-btn').forEach(b=>{
-    b.addEventListener('click',()=>{
-      const id=b.dataset.target;
-      scrollToHash(id);
-    })
+/* ===== SPA 分頁 ===== */
+const pages = ["home","products","guild","kiosk","photos","social","chat","video","about","contact"];
+function showPage(sec){
+  pages.forEach(id=>{
+    const el = document.getElementById('page-'+id);
+    if(el) el.hidden = (id!==sec);
+    document.querySelectorAll('.tab[data-sec="'+id+'"]').forEach(a=>{
+      a.setAttribute('aria-current', id===sec? 'page':'false');
+    });
   });
+  closeMenu();
+  location.hash = '#'+sec;
+  // 地圖大小校正
+  if(sec==='kiosk'){ setTimeout(initMap, 50); }
+  // 預設主子選單刷新
+  if(sec==='photos') { renderWall(); }
+  if(sec==='guild')  { renderVet(); }
+  if(sec==='chat')   { renderChatSelectors(); renderChat(); }
+}
 
-  loadProducts();
-  initMap();
-  renderVet();
-  highlight();
+function navTo(id){ closeMenu(); showPage(id); return false; }
+function restorePage(){ const h=(location.hash||'#home').slice(1); showPage(pages.includes(h)?h:'home'); }
 
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  }
-});
+/* ===== 手機選單 ===== */
+function openMenu(){ document.getElementById('menu').classList.add('open'); document.getElementById('menuBackdrop').classList.add('show'); }
+function closeMenu(){ document.getElementById('menu').classList.remove('open'); document.getElementById('menuBackdrop').classList.remove('show'); }
 
-/* ---------- Identity / VIP ---------- */
+/* ===== 公用：水平捲動 ===== */
+function scrollH(id,dir){ const el=document.getElementById(id); if(!el) return; el.scrollBy({left: dir*(el.clientWidth*0.9), behavior:'smooth'}); }
+
+/* ===== 身份 / VIP ===== */
 function bindPhone(v){ state.user.phone=v||''; save(); }
 function toggleLine(){ state.user.line=!state.user.line; save(); }
-function renderIdentity(){
-  $('#identityInfo').textContent = state.user.phone ? `已綁定：${state.user.phone} ｜ LINE：${state.user.line?'已連結':'未連結'}` : '尚未綁定手機';
-  $('#lineBtn').textContent = state.user.line? '取消 LINE 連結（示意）':'綁定 LINE（示意）';
-}
 function vipLevelByXp(x){ if(x>=5000) return 5; if(x>=3000) return 4; if(x>=1500) return 3; if(x>=600) return 2; if(x>=200) return 1; return 0; }
 function nextVipNeed(x){ const br=[200,600,1500,3000,5000]; for(const b of br){ if(x<b) return b-x; } return 0; }
-function renderVIP(){
-  const xp = state.user.vipXp|0;
-  $('#lifetimeSpend').textContent = `$${(state.user.lifetimeSpend||0).toLocaleString()}`;
-  $('#vipLevel').textContent = 'V'+vipLevelByXp(xp);
-  $('#vipNext').textContent = nextVipNeed(xp)>0? `$${nextVipNeed(xp)}`:'已達頂級';
-}
 function dailyCheckin(){
   const today = new Date().toISOString().slice(0,10);
-  if(state.user.lastCheckin===today){ alert('今天已簽到'); return; }
-  state.user.lastCheckin=today; state.user.energy+=10; state.user.vipXp+=10; save();
-  alert('簽到成功：+10 能量、+10 VIP XP');
+  if(state.user.lastCheckin===today){ document.getElementById('checkinInfo').textContent='今天已簽到'; return; }
+  state.user.lastCheckin=today; state.user.energy+=10; state.user.vipXp+=10;
+  document.getElementById('checkinInfo').textContent='簽到成功：+10 能量、+10 VIP XP'; save();
+}
+function renderIdentity(){
+  const u=state.user;
+  el('identityInfo').textContent = u.phone? `已綁定：${u.phone} ｜ LINE：${u.line?'已連結':'未連結'}` : '尚未綁定手機';
+  el('lineBtn').textContent = u.line? '取消 LINE 連結（示意）':'綁定 LINE（示意）';
+  el('lifetimeSpend').textContent = `$${(u.lifetimeSpend||0).toLocaleString()}`;
+  el('vipLevel').textContent = 'V'+vipLevelByXp(u.vipXp|0);
+  el('vipNext').textContent = nextVipNeed(u.vipXp|0)>0? `$${nextVipNeed(u.vipXp|0)}`:'已達頂級';
 }
 
-/* ---------- Guild ---------- */
+/* ===== 主子（多貓） ===== */
+function loadBreeds(){
+  fetch('./data/breeds.json').then(r=>r.json()).then(list=>{
+    const s = el('breedSelect'); s.innerHTML='';
+    list.forEach(b=>{ const o=document.createElement('option'); o.textContent=b; o.value=b; s.appendChild(o); });
+  }).catch(()=>{});
+}
+function addPet(e){
+  e.preventDefault();
+  const f=e.target;
+  const p = {
+    id: crypto.randomUUID(),
+    name: f.name.value.trim(),
+    sex: f.sex.value,
+    age: Number(f.age.value),
+    breed: f.breed.value,
+    avatar: ''
+  };
+  const file = f.avatar.files[0];
+  if(file){
+    const rd=new FileReader();
+    rd.onload=()=>{ p.avatar=rd.result; state.pets.push(p); save(); f.reset(); };
+    rd.readAsDataURL(file);
+  }else{
+    state.pets.push(p); save(); f.reset();
+  }
+  return false;
+}
+function renderPets(){
+  const row = el('petRow'); row.innerHTML='';
+  state.pets.forEach(pt=>{
+    const card=document.createElement('div');
+    card.className='p-card';
+    card.innerHTML = `
+      <img src="${pt.avatar || './logo/logo-192.png'}" alt="" class="p-avatar">
+      <div class="p-meta">
+        <b>${pt.name}</b>｜${pt.breed||'未知'}｜${pt.sex==='M'?'公':'母'}｜${pt.age||0}歲
+      </div>`;
+    row.appendChild(card);
+  });
+  // 同步下拉
+  ['vetPet','photoPet'].forEach(id=>{
+    const s=el(id); if(!s) return; s.innerHTML=''; 
+    state.pets.forEach(pt=>{ const o=document.createElement('option'); o.value=pt.id; o.textContent=pt.name; s.appendChild(o); });
+  });
+}
+
+/* ===== 健檢（需加入公會/有主子） ===== */
+function renderHospitals(){
+  const city = el('vetCity').value;
+  fetch('./data/hospitals.json').then(r=>r.json()).then(list=>{
+    const s=el('vetHospital'); s.innerHTML='';
+    list.filter(h=>h.city===city).forEach(h=>{ const o=document.createElement('option'); o.textContent=h.name; o.value=h.name; s.appendChild(o); });
+  }).catch(()=>{});
+}
+function uploadVet(){
+  if(!state.pets.length){ return alert('請先建立主子'); }
+  if(!state.guild.name){ return alert('請先加入/創立公會'); }
+  const pid=el('vetPet').value, city=el('vetCity').value, hosp=el('vetHospital').value;
+  const f=el('vetFile').files[0]; if(!f) return alert('請選擇檔案');
+  state.vet.push({ petId: pid, city, hospital:hosp, fileName:f.name, time:new Date().toLocaleString() });
+  state.guild.contribution+=200;
+  save();
+  alert('已上傳（示範）並獲得 +200 公會貢獻');
+}
+function renderVet(){
+  renderHospitals();
+  const box=el('vetList'); if(!state.vet.length){ box.textContent='目前無健檢紀錄'; return; }
+  box.innerHTML = state.vet.map(v=>{
+    const pet=state.pets.find(p=>p.id===v.petId);
+    return `${v.time}｜${v.city}｜${v.hospital}｜${pet?pet.name:'（已刪除）'}｜${v.fileName}`;
+  }).join('<br>');
+}
+
+/* ===== 公會基本 ===== */
 const GUILD_CREATE_NEED = 1200;
 function renderGuild(){
-  $('#guildName').textContent = state.guild.name||'（尚未創立）';
-  $('#guildLevel').textContent = state.guild.level||'–';
-  $('#guildContrib').textContent = state.guild.contribution|0;
+  el('guildName').textContent = state.guild.name||'（尚未創立）';
+  el('guildLevel').textContent = state.guild.level||'–';
+  el('guildContrib').textContent = state.guild.contribution|0;
 }
 function createGuild(){
   if((state.user.lifetimeSpend||0) < GUILD_CREATE_NEED){ return alert('尚未達到創立門檻：累積消費 $1,200'); }
@@ -320,41 +500,32 @@ function createGuild(){
   state.guild.name=name; state.guild.level=1; save(); alert('公會已創立！');
 }
 function contribute(n){ if(!state.guild.name) return alert('請先創立公會'); state.guild.contribution += n; if(state.guild.contribution>= (state.guild.level*500)) { state.guild.level++; alert('公會升級！'); } save(); }
-function mockWar(){ if(!state.guild.name) return alert('先創立公會'); const add=Math.floor(Math.random()*500+100); const tr=document.createElement('tr'); tr.innerHTML=`<td>*</td><td>${state.guild.name}</td><td>你的區域</td><td>+${add}</td>`; $('#warTable').prepend(tr); }
+function mockWar(){ if(!state.guild.name) return alert('先創立公會'); const add=Math.floor(Math.random()*500+100); const tr=document.createElement('tr'); tr.innerHTML=`<td>*</td><td>${state.guild.name}</td><td>你的區域</td><td>+${add}</td>`; el('warTable').prepend(tr); }
 
-/* ---------- Products ---------- */
+/* ===== 產品 / 購物車 ===== */
 async function loadProducts(){
-  const grid = $('#productRow');
-  grid.innerHTML = '<div class="empty">載入中…</div>';
   try{
-    const res = await fetch('./data/products.json',{cache:'no-cache'});
-    const list = await res.json();
-    grid.innerHTML='';
+    const list = await (await fetch('./data/products.json',{cache:'no-cache'})).json();
+    const row = el('productRow'); row.innerHTML='';
     list.forEach(p=>{
-      const el = document.createElement('article'); el.className='pcard';
-      el.innerHTML = `
-        <div class="pcard-img">${p.img?`<img src="${p.img}" alt="${p.name}">`:'<div class="imgph">No Image</div>'}</div>
-        <div class="pcard-body">
-          <h3 class="mt-0">${p.name}</h3>
-          <div class="muted">${p.spec||''}</div>
-          <div class="price">NT$ ${p.price.toLocaleString()}</div>
-          <ul class="list">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
-          <div class="inline mt-1">
-            <button class="btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>加入購物車</button>
-            <button class="btn secondary" onclick='openDetail(${JSON.stringify(p).replace(/'/g,"&#39;")})'>查看詳情</button>
-          </div>
+      const elc=document.createElement('div'); elc.className='card product';
+      elc.innerHTML = `
+        <img src="${p.img||'./logo/logo-512.png'}" alt="" class="prod-img">
+        <h3 class="mt-0">${p.name}</h3>
+        <div class="muted">規格：${p.spec||'-'}</div>
+        <div class="mt-1"><b>NT$ ${p.price.toLocaleString()}</b></div>
+        <div class="inline mt-1">
+          <button class="btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>加入購物車</button>
+          <button class="btn secondary" onclick='openDetail(${JSON.stringify(p).replace(/'/g,"&#39;")})'>查看詳情</button>
         </div>`;
-      grid.appendChild(el);
+      row.appendChild(elc);
     });
-  }catch(e){
-    grid.innerHTML='<div class="empty">讀取產品失敗</div>';
-  }
+  }catch(e){ el('productRow').innerHTML='<div class="empty">讀取產品失敗</div>'; }
 }
-function scrollRow(id,dir){ const el=document.getElementById(id); el.scrollBy({left: dir*320, behavior:'smooth'}); }
 function addToCart(p){ const item = state.cart.find(i=>i.id===p.id) || (state.cart.push({...p,qty:0}), state.cart.find(i=>i.id===p.id)); item.qty++; save(); }
 function clearCart(){ state.cart=[]; save(); }
 function renderCart(){
-  const box = $('#cartItems'); if(!box) return;
+  const box = el('cartItems'); if(!box) return;
   if(state.cart.length===0){ box.textContent='尚無商品'; return; }
   let sum=0; box.innerHTML = state.cart.map(i=>{ sum+=i.price*i.qty; return `${i.name} × ${i.qty} = NT$ ${(i.price*i.qty).toLocaleString()}`; }).join('<br>');
   box.innerHTML += `<div class="mt-1"><b>小計：NT$ ${sum.toLocaleString()}</b></div>`;
@@ -368,49 +539,146 @@ function checkout(){
   state.cart=[]; alert(`結帳成功！累積消費 +$${sum.toLocaleString()}，VIP XP 與能量已增加`);
   save();
 }
-
-/* 詳情 Modal */
 function openDetail(p){
-  const wrap = document.createElement('div');
-  wrap.className='modal-backdrop';
-  wrap.innerHTML = `
-  <div class="modal">
-    <button class="modal-close" aria-label="關閉" onclick="this.closest('.modal-backdrop').remove()">×</button>
-    <div class="modal-body">
-      <div class="modal-img">${p.img?`<img src="${p.img}" alt="${p.name}">`:'<div class="imgph">No Image</div>'}</div>
-      <div class="modal-copy">
-        <h3 class="mt-0">${p.name}</h3>
-        <div class="muted">${p.spec||''}</div>
-        <div class="price">NT$ ${p.price.toLocaleString()}</div>
-        <ul class="list">${(p.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
-      </div>
-    </div>
-  </div>`;
-  document.body.appendChild(wrap);
+  const m=el('modal'); el('mTitle').textContent=p.name;
+  el('mBody').innerHTML = `<img src="${p.img||'./logo/logo-512.png'}" class="prod-img" style="max-height:240px"><p class="mt-1">${(p.bullets||[]).map(b=>`• ${b}`).join('<br>')}</p>`;
+  const addBtn=el('mAddBtn'); addBtn.onclick=()=>{ addToCart(p); closeModal(); };
+  m.showModal();
+}
+function closeModal(){ el('modal').close(); }
+
+/* ===== 照片牆 ===== */
+function addPhoto(e){
+  const pid=el('photoPet').value; if(!pid){ alert('請先建立主子'); return; }
+  const file=e.target.files[0]; if(!file) return;
+  const rd=new FileReader(); rd.onload=()=>{ (state.photos[pid]=state.photos[pid]||[]).push({src:rd.result, likes:0, comments:[]}); save(); }; rd.readAsDataURL(file);
+}
+function likePhoto(pid, idx){ (state.photos[pid][idx].likes++); save(); }
+function commentPhoto(pid, idx){
+  const t=prompt('留言'); if(!t) return; (state.photos[pid][idx].comments.push({text:t, time:new Date().toLocaleString()})); save();
+}
+function renderWall(){
+  const pid=el('photoPet').value || (state.pets[0]?.id||'');
+  if(el('photoPet').value!==pid) el('photoPet').value=pid;
+  const wall=el('wall'); wall.innerHTML='';
+  (state.photos[pid]||[]).forEach((ph,idx)=>{
+    const d=document.createElement('div'); d.className='card';
+    d.innerHTML = `<img src="${ph.src}" alt="" style="border-radius:12px"><div class="inline mt-1"><button class="btn" onclick="likePhoto('${pid}',${idx})">♥ ${ph.likes}</button><button class="btn secondary" onclick="commentPhoto('${pid}',${idx})">留言</button></div>`;
+    wall.appendChild(d);
+  });
+}
+function clearWall(){ const pid=el('photoPet').value; if(confirm('清除本機照片？')){ state.photos[pid]=[]; save(); }}
+
+/* ===== 社群 / 聊天 ===== */
+function addFriend(){
+  const n=el('friendName').value.trim(); if(!n) return;
+  if(state.friends.includes(n)) return alert('已存在');
+  state.friends.push(n); save(); el('friendName').value='';
+}
+function removeFriend(n){ state.friends=state.friends.filter(x=>x!==n); delete state.chats[n]; save(); }
+function blockFriend(n){ if(!state.blocks.includes(n)) state.blocks.push(n); save(); }
+function unblock(n){ state.blocks=state.blocks.filter(x=>x!==n); save(); }
+function renderSocial(){
+  // friends
+  const fl=el('friendList'); fl.innerHTML='';
+  state.friends.forEach(n=>{
+    const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="blockFriend('${n}')">封鎖</button> <button class="btn secondary" onclick="removeFriend('${n}')">刪除</button>`;
+    fl.appendChild(li);
+  });
+  // blocks
+  const bl=el('blockList'); bl.innerHTML='';
+  state.blocks.forEach(n=>{
+    const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="unblock('${n}')">解除</button>`;
+    bl.appendChild(li);
+  });
+}
+function renderChatSelectors(){
+  const s=el('chatWith'); s.innerHTML='';
+  state.friends.filter(n=>!state.blocks.includes(n)).forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; s.appendChild(o); });
+}
+function renderChat(){
+  const withN=el('chatWith').value; const box=el('chatBox'); box.innerHTML='';
+  const arr=state.chats[withN]||[];
+  arr.forEach(m=>{
+    const d=document.createElement('div');
+    d.className='msg '+(m.me?'me':'other');
+    d.textContent=`${m.text}  ·  ${m.time}`;
+    box.appendChild(d);
+  });
+  box.scrollTop=box.scrollHeight;
+}
+function sendMsg(){
+  const withN=el('chatWith').value; if(!withN) return;
+  const t=el('chatMsg').value.trim(); if(!t) return;
+  (state.chats[withN]=state.chats[withN]||[]).push({text:t, me:true, time:new Date().toLocaleTimeString()});
+  el('chatMsg').value=''; save();
+  setTimeout(()=>{ (state.chats[withN]=state.chats[withN]||[]).push({text:'（自動回覆）喵喵～', me:false, time:new Date().toLocaleTimeString()}); save(); }, 500);
 }
 
-/* ---------- Photos (local) ---------- */
-function addPhoto(e){ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ state.wall.push(reader.result); save(); }; reader.readAsDataURL(file); }
-function renderWall(){ const wall=$('#wall'); if(!wall) return; wall.innerHTML=''; (state.wall||[]).forEach(src=>{ const img=new Image(); img.src=src; img.style.borderRadius='12px'; wall.appendChild(img); }); }
-function clearWall(){ if(confirm('清除所有本機照片？')){ state.wall=[]; save(); }}
+/* ===== 短影片 ===== */
+function addVideo(e){
+  const f=e.target.files[0]; if(!f) return;
+  const url=URL.createObjectURL(f);
+  const v=document.createElement('video'); v.src=url; v.onloadedmetadata=()=>{
+    if(v.duration>30){ URL.revokeObjectURL(url); alert('超過 30 秒'); return; }
+    const rd=new FileReader();
+    rd.onload=()=>{ state.videos.push({src:rd.result, time:new Date().toLocaleString()}); save(); };
+    rd.readAsDataURL(f);
+  }
+}
+function renderVideos(){
+  const g=el('videoGrid'); g.innerHTML='';
+  state.videos.forEach(v=>{
+    const d=document.createElement('div'); d.className='card'; d.innerHTML=`<video src="${v.src}" controls style="width:100%;border-radius:12px"></video><div class="muted mt-1">${v.time}</div>`;
+    g.appendChild(d);
+  });
+}
 
-/* ---------- Map (Leaflet) ---------- */
+/* ===== 地圖 ===== */
+let _map, _mapReady=false;
 async function initMap(){
-  const map=L.map('map').setView([25.0330,121.5654],12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
-  try{
-    const res = await fetch('./data/locations.json',{cache:'no-cache'}); const points = await res.json();
-    points.forEach(p=>{
-      const m=L.marker([p.lat,p.lng]).addTo(map);
-      const gLink = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
-      const aLink = `https://maps.apple.com/?q=${p.lat},${p.lng}`;
-      m.bindPopup(`<b>${p.name}</b><br>${p.address||''}<br><a href='${gLink}' target='_blank'>Google Maps</a> ｜ <a href='${aLink}' target='_blank'>Apple Maps</a>`);
-    });
-  }catch(e){}
+  if(!_map){
+    _map=L.map('map'); _mapReady=true;
+    _map.setView([25.0330,121.5654],12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(_map);
+    try{
+      const points = await (await fetch('./data/locations.json',{cache:'no-cache'})).json();
+      points.forEach(p=>{
+        const m=L.marker([p.lat,p.lng]).addTo(_map);
+        const gLink = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
+        const aLink = `https://maps.apple.com/?q=${p.lat},${p.lng}`;
+        m.bindPopup(`<b>${p.name}</b><br>${p.address||''}<br><a href='${gLink}' target='_blank'>Google Maps</a> ｜ <a href='${aLink}' target='_blank'>Apple Maps</a>`);
+      });
+    }catch(e){}
+  }
+  if(_mapReady){ setTimeout(()=>{ _map.invalidateSize(); }, 60); }
 }
 
-/* ---------- Contact ---------- */
+/* ===== 聯絡表單 ===== */
 function submitForm(e){ e.preventDefault(); alert('已收到您的訊息（示範）'); e.target.reset(); return false; }
+
+/* ===== 小工具 ===== */
+function el(id){ return document.getElementById(id); }
+
+/* ===== 初始 ===== */
+async function renderAll(){
+  renderIdentity();
+  renderGuild();
+  renderPets();
+  renderCart();
+  renderSocial();
+  renderVideos();
+  renderVet();
+  renderWall();
+}
+function boot(){
+  restorePage();
+  loadBreeds();
+  loadProducts();
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+}
+window.addEventListener('hashchange', restorePage);
+window.addEventListener('DOMContentLoaded', boot);
 </script>
 </body>
 </html>
