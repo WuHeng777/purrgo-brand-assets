@@ -7,7 +7,7 @@ self.addEventListener('install',e=>{
 self.addEventListener('fetch',e=>{
   e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
 });// 只做最基本的快取優先 (可依需要擴充)
-const CACHE = 'purrgo-v4';
+const CACHE = 'purrgo-v5';
 const ASSETS = [
   './',
   './index.html',
