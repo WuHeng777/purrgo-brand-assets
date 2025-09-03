@@ -226,12 +226,15 @@
         <select class="input" id="photoPet" onchange="renderWall()"></select>
       </label>
 
-      <!-- 支援一次多選 -->
-      <input id="photoInput" type="file" accept="image/*" multiple onchange="addPhoto(event)">
+      <!-- ✅ 支援一次多選 -->
+      <input id="photoInput" type="file" accept="image/*" multiple
+             onchange="addPhoto(event)">
+      <small class="muted" id="photoCount"></small>
+
       <button class="btn secondary" onclick="clearWall()">清除本機照片</button>
     </div>
 
-    <!-- 三欄方格 -->
+    <!-- ✅ IG 三欄方格 -->
     <div id="wall" class="wall-grid mt-2"></div>
   </section>
 </section>
@@ -252,8 +255,45 @@
           <button class="btn secondary" onclick="addCommentCurrent()">留言</button>
         </div>
         <div id="pmComments" class="pm-comments"></div>
+        <div class="pm-outer">
+    <img id="pmImg" alt="" class="pm-img">
+    <div class="pm-bar">
+      <div class="pm-l">
+        <button class="btn" onclick="likeCurrent()">♥ <span id="pmLike">0</span></button>
+        <button class="btn secondary" onclick="addCommentCurrent()">留言</button>
+      </div>
+      <div class="pm-r muted" id="pmMeta">相片 0 ／ 共 0 張</div>
+    </div>
+    <div id="pmComments" class="pm-comments"></div>
+    <button class="btn secondary pm-close" onclick="closePhoto()">關閉</button>
+  </div>
       </aside>
     </div>
+    <div class="auth-card">
+    <h3 class="mt-0">編輯主子</h3>
+    <form id="petForm" class="grid g-2" onsubmit="return savePet(event)">
+      <input type="hidden" id="petId">
+      <div><label>暱稱<input id="petName" class="input" required></label></div>
+      <div><label>性別
+        <select id="petSex" class="input">
+          <option value="M">公</option><option value="F">母</option>
+        </select></label></div>
+      <div class="gcol-2"><label>生日
+        <input id="petBirth" type="date" class="input">
+      </label></div>
+      <div class="gcol-2"><label>品種
+        <select id="petBreed" class="input"></select>
+      </label></div>
+      <div class="gcol-2"><label>更換頭像
+        <input id="petAvatar" type="file" accept="image/*" class="input">
+      </label></div>
+      <div class="inline">
+        <button class="btn" type="submit">儲存</button>
+        <button class="btn secondary" type="button" onclick="closePet()">取消</button>
+        <button class="btn ghost" type="button" onclick="deletePet()">刪除主子</button>
+      </div>
+    </form>
+  </div>
   </article>
 </dialog>
 
