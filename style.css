@@ -260,3 +260,32 @@ body.menu-open .leaflet-bottom{
 .pm-comments{ display:flex; flex-direction:column; gap:8px; max-height:45vh; overflow:auto; }
 .pm-comments .c{ background:#1a1b1f; border:1px solid #26272b; border-radius:12px; padding:8px 10px; font-size:.92rem; }
 
+/* ===== IG 風格照片牆 ===== */
+.wall-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.wall-item{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;background:#111}
+.wall-item img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.wall-meta{
+  position:absolute;inset:auto 6px 6px 6px;
+  display:flex;justify-content:space-between;gap:8px;
+  padding:6px 8px;border-radius:10px;background:rgba(0,0,0,.45);color:#fff;font-weight:700
+}
+@media (max-width:640px){ .wall-grid{grid-template-columns:repeat(3,1fr)} }
+
+/* 預覽 dialog */
+#photoModal{border:0;padding:0;max-width:min(94vw,560px);border-radius:18px}
+.pm-outer{background:#101114;border:1px solid #222;border-radius:18px;padding:12px}
+.pm-img{width:100%;border-radius:12px;object-fit:contain;background:#000}
+.pm-bar{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.pm-comments{margin-top:8px;max-height:160px;overflow:auto;border-top:1px dashed #2b2c30;padding-top:8px}
+.pm-comments .c{padding:6px 0;color:#cfcfcf}
+.pm-close{width:100%;margin-top:10px}
+
+/* 主子卡片上的「編輯」按鈕外觀（已存在可略） */
+.p-card{min-width:220px;display:flex;gap:12px;align-items:center;background:#17181b;border:1px solid #232427;border-radius:14px;padding:10px;cursor:pointer}
+.p-card:hover{outline:1px solid #2a2a2a}
+.p-avatar{width:56px;height:56px;border-radius:12px;object-fit:cover}
+
