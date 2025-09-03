@@ -11,48 +11,183 @@
   <link rel="apple-touch-icon" sizes="192x192" href="./logo/logo-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="./logo/logo-512.png">
   <meta name="theme-color" content="#ff7f50">
-  <link rel="stylesheet" href="./style.css?v=20250904-1">
-  <!-- 保險用 fallback，避免 style.css 沒載到 -->
+
+  <!-- 主要樣式（若有外部 style.css 仍會套用；下面 <style> 是保險覆寫/fallback） -->
+  <link rel="stylesheet" href="./style.css?v=20250905">
+
+  <!-- 補強覆寫樣式（含本回所有修正） -->
   <style>
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC",sans-serif;background:#0f1011;color:#eaeaea}
-  .card{border:1px solid #222;border-radius:18px;padding:22px;background:#131416}
-  .hero-visual img{width:220px;height:220px;object-fit:cover;border-radius:20px}
-  .fab-btn{position:fixed;right:14px;bottom:14px;width:56px;height:56px;border-radius:50%;background:#ff7f50;color:#111}
-  .menu{display:none}.menu.open{display:block;position:fixed;right:0;top:0;bottom:0;background:#111;width:80vw;z-index:1200}
+  :root{
+    --bg:#0f1011; --bg-2:#151618; --card:#131416; --text:#eaeaea; --muted:#9aa0a6;
+    --brand:#ff7f50; --chip:#ffe0d3; --chip-text:#2b2b2b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.6}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1120px;margin:0 auto;padding:0 16px}
+  .hide-mobile{display:none}
+  @media (min-width:960px){.hide-desktop{display:none}.hide-mobile{display:flex}}
+
+  /* 頂部列 */
+  header .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:12px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+  .brand img{width:28px;height:28px;border-radius:8px;object-fit:cover}
+
+  /* 右上：訪客/登入（水平置中、與漢堡高度一致） */
+  .auth-chip{display:flex;align-items:center;gap:12px;height:48px;padding:0 16px;border-radius:16px;background:#1b1c1f;border:1px solid #26272a}
+  .auth-chip .sep{opacity:.4}
+  .auth-chip b{font-weight:800}
+
+  /* 手機漢堡 */
+  .menu-toggle{width:48px;height:48px;border-radius:14px;background:#232427;border:0;display:grid;place-items:center}
+  .menu-ico, .menu-ico::before, .menu-ico::after{content:"";display:block;width:22px;height:2px;background:#fff;border-radius:2px;position:relative}
+  .menu-ico::before{top:-6px;position:absolute}
+  .menu-ico::after{top:6px;position:absolute}
+
+  /* 手機抽屜（z-index 大於地圖，並有遮罩） */
+  .menu{position:fixed;inset:0 0 0 auto;width:min(86vw,340px);transform:translateX(100%);transition:transform .25s ease;background:#0d0e10;z-index:1002;padding:16px;overflow:auto}
+  .menu.open{transform:none}
+  .menu a{display:block;padding:14px 16px;margin:10px 0;border-radius:14px;background:#1b1c1f;border:1px solid #26272a}
+  .menu a[aria-current="page"]{background:var(--brand);color:#1a1a1a;border-color:transparent}
+  .menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:1001}
+  .menu-backdrop.show{opacity:1;pointer-events:auto}
+
+  /* Page & 卡片 */
+  .page{padding:8px 0 40px}
+  .card{background:radial-gradient(130% 120% at 100% 0%,#1a1b1e 0%,#111214 60%);border-radius:18px;padding:22px;border:1px solid #1d1e21}
+  .band .section-head{margin-bottom:12px}
+  .pill{display:inline-block;background:var(--chip);color:var(--chip-text);padding:8px 14px;border-radius:999px;font-weight:700}
+  .section-caption{font-size:.95rem;color:var(--muted);margin:6px 0 10px}
+
+  /* Hero（右圖為正方形導圓角，與按鈕區等高置中） */
+  .hero{display:grid;grid-template-columns:1.2fr .9fr;gap:16px;align-items:center}
+  .hero-title{font-size:clamp(24px,5.6vw,40px);line-height:1.25;margin:.2rem 0 1rem}
+  .hero-copy .btn{margin-right:10px;margin-bottom:10px}
+  .hero-visual{display:flex;align-items:center;justify-content:flex-end}
+  .hero-logo{width:min(56vw,240px);aspect-ratio:1/1;border-radius:20px;object-fit:cover;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr}
+    .hero-visual{justify-content:flex-end}
+  }
+
+  /* 表單 / 元件 */
+  .input, select.input, textarea.input{width:100%;padding:14px 14px;border-radius:12px;border:1px solid #2a2b2d;background:#101113;color:var(--text)}
+  .btn{background:var(--brand);color:#1b1b1b;border:0;border-radius:14px;padding:12px 16px;font-weight:800}
+  .btn.secondary{background:#26272a;color:#ddd;border:1px solid #2b2c2f}
+  .btn.ghost{background:transparent;border:1px dashed #3a3b3f;color:#bbb}
+  .inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .grid{display:grid}
+  .g-2{grid-template-columns:repeat(2,1fr);gap:14px}
+  .g-3{grid-template-columns:repeat(3,1fr);gap:14px}
+  .gcol-2{grid-column:span 2}
+
+  /* 水平滑區（產品） */
+  .hscroll{display:flex;gap:12px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
+  .hwrap{position:relative}
+  .hbtn{position:absolute;top:50%;transform:translateY(-50%);z-index:3;border:0;background:#1a1b1e;color:#fff;width:36px;height:36px;border-radius:50%}
+  .hbtn.prev{left:-6px}.hbtn.next{right:-6px}
+
+  .table{width:100%;border-collapse:collapse}
+  .table th,.table td{padding:10px;border-bottom:1px solid #222}
+  .list{list-style:none;margin:0;padding-left:0}
+  .msg{padding:8px 12px;border-radius:12px;margin:6px 0;display:inline-block}
+  .msg.me{background:#2a2b2f}.msg.other{background:#202124}
+  .chatbox{height:220px;overflow:auto;border:1px solid #242529;border-radius:14px;padding:10px}
+
+  /* 右下 Top（單顆） */
+  .fab{position:fixed;right:14px;bottom:14px;z-index:40}
+  .fab-btn{width:60px;height:60px;border-radius:50%;background:linear-gradient(180deg,#ff895f,#e76938);border:0;color:#1c1c1c;font-weight:900;box-shadow:0 10px 20px rgba(0,0,0,.35)}
+  .fab-btn:active{transform:translateY(1px)}
+
+  /* 產品卡 */
+  .product{min-width:280px;scroll-snap-align:start}
+  .prod-img{width:100%;height:180px;object-fit:cover;border-radius:14px}
+
+  /* 主子頭像卡（可點編輯） */
+  .p-card{min-width:220px;display:flex;gap:12px;align-items:center;background:#17181b;border:1px solid #232427;border-radius:14px;padding:10px}
+  .p-avatar{width:56px;height:56px;border-radius:12px;object-fit:cover;cursor:pointer}
+
+  /* 登入 Dialog（置中；深色外框；亮色時用淺外框） */
+  dialog{border:0;border-radius:18px;padding:0;max-width:min(92vw,520px)}
+  dialog::backdrop{background:rgba(0,0,0,.55)}
+  .auth-outer{background:#0b0c0d;border:1px solid #1c1d21;padding:16px;border-radius:20px}
+  .auth-card{background:var(--bg-2);border:1px solid #24262a;border-radius:18px;padding:18px}
+  .auth-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .auth-actions .btn{flex:1}
+
+  @media (prefers-color-scheme: light){
+    body{background:#fbfbfb;color:#222}
+    .card{background:#fff;border-color:#eee}
+    .menu{background:#fff}
+    .menu a{background:#f3f4f6}
+    .auth-outer{background:#f6f7f8;border-color:#e6e7ea}
+    .auth-card{background:#fff;border-color:#e9e9ee}
+  }
+
+  /* IG 牆（6 宮格） */
+  .ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  @media (min-width:760px){.ig-grid{grid-template-columns:repeat(6,1fr)}}
+  .ig-cell{position:relative;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:#0e0f10;border:1px solid #222}
+  .ig-cell img{width:100%;height:100%;object-fit:cover;display:block}
+  .ig-like{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.5);color:#fff;border:0;border-radius:999px;padding:6px 10px;font-weight:800}
+
+  /* 照片預覽 Modal */
+  .ph-modal{padding:0;max-width:min(96vw,860px)}
+  .ph-body{display:grid;grid-template-columns:1fr 320px;gap:0}
+  .ph-img{max-height:72vh;object-fit:contain;background:#000}
+  .ph-side{padding:16px;background:#121315;border-left:1px solid #1f2023}
+  .ph-meta{font-size:.9rem;color:var(--muted);margin-bottom:10px}
+  .ph-c-list{max-height:40vh;overflow:auto;border:1px solid #222;border-radius:12px;padding:8px}
+  .ph-c{padding:6px 8px;border-bottom:1px dashed #2a2b2d}
+  .ph-c:last-child{border-bottom:0}
+  .ph-actions{display:flex;gap:10px;margin-top:10px}
+
+  /* 地圖層級（避免覆蓋選單） */
+  #map{position:relative;z-index:1;border-radius:12px;overflow:hidden}
+  .leaflet-container{z-index:1}
+
+  /* 工具類 */
+  .mt-0{margin-top:0}.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}
+  .muted{color:var(--muted)}
+  .empty{padding:22px;border:1px dashed #2b2c30;border-radius:14px;text-align:center}
   </style>
 </head>
 <body>
 
-<!-- ===== 頂部：品牌、訪客/登入、漢堡 ===== -->
-<header>
-  <div class="container topbar">
+<header class="container">
+  <div class="nav">
     <a class="brand" href="#home" onclick="showPage('home');return false;">
-      <img src="./logo/logo-192.png" alt="PurrGo"><span>PurrGo 喵來速</span>
+      <img src="./logo/logo-192.png" alt="PurrGo">
+      <span>PurrGo 喵來速</span>
     </a>
-    <div class="auth">
-      <span id="userLabel">訪客</span><span class="sep">｜</span>
-      <a class="link" href="#" onclick="openLogin();return false;">登入</a>
+
+    <div class="auth-chip">
+      <b id="authName">訪客</b><span class="sep">｜</span>
+      <a href="#" class="btn secondary" style="padding:6px 10px;border-radius:10px" onclick="openAuth()">登入</a>
     </div>
+
+    <!-- 手機：漢堡 -->
     <button class="menu-toggle" aria-label="開啟選單" onclick="openMenu()">
       <span class="menu-ico" aria-hidden="true"></span>
     </button>
   </div>
+
+  <!-- 手機：抽屜選單＋背景遮罩 -->
   <nav id="menu" class="menu" aria-label="主選單">
-    <a href="#home"     onclick="navTo('home')">首頁</a>
-    <a href="#products" onclick="navTo('products')">產品</a>
-    <a href="#guild"    onclick="navTo('guild')">公會</a>
-    <a href="#kiosk"    onclick="navTo('kiosk')">據點</a>
-    <a href="#photos"   onclick="navTo('photos')">照片牆</a>
-    <a href="#social"   onclick="navTo('social')">社群</a>
-    <a href="#chat"     onclick="navTo('chat')">聊天</a>
-    <a href="#video"    onclick="navTo('video')">短影片</a>
-    <a href="#about"    onclick="navTo('about')">理念</a>
-    <a href="#contact"  onclick="navTo('contact')">聯絡</a>
+    <a data-sec="home"     onclick="navTo('home')">首頁</a>
+    <a data-sec="products" onclick="navTo('products')">產品</a>
+    <a data-sec="guild"    onclick="navTo('guild')">公會</a>
+    <a data-sec="kiosk"    onclick="navTo('kiosk')">據點</a>
+    <a data-sec="photos"   onclick="navTo('photos')">照片牆</a>
+    <a data-sec="social"   onclick="navTo('social')">社群</a>
+    <a data-sec="chat"     onclick="navTo('chat')">聊天</a>
+    <a data-sec="video"    onclick="navTo('video')">短影片</a>
+    <a data-sec="about"    onclick="navTo('about')">理念</a>
+    <a data-sec="contact"  onclick="navTo('contact')">聯絡</a>
   </nav>
   <div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()"></div>
 </header>
 
-<!-- ===== 主內容 ===== -->
 <main class="container">
 
   <!-- ============ 首頁 ============ -->
@@ -63,11 +198,13 @@
       <div class="hero-copy">
         <span class="pill">PurrGo 喵來速</span>
         <h1 class="hero-title">便利 × 可愛 × 永續 × 共創</h1>
-        <p class="muted">用創新配送＋公會制度，讓補給更聰明、更便宜、更好玩。把「買貓砂」變成有成就感的里程碑遊戲。</p>
+        <p class="muted">
+          用創新配送＋公會制度，讓補給更聰明、更便宜、更好玩。把「買貓砂」變成有成就感的里程碑遊戲。
+        </p>
         <div class="inline mt-1">
           <a class="btn" onclick="showPage('products')">開始探索產品</a>
           <a class="btn secondary" onclick="showPage('guild')">加入貓奴公會</a>
-          <a class="btn secondary" onclick="showPage('about')">了解品牌理念</a>
+          <a class="btn ghost" onclick="showPage('about')">了解品牌理念</a>
         </div>
       </div>
       <div class="hero-visual">
@@ -75,36 +212,36 @@
       </div>
     </section>
 
-    <!-- 建立主子角色：不限數量、生日自動算年齡、第一張頭像自動進相簿 -->
-    <section class="card">
+    <!-- 建立主子角色（多貓、生日→自動年齡、可編輯） -->
+    <section class="card mt-2">
       <span class="pill">主子</span>
       <h2 class="mt-0">建立主子角色</h2>
       <form class="grid g-2" onsubmit="return addPet(event)">
         <div><label>暱稱<input class="input" name="name" required></label></div>
         <div><label>性別<select class="input" name="sex"><option value="M">公</option><option value="F">母</option></select></label></div>
-        <div><label>生日<input class="input" name="birth" type="date" required></label></div>
+        <div><label>生日<input class="input" name="dob" type="date" required></label></div>
         <div><label>品種<select class="input" id="breedSelect" name="breed"></select></label></div>
         <div class="gcol-2"><label>大頭照<input class="input" name="avatar" type="file" accept="image/*"></label></div>
         <div class="inline"><button class="btn" type="submit">新增主子</button></div>
       </form>
-      <div id="petRow" class="p-row mt-2"></div>
+      <div id="petRow" class="hscroll mt-2"></div>
     </section>
   </section>
 
   <!-- ============ 產品 ============ -->
   <section id="page-products" class="page" hidden>
-    <div class="section-caption">產品</div>
+    <div class="section-caption">Products</div>
     <section class="band">
       <header class="section-head"><div>
         <span class="pill">Products</span>
         <h2 class="mt-0">熱銷與方案</h2>
-        <p class="muted">橫向滑動卡片，支援產品照片、詳情彈窗與加入購物車。</p>
+        <p class="section-sub muted">橫向滑動卡片，支援產品照片、詳情彈窗與加入購物車。</p>
       </div></header>
 
-      <div class="hwrap" style="position:relative">
-        <button class="hbtn prev" aria-label="上一個" onclick="scrollH('productRow',-1)" style="position:absolute;left:-6px;top:50%;transform:translateY(-50%);border:0;background:#1a1b1e;color:#fff;width:36px;height:36px;border-radius:50%">‹</button>
-        <div id="productRow" class="hscroll" style="display:flex;gap:12px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:6px"></div>
-        <button class="hbtn next" aria-label="下一個" onclick="scrollH('productRow',1)"  style="position:absolute;right:-6px;top:50%;transform:translateY(-50%);border:0;background:#1a1b1e;color:#fff;width:36px;height:36px;border-radius:50%">›</button>
+      <div class="hwrap">
+        <button class="hbtn prev" aria-label="上一個" onclick="scrollH('productRow',-1)">‹</button>
+        <div id="productRow" class="hscroll"></div>
+        <button class="hbtn next" aria-label="下一個" onclick="scrollH('productRow',1)">›</button>
       </div>
 
       <section class="card mt-2">
@@ -120,12 +257,12 @@
 
   <!-- ============ 公會 / 健檢 ============ -->
   <section id="page-guild" class="page" hidden>
-    <div class="section-caption">公會</div>
+    <div class="section-caption">Guild</div>
     <section class="band">
       <header class="section-head"><div>
         <span class="pill">Guild</span>
         <h2 class="mt-0">公會制度：一起成長、一起更省</h2>
-        <p class="muted">創立門檻、VIP 等級、貢獻條、每日任務…</p>
+        <p class="section-sub muted">創立門檻、VIP 等級、貢獻條、每日任務…</p>
       </div></header>
 
       <!-- 身分綁定 / VIP -->
@@ -151,7 +288,7 @@
         </div>
       </section>
 
-      <!-- 健檢報告上傳（需先有主子 & 公會） -->
+      <!-- 健檢報告上傳（需先有主子） -->
       <section class="card">
         <h3 class="mt-0">免費健檢（每年 1 次 / 需加入公會）</h3>
         <div class="grid g-3">
@@ -182,7 +319,7 @@
         <div id="vetList" class="muted mt-1">目前無健檢紀錄</div>
       </section>
 
-      <!-- 公會基本：創立 / 貢獻條 / 區域戰 -->
+      <!-- 公會基本：創立 / 貢獻條 -->
       <section class="card">
         <div class="inline">
           <button class="btn" onclick="createGuild()">創立門檻（示意）</button>
@@ -190,7 +327,7 @@
           <button class="btn secondary" onclick="mockWar()">展開：區域戰（示意）</button>
         </div>
         <div class="mt-1">公會：<b id="guildName">（尚未創立）</b> ｜ 等級：<b id="guildLevel">–</b> ｜ 貢獻值：<b id="guildContrib">0</b></div>
-        <table class="table mt-2" style="width:100%;border-collapse:collapse">
+        <table class="table mt-2">
           <thead><tr><th>名次</th><th>公會</th><th>區域</th><th>分數</th></tr></thead>
           <tbody id="warTable"><tr><td>1</td><td>台北抓抓隊</td><td>台北</td><td>12,340</td></tr></tbody>
         </table>
@@ -200,18 +337,18 @@
 
   <!-- ============ 據點 / 地圖 ============ -->
   <section id="page-kiosk" class="page" hidden>
-    <div class="section-caption">據點</div>
+    <div class="section-caption">Kiosk</div>
     <section class="card">
       <span class="pill">Kiosk</span>
       <h2 class="mt-0">販賣機點位</h2>
-      <div id="map" style="height:360px;border-radius:12px;overflow:hidden;position:relative;z-index:1"></div>
+      <div id="map" style="height:360px"></div>
       <div class="muted mt-1">點擊標記可開啟 Google/Apple Maps 導航。</div>
     </section>
   </section>
 
-  <!-- ============ 照片牆 ============ -->
+  <!-- ============ 照片牆（IG 6 宮格） ============ -->
   <section id="page-photos" class="page" hidden>
-    <div class="section-caption">照片牆</div>
+    <div class="section-caption">Photos</div>
     <section class="card">
       <span class="pill">Photos</span>
       <h2 class="mt-0">照片牆（依主子分相簿）</h2>
@@ -219,19 +356,99 @@
         <label>主子
           <select class="input" id="photoPet" onchange="renderWall()"></select>
         </label>
-        <input id="photoPicker" type="file" accept="image/*" multiple onchange="addPhoto(event)">
+        <label class="inline" style="align-items:center;gap:8px">
+          <input id="multiUpload" type="file" accept="image/*" multiple onchange="addPhoto(event)">
+          <small class="muted" id="multiCount">0 張照片</small>
+        </label>
         <button class="btn secondary" onclick="clearWall()">清除本機照片</button>
       </div>
-      <div id="wall" class="grid-photos mt-2"></div>
+      <div id="wall" class="ig-grid mt-2"></div>
     </section>
   </section>
 
-  <!-- ============ 社群 / 聊天 / 短影片 / 理念 / 聯絡（保留） ============ -->
-  <section id="page-social"   class="page" hidden><div class="section-caption">社群</div><section class="card"><span class="pill">Social</span><h2 class="mt-0">社群（示範保留）</h2></section></section>
-  <section id="page-chat"     class="page" hidden><div class="section-caption">聊天</div><section class="card"><span class="pill">Chat</span><h2 class="mt-0">聊天（示範保留）</h2></section></section>
-  <section id="page-video"    class="page" hidden><div class="section-caption">短影片</div><section class="card"><span class="pill">Video</span><h2 class="mt-0">短影片（示範保留）</h2></section></section>
-  <section id="page-about"    class="page" hidden><div class="section-caption">理念</div><section class="card"><span class="pill">About</span><h2 class="mt-0">我們相信「便利 × 可愛 × 永續 × 共創」</h2><p class="muted">用創新配送結合公會化社群；永續思維把日常消耗品變成參與式里程碑。</p></section></section>
-  <section id="page-contact"  class="page" hidden><div class="section-caption">聯絡</div><section class="card"><span class="pill">Contact</span><h2 class="mt-0">聯絡我們</h2><form class="grid g-2" onsubmit="return submitForm(event)"><div><label>您的稱呼<input class="input" required></label></div><div><label>Email<input type="email" class="input" required></label></div><div class="gcol-2"><label>訊息<textarea class="input" required></textarea></label></div><div class="inline"><button class="btn" type="submit">送出</button></div></form><p class="muted mt-1">也可來信：<a href="mailto:hello@purrgo.tw">hello@purrgo.tw</a></p></section></section>
+  <!-- ============ 社群（好友名單 / 追蹤） ============ -->
+  <section id="page-social" class="page" hidden>
+    <div class="section-caption">Social</div>
+    <section class="card">
+      <span class="pill">Social</span>
+      <h2 class="mt-0">社群</h2>
+      <div class="grid g-2">
+        <div>
+          <h3 class="mt-0">好友</h3>
+          <div class="inline">
+            <input class="input" id="friendName" placeholder="輸入好友暱稱">
+            <button class="btn" onclick="addFriend()">新增</button>
+          </div>
+          <ul id="friendList" class="list mt-1"></ul>
+        </div>
+        <div>
+          <h3 class="mt-0">封鎖</h3>
+          <ul id="blockList" class="list"></ul>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ============ 聊天 ============ -->
+  <section id="page-chat" class="page" hidden>
+    <div class="section-caption">Chat</div>
+    <section class="card">
+      <span class="pill">Chat</span>
+      <h2 class="mt-0">私訊聊天（示範）</h2>
+      <div class="grid g-2">
+        <div>
+          <label>選擇好友
+            <select class="input" id="chatWith" onchange="renderChat()"></select>
+          </label>
+          <div id="chatBox" class="chatbox mt-1"></div>
+          <div class="inline mt-1">
+            <input class="input" id="chatMsg" placeholder="輸入訊息…">
+            <button class="btn" onclick="sendMsg()">送出</button>
+          </div>
+        </div>
+        <div class="muted">示範用途：所有內容僅存本機，不會上傳。</div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ============ 短影片 ============ -->
+  <section id="page-video" class="page" hidden>
+    <div class="section-caption">Video</div>
+    <section class="card">
+      <span class="pill">Video</span>
+      <h2 class="mt-0">短影片（≤ 30 秒）</h2>
+      <div class="inline">
+        <input type="file" accept="video/mp4" onchange="addVideo(event)">
+      </div>
+      <div id="videoGrid" class="grid g-3 mt-2"></div>
+    </section>
+  </section>
+
+  <!-- ============ 品牌理念 ============ -->
+  <section id="page-about" class="page" hidden>
+    <div class="section-caption">About</div>
+    <section class="card">
+      <span class="pill">About</span>
+      <h2 class="mt-0">我們相信「便利 × 可愛 × 永續 × 共創」</h2>
+      <p class="muted">用「創新配送」結合「公會化社群」；永續思維，和貓奴們一起把日常消耗品變成參與式里程碑。</p>
+    </section>
+  </section>
+
+  <!-- ============ 聯絡我們 ============ -->
+  <section id="page-contact" class="page" hidden>
+    <div class="section-caption">Contact</div>
+    <section class="card">
+      <span class="pill">Contact</span>
+      <h2 class="mt-0">聯絡我們</h2>
+      <form class="grid g-2" onsubmit="return submitForm(event)">
+        <div><label>您的稱呼<input class="input" required></label></div>
+        <div><label>Email<input type="email" class="input" required></label></div>
+        <div class="gcol-2"><label>訊息<textarea class="input" required></textarea></label></div>
+        <div class="inline"><button class="btn" type="submit">送出</button></div>
+      </form>
+      <p class="muted mt-1">也可來信：<a href="mailto:hello@purrgo.tw">hello@purrgo.tw</a></p>
+    </section>
+  </section>
 
 </main>
 
@@ -240,68 +457,38 @@
 </footer>
 
 <!-- 右下 Top（單顆） -->
-<div class="fab" id="fab" aria-label="快速導覽">
-  <button class="fab-btn" title="回頂端" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top</button>
-</div>
+<button class="fab-btn fab" onclick="scrollToTop()" title="回頂端">Top</button>
 
-<!-- ===== 產品詳情 Modal（保留） ===== -->
+<!-- ===== 產品詳情 Modal ===== -->
 <dialog id="modal">
-  <article style="padding:16px">
-    <header class="inline" style="justify-content:space-between;align-items:center">
-      <h3 id="mTitle" class="mt-0">產品詳情</h3>
-      <button class="btn secondary" onclick="closeModal()">關閉</button>
-    </header>
-    <div id="mBody"></div>
-    <footer class="inline mt-1">
-      <button class="btn" id="mAddBtn">加入購物車</button>
-    </footer>
+  <article class="auth-outer">
+    <div class="auth-card">
+      <header class="inline" style="justify-content:space-between">
+        <h3 id="mTitle" class="mt-0">產品詳情</h3>
+        <button class="btn secondary" onclick="closeModal()">關閉</button>
+      </header>
+      <div id="mBody"></div>
+      <footer class="inline mt-1">
+        <button class="btn" id="mAddBtn">加入購物車</button>
+      </footer>
+    </div>
   </article>
 </dialog>
 
-<!-- ===== 照片預覽 Dialog ===== -->
-<dialog id="photoModal">
-  <div class="ph-modal">
-    <img id="pmImg" alt="photo">
-    <div class="ph-act">
-      <div id="pmMeta" class="muted">—</div>
-      <div class="dock">
-        <button onclick="likeCurrent()">♥ <span id="pmLike">0</span></button>
-        <button onclick="addCommentCurrent()">留言</button>
-        <button onclick="closePhoto()">關閉</button>
-      </div>
-    </div>
-    <div id="pmComments" class="mt-1"></div>
-  </div>
-</dialog>
-
-<!-- ===== 主子編輯 Dialog ===== -->
-<dialog id="petModal">
-  <div class="auth-outer">
-    <div class="auth-card">
-      <h3 class="mt-0">編輯主子</h3>
-      <form id="petForm" class="grid g-2" onsubmit="return savePetEdit(event)">
-        <div><label>暱稱<input class="input" name="name" required></label></div>
-        <div><label>性別<select class="input" name="sex"><option value="M">公</option><option value="F">母</option></select></label></div>
-        <div><label>生日<input class="input" name="birth" type="date" required></label></div>
-        <div><label>品種<select class="input" id="editBreed" name="breed"></select></label></div>
-        <div class="gcol-2"><label>更換頭像<input class="input" name="avatar" type="file" accept="image/*"></label></div>
-        <div class="inline"><button class="btn" type="submit">儲存</button><button class="btn secondary" type="button" onclick="closePet()">取消</button></div>
-      </form>
-    </div>
-  </div>
-</dialog>
-
-<!-- ===== 登入 Dialog（首頁入口） ===== -->
-<dialog id="loginModal">
+<!-- ===== 登入 Modal ===== -->
+<dialog id="authModal">
   <div class="auth-outer">
     <div class="auth-card">
       <h3 class="mt-0">註冊 / 登入</h3>
-      <form onsubmit="return doLogin(event)" class="grid g-2">
-        <div class="gcol-2"><label>註冊 ID<input class="input" id="loginId" required></label></div>
-        <div class="gcol-2"><label>密碼<input class="input" id="loginPw" type="password" required></label></div>
-        <div class="gcol-2"><label>手機號碼驗證<input class="input" id="loginPhone" required></label></div>
-        <div class="inline"><button class="btn" type="submit">開始使用</button><button class="btn secondary" type="button" onclick="el('loginModal').close()">取消</button></div>
-      </form>
+      <div class="grid g-2">
+        <div class="gcol-2"><label>註冊 ID<input id="authId" class="input" placeholder="你的社群名稱"></label></div>
+        <div class="gcol-2"><label>密碼<input id="authPw" class="input" type="password" placeholder="••••••"></label></div>
+        <div class="gcol-2"><label>手機號碼驗證<input id="authPhone" class="input" placeholder="09xxxxxxxx"></label></div>
+      </div>
+      <div class="auth-actions mt-1">
+        <button class="btn" onclick="doLogin()">開始使用</button>
+        <button class="btn secondary" onclick="closeAuth()">取消</button>
+      </div>
       <div class="inline mt-1">
         <button class="btn secondary">使用 LINE 登入（示意）</button>
         <button class="btn secondary">使用 Facebook 登入（示意）</button>
@@ -312,192 +499,272 @@
   </div>
 </dialog>
 
-<!-- Leaflet JS（地圖） -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+<!-- ===== 主子編輯 Modal ===== -->
+<dialog id="petEdit">
+  <div class="auth-outer">
+    <div class="auth-card">
+      <h3 class="mt-0">編輯主子</h3>
+      <form id="petEditForm" class="grid g-2" onsubmit="return savePetEdit(event)">
+        <input type="hidden" id="editId">
+        <div><label>暱稱<input id="editName" class="input" required></label></div>
+        <div><label>性別<select id="editSex" class="input"><option value="M">公</option><option value="F">母</option></select></label></div>
+        <div><label>生日<input id="editDob" type="date" class="input" required></label></div>
+        <div><label>品種<select id="editBreed" class="input"></select></label></div>
+        <div class="gcol-2"><label>大頭照<input id="editAvatar" type="file" accept="image/*" class="input"></label></div>
+        <div class="inline"><button class="btn" type="submit">儲存</button><button type="button" class="btn secondary" onclick="closePetEdit()">取消</button></div>
+      </form>
+    </div>
+  </div>
+</dialog>
 
-<!-- ===== Main Script（保留你 99% 版邏輯＋增修） ===== -->
+<!-- ===== 照片預覽 Modal（IG） ===== -->
+<dialog id="photoModal" class="ph-modal">
+  <div class="auth-outer">
+    <div class="ph-body">
+      <img id="pmImg" class="ph-img" alt="">
+      <div class="ph-side">
+        <div id="pmMeta" class="ph-meta"></div>
+        <div class="ph-actions">
+          <button class="btn" onclick="likeCurrent()">♥ <span id="pmLike">0</span></button>
+          <button class="btn secondary" onclick="addCommentCurrent()">留言</button>
+          <button class="btn ghost" onclick="closePhoto()">關閉</button>
+        </div>
+        <div id="pmComments" class="ph-c-list mt-1"></div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+
+<!-- ===== Main Script（整合修正版） ===== -->
 <script>
-/* ===== 全域狀態（localStorage） ===== */
+/* ========= 全域狀態（localStorage） ========= */
 const LS_KEY = 'purrgoState';
 const state = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
-state.user ||= null; // { id:'...' }
+state.user ||= { id:'', phone:'', line:false, vipXp:0, lifetimeSpend:0, energy:0, lastCheckin:'' };
 state.guild ||= { name:'', level:0, contribution:0 };
 state.cart  ||= [];
-state.pets  ||= [];             // {id,name,sex,birth,breed,avatar}
+state.pets  ||= [];             // {id,name,sex,dob,breed,avatar}
 state.vet   ||= [];             // {petId, city, hospital, fileName, time}
 state.photos ||= {};            // petId -> [{src, likes, comments:[{text,time}]}]
-state.friends ||= [];
-state.blocks  ||= [];
-state.chats   ||= {};
-state.videos  ||= [];
-state.userExtra ||= { phone:'', line:false, vipXp:0, lifetimeSpend:0, energy:0, lastCheckin:'' }; // 繼承舊欄位
+state.friends ||= [];           // ["name", ...]
+state.blocks  ||= [];           // ["name", ...]
+state.chats   ||= {};           // name -> [{text, me:true/false, time}]
+state.videos  ||= [];           // [{src, time}]
 save();
+
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); renderAll(); }
 
-/* ===== SPA 分頁 ===== */
+/* ========= SPA 分頁 ========= */
 const pages = ["home","products","guild","kiosk","photos","social","chat","video","about","contact"];
 function showPage(sec){
   pages.forEach(id=>{
     const el = document.getElementById('page-'+id);
     if(el) el.hidden = (id!==sec);
+    document.querySelectorAll('.menu a[data-sec="'+id+'"]').forEach(a=>{
+      a.setAttribute('aria-current', id===sec? 'page':'false');
+    });
   });
   closeMenu();
   location.hash = '#'+sec;
-  if(sec==='kiosk'){ setTimeout(initMap, 50); }
-  if(sec==='photos'){ renderWall(); }
+  if(sec==='kiosk'){ setTimeout(initMap, 80); }
+  if(sec==='photos') { renderWall(); }
+  if(sec==='guild')  { renderVet(); }
+  if(sec==='chat')   { renderChatSelectors(); renderChat(); }
 }
 function navTo(id){ closeMenu(); showPage(id); return false; }
 function restorePage(){ const h=(location.hash||'#home').slice(1); showPage(pages.includes(h)?h:'home'); }
 
-/* ===== 手機選單 ===== */
-function openMenu(){ el('menu').classList.add('open'); el('menuBackdrop').classList.add('show'); }
-function closeMenu(){ el('menu').classList.remove('open'); el('menuBackdrop').classList.remove('show'); }
+/* ========= 手機選單 ========= */
+function openMenu(){ document.getElementById('menu').classList.add('open'); document.getElementById('menuBackdrop').classList.add('show'); }
+function closeMenu(){ document.getElementById('menu').classList.remove('open'); document.getElementById('menuBackdrop').classList.remove('show'); }
 
-/* ===== 身份 / VIP（沿用你原本） ===== */
-function bindPhone(v){ state.userExtra.phone=v||''; save(); }
-function toggleLine(){ state.userExtra.line=!state.userExtra.line; save(); }
+/* ========= Top FAB ========= */
+function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+
+/* ========= 水平捲動 ========= */
+function scrollH(id,dir){ const el=document.getElementById(id); if(!el) return; el.scrollBy({left: dir*(el.clientWidth*0.9), behavior:'smooth'}); }
+
+/* ========= 登入（本機示意） ========= */
+function openAuth(){ document.getElementById('authModal').showModal(); }
+function closeAuth(){ document.getElementById('authModal').close(); }
+function doLogin(){
+  const id = document.getElementById('authId').value.trim();
+  const pw = document.getElementById('authPw').value.trim();
+  const ph = document.getElementById('authPhone').value.trim();
+  if(!id || !pw || !ph) { alert('請輸入 ID / 密碼 / 手機'); return; }
+  state.user.id = id; state.user.phone=ph;
+  save(); closeAuth();
+}
+
+/* ========= 身份 / VIP ========= */
+function bindPhone(v){ state.user.phone=v||''; save(); }
+function toggleLine(){ state.user.line=!state.user.line; save(); }
 function vipLevelByXp(x){ if(x>=5000) return 5; if(x>=3000) return 4; if(x>=1500) return 3; if(x>=600) return 2; if(x>=200) return 1; return 0; }
 function nextVipNeed(x){ const br=[200,600,1500,3000,5000]; for(const b of br){ if(x<b) return b-x; } return 0; }
 function dailyCheckin(){
   const today = new Date().toISOString().slice(0,10);
-  if(state.userExtra.lastCheckin===today){ el('checkinInfo').textContent='今天已簽到'; return; }
-  state.userExtra.lastCheckin=today; state.userExtra.energy+=10; state.userExtra.vipXp+=10;
-  el('checkinInfo').textContent='簽到成功：+10 能量、+10 VIP XP'; save();
+  if(state.user.lastCheckin===today){ document.getElementById('checkinInfo').textContent='今天已簽到'; return; }
+  state.user.lastCheckin=today; state.user.energy+=10; state.user.vipXp+=10;
+  document.getElementById('checkinInfo').textContent='簽到成功：+10 能量、+10 VIP XP'; save();
 }
 function renderIdentity(){
-  const u=state.userExtra;
-  const info = u.phone? `已綁定：${u.phone} ｜ LINE：${u.line?'已連結':'未連結'}` : '尚未綁定手機';
-  if(el('identityInfo')) el('identityInfo').textContent = info;
-  if(el('lineBtn')) el('lineBtn').textContent = u.line? '取消 LINE 連結（示意）':'綁定 LINE（示意）';
-  if(el('lifetimeSpend')) el('lifetimeSpend').textContent = `$${(u.lifetimeSpend||0).toLocaleString()}`;
-  if(el('vipLevel')) el('vipLevel').textContent = 'V'+vipLevelByXp(u.vipXp|0);
-  if(el('vipNext')) el('vipNext').textContent = nextVipNeed(u.vipXp|0)>0? `$${nextVipNeed(u.vipXp|0)}`:'已達頂級';
+  const u=state.user;
+  const authName = document.getElementById('authName');
+  authName.textContent = u.id || '訪客';
+  const info = document.getElementById('identityInfo'); if(info){
+    info.textContent = u.phone? `已綁定：${u.phone} ｜ LINE：${u.line?'已連結':'未連結'}` : '尚未綁定手機';
+  }
+  const lb=document.getElementById('lineBtn'); if(lb){ lb.textContent = u.line? '取消 LINE 連結（示意）':'綁定 LINE（示意）'; }
+  const ls=document.getElementById('lifetimeSpend'); if(ls) ls.textContent = `$${(u.lifetimeSpend||0).toLocaleString()}`;
+  const vl=document.getElementById('vipLevel'); if(vl) vl.textContent = 'V'+vipLevelByXp(u.vipXp|0);
+  const vn=document.getElementById('vipNext'); if(vn) vn.textContent = nextVipNeed(u.vipXp|0)>0? `$${nextVipNeed(u.vipXp|0)}`:'已達頂級';
 }
 
-/* ===== 登入（Demo） ===== */
-function openLogin(){ el('loginModal').showModal(); }
-function doLogin(e){
-  e.preventDefault();
-  const id = el('loginId').value.trim();
-  state.user = { id };
-  save();
-  el('loginModal').close();
-}
-
-/* ===== 主子（多貓） ===== */
+/* ========= 主子（多貓 + 生日年齡 + 可編輯） ========= */
 function loadBreeds(){
-  const breeds = ["美國短毛貓","英國短毛貓","蘇格蘭摺耳貓","布偶貓","米克斯","挪威森林貓","波斯貓","孟加拉豹貓"];
-  const selA = el('breedSelect'), selB = el('editBreed');
-  [selA, selB].forEach(sel=>{
-    if(!sel) return;
-    sel.innerHTML='';
-    breeds.forEach(b=>{ const o=document.createElement('option'); o.value=o.textContent=b; sel.appendChild(o); });
-  });
+  fetch('./data/breeds.json').then(r=>r.json()).then(list=>{
+    const s1 = document.getElementById('breedSelect'); s1.innerHTML='';
+    const s2 = document.getElementById('editBreed');  s2.innerHTML='';
+    list.forEach(b=>{
+      const o=document.createElement('option'); o.textContent=b; o.value=b; s1.appendChild(o.cloneNode(true)); s2.appendChild(o);
+    });
+  }).catch(()=>{});
 }
-function ageFromBirth(iso){ if(!iso) return ''; const b=new Date(iso); const n=new Date(); let y=n.getFullYear()-b.getFullYear(); let m=n.getMonth()-b.getMonth(); if(m<0){y--;m+=12;} return `${y}歲${m>0?m+'個月':''}`; }
-
+function calcAgeText(dobStr){
+  if(!dobStr) return '';
+  const dob = new Date(dobStr);
+  const now = new Date();
+  let y = now.getFullYear()-dob.getFullYear();
+  let m = now.getMonth()-dob.getMonth();
+  if(m<0){ y--; m+=12; }
+  return `${y} 歲 ${m} 月`;
+}
 function addPet(e){
   e.preventDefault();
   const f=e.target;
-  const p={ id:crypto.randomUUID(), name:f.name.value.trim(), sex:f.sex.value, birth:f.birth.value, breed:f.breed.value, avatar:'' };
-  const file=f.avatar.files[0];
-
-  const pushAndSave=()=>{
-    state.pets.push(p);
-    if(p.avatar){ (state.photos[p.id]=state.photos[p.id]||[]).unshift({src:p.avatar,likes:0,comments:[]}); }
-    save(); f.reset();
+  const p = {
+    id: crypto.randomUUID(),
+    name: f.name.value.trim(),
+    sex: f.sex.value,
+    dob: f.dob.value,
+    breed: f.breed.value,
+    avatar: ''
   };
-
+  const file = f.avatar.files[0];
   if(file){
     const rd=new FileReader();
-    rd.onload=()=>{ p.avatar=rd.result; pushAndSave(); };
+    rd.onload=()=>{ p.avatar=rd.result; finishAddPet(p,f); };
     rd.readAsDataURL(file);
   }else{
-    pushAndSave();
+    finishAddPet(p,f);
   }
+  return false;
+}
+function finishAddPet(p, form){
+  state.pets.push(p);
+  // 首張頭像帶入照片牆
+  if(p.avatar){ (state.photos[p.id]=state.photos[p.id]||[]).unshift({src:p.avatar, likes:0, comments:[]}); }
+  save(); form.reset();
 }
 function renderPets(){
-  const row = el('petRow'); if(row){ row.innerHTML='';
-    state.pets.forEach(pt=>{
-      const card=document.createElement('button');
-      card.type='button'; card.className='p-card'; card.onclick=()=>openPet(pt.id);
-      card.innerHTML = `
-        <img src="${pt.avatar || './logo/logo-192.png'}" alt="" class="p-avatar">
-        <div>
-          <div><b>${pt.name}</b>｜${pt.breed||'未知'}｜${pt.sex==='M'?'公':'母'}</div>
-          <div class="muted">年齡：${ageFromBirth(pt.birth)}</div>
-        </div>
-        <span class="p-edit btn secondary">編輯</span>`;
-      row.appendChild(card);
-    });
-  }
-  // 同步下拉
-  if(el('photoPet')){ const s=el('photoPet'); s.innerHTML=''; state.pets.forEach(pt=>{ const o=document.createElement('option'); o.value=pt.id; o.textContent=pt.name; s.appendChild(o); }); }
-  if(el('vetPet')){ const v=el('vetPet'); v.innerHTML=''; state.pets.forEach(pt=>{ const o=document.createElement('option'); o.value=pt.id; o.textContent=pt.name; v.appendChild(o); }); }
+  const row = document.getElementById('petRow'); if(!row) return;
+  row.innerHTML='';
+  state.pets.forEach(pt=>{
+    const card=document.createElement('div');
+    card.className='p-card';
+    card.innerHTML = `
+      <img src="${pt.avatar || './logo/logo-192.png'}" alt="" class="p-avatar" onclick="openPetEdit('${pt.id}')">
+      <div class="p-meta">
+        <b>${pt.name}</b>｜${pt.breed||'未知'}｜${pt.sex==='M'?'公':'母'}｜${calcAgeText(pt.dob)}
+      </div>`;
+    row.appendChild(card);
+  });
+  // 下拉同步
+  ['vetPet','photoPet'].forEach(id=>{
+    const s=document.getElementById(id); if(!s) return; s.innerHTML='';
+    state.pets.forEach(pt=>{ const o=document.createElement('option'); o.value=pt.id; o.textContent=pt.name; s.appendChild(o); });
+  });
 }
-let _editPid=null;
-function openPet(pid){
-  _editPid=pid;
-  const p=state.pets.find(x=>x.id===pid); if(!p) return;
-  const f=el('petForm');
-  f.name.value=p.name; f.sex.value=p.sex; f.birth.value=p.birth; f.breed.value=p.breed;
-  el('petModal').showModal();
+function openPetEdit(id){
+  const p = state.pets.find(x=>x.id===id); if(!p) return;
+  document.getElementById('editId').value=p.id;
+  document.getElementById('editName').value=p.name;
+  document.getElementById('editSex').value=p.sex;
+  document.getElementById('editDob').value=p.dob||'';
+  document.getElementById('editBreed').value=p.breed||'';
+  document.getElementById('petEdit').showModal();
 }
-function closePet(){ el('petModal').close(); _editPid=null; }
+function closePetEdit(){ document.getElementById('petEdit').close(); }
 function savePetEdit(e){
   e.preventDefault();
-  if(!_editPid) return false;
-  const f=e.target; const p=state.pets.find(x=>x.id===_editPid); if(!p) return false;
-  const file=f.avatar.files[0];
-  const apply=()=>{ p.name=f.name.value.trim(); p.sex=f.sex.value; p.birth=f.birth.value; p.breed=f.breed.value; save(); closePet(); };
-  if(file){ const rd=new FileReader(); rd.onload=()=>{ p.avatar=rd.result; apply(); }; rd.readAsDataURL(file); } else { apply(); }
+  const id=document.getElementById('editId').value;
+  const p = state.pets.find(x=>x.id===id); if(!p) return false;
+  p.name=document.getElementById('editName').value.trim();
+  p.sex=document.getElementById('editSex').value;
+  p.dob=document.getElementById('editDob').value;
+  p.breed=document.getElementById('editBreed').value;
+  const file=document.getElementById('editAvatar').files[0];
+  if(file){
+    const rd=new FileReader();
+    rd.onload=()=>{ p.avatar=rd.result; save(); closePetEdit(); };
+    rd.readAsDataURL(file);
+  }else{ save(); closePetEdit(); }
   return false;
 }
 
-/* ===== 健檢（需主子 & 公會） ===== */
+/* ========= 健檢 ========= */
 function renderHospitals(){
-  const city = el('vetCity')?.value || '台北';
+  const city = document.getElementById('vetCity').value;
   fetch('./data/hospitals.json').then(r=>r.json()).then(list=>{
-    const s=el('vetHospital'); if(!s) return; s.innerHTML='';
+    const s=document.getElementById('vetHospital'); s.innerHTML='';
     list.filter(h=>h.city===city).forEach(h=>{ const o=document.createElement('option'); o.textContent=h.name; o.value=h.name; s.appendChild(o); });
   }).catch(()=>{});
 }
 function uploadVet(){
-  if(!state.pets.length) return alert('請先建立主子');
-  if(!state.guild.name) return alert('請先加入/創立公會');
-  const pid=el('vetPet').value, city=el('vetCity').value, hosp=el('vetHospital').value;
-  const f=el('vetFile').files[0]; if(!f) return alert('請選擇檔案');
+  if(!state.pets.length){ return alert('請先建立主子'); }
+  if(!state.guild.name){ return alert('請先加入/創立公會'); }
+  const pid=document.getElementById('vetPet').value, city=document.getElementById('vetCity').value, hosp=document.getElementById('vetHospital').value;
+  const f=document.getElementById('vetFile').files[0]; if(!f) return alert('請選擇檔案');
   state.vet.push({ petId: pid, city, hospital:hosp, fileName:f.name, time:new Date().toLocaleString() });
-  state.guild.contribution+=200; save(); alert('已上傳（示範）並獲得 +200 公會貢獻');
+  state.guild.contribution+=200;
+  save();
+  alert('已上傳（示範）並獲得 +200 公會貢獻');
 }
 function renderVet(){
   renderHospitals();
-  const box=el('vetList'); if(!box) return;
+  const box=document.getElementById('vetList'); if(!box) return;
   if(!state.vet.length){ box.textContent='目前無健檢紀錄'; return; }
-  box.innerHTML = state.vet.map(v=>{ const pet=state.pets.find(p=>p.id===v.petId); return `${v.time}｜${v.city}｜${v.hospital}｜${pet?pet.name:'（已刪除）'}｜${v.fileName}`; }).join('<br>');
+  box.innerHTML = state.vet.map(v=>{
+    const pet=state.pets.find(p=>p.id===v.petId);
+    return `${v.time}｜${v.city}｜${v.hospital}｜${pet?pet.name:'（已刪除）'}｜${v.fileName}`;
+  }).join('<br>');
 }
 
-/* ===== 公會基本 ===== */
+/* ========= 公會基本 ========= */
 const GUILD_CREATE_NEED = 1200;
 function renderGuild(){
-  if(el('guildName')) el('guildName').textContent = state.guild.name||'（尚未創立）';
-  if(el('guildLevel')) el('guildLevel').textContent = state.guild.level||'–';
-  if(el('guildContrib')) el('guildContrib').textContent = state.guild.contribution|0;
+  const g=state.guild;
+  const gn=document.getElementById('guildName'); if(gn) gn.textContent = g.name||'（尚未創立）';
+  const gl=document.getElementById('guildLevel'); if(gl) gl.textContent = g.level||'–';
+  const gc=document.getElementById('guildContrib'); if(gc) gc.textContent = g.contribution|0;
 }
 function createGuild(){
-  if((state.userExtra.lifetimeSpend||0) < GUILD_CREATE_NEED){ return alert('尚未達到創立門檻：累積消費 $1,200'); }
+  if((state.user.lifetimeSpend||0) < GUILD_CREATE_NEED){ return alert('尚未達到創立門檻：累積消費 $1,200'); }
   const name = prompt('輸入公會名稱'); if(!name) return;
   state.guild.name=name; state.guild.level=1; save(); alert('公會已創立！');
 }
 function contribute(n){ if(!state.guild.name) return alert('請先創立公會'); state.guild.contribution += n; if(state.guild.contribution>= (state.guild.level*500)) { state.guild.level++; alert('公會升級！'); } save(); }
-function mockWar(){ if(!state.guild.name) return alert('先創立公會'); const add=Math.floor(Math.random()*500+100); const tr=document.createElement('tr'); tr.innerHTML=`<td>*</td><td>${state.guild.name}</td><td>你的區域</td><td>+${add}</td>`; el('warTable').prepend(tr); }
+function mockWar(){ if(!state.guild.name) return alert('先創立公會'); const add=Math.floor(Math.random()*500+100); const tr=document.createElement('tr'); tr.innerHTML=`<td>*</td><td>${state.guild.name}</td><td>你的區域</td><td>+${add}</td>`; document.getElementById('warTable').prepend(tr); }
 
-/* ===== 產品 / 購物車 ===== */
+/* ========= 產品 / 購物車 ========= */
 async function loadProducts(){
   try{
     const list = await (await fetch('./data/products.json',{cache:'no-cache'})).json();
-    const row = el('productRow'); if(!row) return; row.innerHTML='';
+    const row = document.getElementById('productRow'); row.innerHTML='';
     list.forEach(p=>{
       const elc=document.createElement('div'); elc.className='card product';
       elc.innerHTML = `
@@ -511,12 +778,12 @@ async function loadProducts(){
         </div>`;
       row.appendChild(elc);
     });
-  }catch(e){ if(el('productRow')) el('productRow').innerHTML='<div class="empty">讀取產品失敗</div>'; }
+  }catch(e){ document.getElementById('productRow').innerHTML='<div class="empty">讀取產品失敗</div>'; }
 }
 function addToCart(p){ const item = state.cart.find(i=>i.id===p.id) || (state.cart.push({...p,qty:0}), state.cart.find(i=>i.id===p.id)); item.qty++; save(); }
 function clearCart(){ state.cart=[]; save(); }
 function renderCart(){
-  const box = el('cartItems'); if(!box) return;
+  const box = document.getElementById('cartItems'); if(!box) return;
   if(state.cart.length===0){ box.textContent='尚無商品'; return; }
   let sum=0; box.innerHTML = state.cart.map(i=>{ sum+=i.price*i.qty; return `${i.name} × ${i.qty} = NT$ ${(i.price*i.qty).toLocaleString()}`; }).join('<br>');
   box.innerHTML += `<div class="mt-1"><b>小計：NT$ ${sum.toLocaleString()}</b></div>`;
@@ -524,63 +791,58 @@ function renderCart(){
 function checkout(){
   if(state.cart.length===0) return alert('購物車是空的');
   const sum = state.cart.reduce((a,b)=>a+b.price*b.qty,0);
-  state.userExtra.lifetimeSpend = (state.userExtra.lifetimeSpend||0) + sum;
-  state.userExtra.vipXp += Math.round(sum/10);
-  state.userExtra.energy += Math.round(sum/20);
+  state.user.lifetimeSpend = (state.user.lifetimeSpend||0) + sum;
+  state.user.vipXp += Math.round(sum/10);
+  state.user.energy += Math.round(sum/20);
   state.cart=[]; alert(`結帳成功！累積消費 +$${sum.toLocaleString()}，VIP XP 與能量已增加`);
   save();
 }
 function openDetail(p){
-  const m=el('modal'); el('mTitle').textContent=p.name;
-  el('mBody').innerHTML = `<img src="${p.img||'./logo/logo-512.png'}" class="prod-img" style="max-height:240px"><p class="mt-1">${(p.bullets||[]).map(b=>`• ${b}`).join('<br>')}</p>`;
-  const addBtn=el('mAddBtn'); addBtn.onclick=()=>{ addToCart(p); closeModal(); };
+  const m=document.getElementById('modal'); document.getElementById('mTitle').textContent=p.name;
+  document.getElementById('mBody').innerHTML = `<img src="${p.img||'./logo/logo-512.png'}" class="prod-img" style="max-height:240px"><p class="mt-1">${(p.bullets||[]).map(b=>`• ${b}`).join('<br>')}</p>`;
+  const addBtn=document.getElementById('mAddBtn'); addBtn.onclick=()=>{ addToCart(p); closeModal(); };
   m.showModal();
 }
-function closeModal(){ el('modal').close(); }
+function closeModal(){ document.getElementById('modal').close(); }
 
-/* ===== 照片牆（IG 風） ===== */
+/* ========= 照片牆（IG） ========= */
+document.getElementById('multiUpload').addEventListener('change', e=>{
+  document.getElementById('multiCount').textContent = `${e.target.files.length} 張照片`;
+});
+
 function addPhoto(e){
-  const pid=el('photoPet').value; if(!pid) return alert('請先建立主子');
+  const pid=document.getElementById('photoPet').value; if(!pid){ alert('請先建立主子'); return; }
   const files=[...e.target.files]; if(!files.length) return;
-  files.forEach(file=>{
-    const rd=new FileReader();
-    rd.onload=()=>{ (state.photos[pid]=state.photos[pid]||[]).push({src:rd.result,likes:0,comments:[]}); save(); };
-    rd.readAsDataURL(file);
-  });
-  e.target.value='';
+  const readerJob = (i)=>{
+    if(i>=files.length){ save(); document.getElementById('multiCount').textContent = `${files.length} 張照片`; return; }
+    const f=files[i], rd=new FileReader();
+    rd.onload=()=>{ (state.photos[pid]=state.photos[pid]||[]).push({src:rd.result, likes:0, comments:[]}); readerJob(i+1); };
+    rd.readAsDataURL(f);
+  };
+  readerJob(0);
 }
-function clearWall(){ const pid=el('photoPet').value; if(!pid) return; if(confirm('清除本機相簿照片？')){ state.photos[pid]=[]; save(); } }
-function renderWall(){
-  const s=el('photoPet'); if(!s) return;
-  const pid=s.value || (state.pets[0]?.id||'');
-  if(s.value!==pid) s.value=pid;
-  const wall=el('wall'); wall.innerHTML='';
-  (state.photos[pid]||[]).forEach((ph,idx)=>{
-    const wrap=document.createElement('div'); wrap.className='ph';
-    const img=document.createElement('img'); img.src=ph.src; img.alt='';
-    img.onclick=()=>openPhoto(pid,idx);
-    const badge=document.createElement('div'); badge.className='badge'; badge.textContent=`♥ ${ph.likes||0}`;
-    wrap.appendChild(img); wrap.appendChild(badge); wall.appendChild(wrap);
-  });
-}
+function likePhoto(pid, idx){ (state.photos[pid][idx].likes++); save(); }
 
-/* 照片預覽 / 愛心 / 留言 */
 let _pm = { pid:null, idx:-1 };
 function openPhoto(pid, idx){
   _pm = { pid, idx };
-  const ph = (state.photos[pid]||[])[idx]; if(!ph) return;
-  el('pmImg').src = ph.src;
-  el('pmLike').textContent = ph.likes || 0;
-  el('pmMeta').textContent = `相片 ${idx+1} ／ 共 ${state.photos[pid].length} 張`;
+  const ph = (state.photos[pid]||[])[idx];
+  if(!ph) return;
+  document.getElementById('pmImg').src = ph.src;
+  document.getElementById('pmLike').textContent = ph.likes || 0;
+  document.getElementById('pmMeta').textContent = `相片 ${idx+1} ／ 共 ${state.photos[pid].length} 張`;
   renderPhotoComments(ph);
-  el('photoModal').showModal();
+  document.getElementById('photoModal').showModal();
 }
-function closePhoto(){ el('photoModal').close(); _pm = { pid:null, idx:-1 }; }
+function closePhoto(){
+  document.getElementById('photoModal').close();
+  _pm = { pid:null, idx:-1 };
+}
 function likeCurrent(){
   if(!_pm.pid) return;
   const ph = state.photos[_pm.pid][_pm.idx];
   ph.likes = (ph.likes||0) + 1;
-  el('pmLike').textContent = ph.likes;
+  document.getElementById('pmLike').textContent = ph.likes;
   save();
 }
 function addCommentCurrent(){
@@ -592,17 +854,82 @@ function addCommentCurrent(){
   save();
 }
 function renderPhotoComments(ph){
-  const box = el('pmComments'); box.innerHTML = '';
+  const box = document.getElementById('pmComments'); box.innerHTML = '';
   (ph.comments||[]).slice().reverse().forEach(c=>{
-    const d = document.createElement('div'); d.className = 'c';
+    const d = document.createElement('div');
+    d.className = 'ph-c';
     d.textContent = `${c.text} · ${c.time}`;
     box.appendChild(d);
   });
 }
 
-/* ===== 短影片 / 社群 / 聊天（保留你原流程，如需可再接） ===== */
+function renderWall(){
+  const sel = document.getElementById('photoPet');
+  const pid = sel.value || (state.pets[0]?.id||'');
+  if(sel.value!==pid) sel.value=pid;
+  const wall=document.getElementById('wall'); if(!wall) return;
+  wall.innerHTML='';
+  (state.photos[pid]||[]).forEach((ph,idx)=>{
+    const c=document.createElement('div'); c.className='ig-cell';
+    c.innerHTML=`<img src="${ph.src}" alt="" onclick="openPhoto('${pid}',${idx})"><button class="ig-like" onclick="event.stopPropagation();likePhoto('${pid}',${idx})">♥ ${ph.likes||0}</button>`;
+    wall.appendChild(c);
+  });
+}
+function clearWall(){ const pid=document.getElementById('photoPet').value; if(confirm('清除本機照片？')){ state.photos[pid]=[]; save(); }}
 
-/* ===== 地圖（確保不蓋過選單；選單 z-index 已高於地圖） ===== */
+/* ========= 社群 / 聊天 ========= */
+function addFriend(){
+  const n=document.getElementById('friendName').value.trim(); if(!n) return;
+  if(state.friends.includes(n)) return alert('已存在');
+  state.friends.push(n); save(); document.getElementById('friendName').value='';
+}
+function removeFriend(n){ state.friends=state.friends.filter(x=>x!==n); delete state.chats[n]; save(); }
+function blockFriend(n){ if(!state.blocks.includes(n)) state.blocks.push(n); save(); }
+function unblock(n){ state.blocks=state.blocks.filter(x=>x!==n); save(); }
+function renderSocial(){
+  const fl=document.getElementById('friendList'); if(fl){ fl.innerHTML=''; state.friends.forEach(n=>{ const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="blockFriend('${n}')">封鎖</button> <button class="btn secondary" onclick="removeFriend('${n}')">刪除</button>`; fl.appendChild(li); }); }
+  const bl=document.getElementById('blockList'); if(bl){ bl.innerHTML=''; state.blocks.forEach(n=>{ const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="unblock('${n}')">解除</button>`; bl.appendChild(li); }); }
+}
+function renderChatSelectors(){
+  const s=document.getElementById('chatWith'); if(!s) return; s.innerHTML='';
+  state.friends.filter(n=>!state.blocks.includes(n)).forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; s.appendChild(o); });
+}
+function renderChat(){
+  const withN=document.getElementById('chatWith').value; const box=document.getElementById('chatBox'); if(!box) return; box.innerHTML='';
+  const arr=state.chats[withN]||[];
+  arr.forEach(m=>{
+    const d=document.createElement('div'); d.className='msg '+(m.me?'me':'other'); d.textContent=`${m.text}  ·  ${m.time}`; box.appendChild(d);
+  });
+  box.scrollTop=box.scrollHeight;
+}
+function sendMsg(){
+  const withN=document.getElementById('chatWith').value; if(!withN) return;
+  const t=document.getElementById('chatMsg').value.trim(); if(!t) return;
+  (state.chats[withN]=state.chats[withN]||[]).push({text:t, me:true, time:new Date().toLocaleTimeString()});
+  document.getElementById('chatMsg').value=''; save();
+  setTimeout(()=>{ (state.chats[withN]=state.chats[withN]||[]).push({text:'（自動回覆）喵喵～', me:false, time:new Date().toLocaleTimeString()}); save(); }, 500);
+}
+
+/* ========= 短影片 ========= */
+function addVideo(e){
+  const f=e.target.files[0]; if(!f) return;
+  const url=URL.createObjectURL(f);
+  const v=document.createElement('video'); v.src=url; v.onloadedmetadata=()=>{
+    if(v.duration>30){ URL.revokeObjectURL(url); alert('超過 30 秒'); return; }
+    const rd=new FileReader();
+    rd.onload=()=>{ state.videos.push({src:rd.result, time:new Date().toLocaleString()}); save(); };
+    rd.readAsDataURL(f);
+  }
+}
+function renderVideos(){
+  const g=document.getElementById('videoGrid'); if(!g) return; g.innerHTML='';
+  state.videos.forEach(v=>{
+    const d=document.createElement('div'); d.className='card'; d.innerHTML=`<video src="${v.src}" controls style="width:100%;border-radius:12px"></video><div class="muted mt-1">${v.time}</div>`;
+    g.appendChild(d);
+  });
+}
+
+/* ========= 地圖 ========= */
 let _map, _mapReady=false;
 async function initMap(){
   if(!_map){
@@ -619,23 +946,23 @@ async function initMap(){
       });
     }catch(e){}
   }
-  if(_mapReady){ setTimeout(()=>{ _map.invalidateSize(); }, 60); }
+  if(_mapReady){ setTimeout(()=>{ _map.invalidateSize(); }, 80); }
 }
 
-/* ===== 聯絡表單 ===== */
+/* ========= 聯絡表單 ========= */
 function submitForm(e){ e.preventDefault(); alert('已收到您的訊息（示範）'); e.target.reset(); return false; }
 
-/* ===== 公用 ===== */
+/* ========= 小工具 ========= */
 function el(id){ return document.getElementById(id); }
-function scrollH(id,dir){ const el=document.getElementById(id); if(!el) return; el.scrollBy({left: dir*(el.clientWidth*0.9), behavior:'smooth'}); }
 
-/* ===== 初始 ===== */
-function renderAll(){
-  if(el('userLabel')) el('userLabel').textContent = state.user ? state.user.id : '訪客';
+/* ========= 渲染入口 ========= */
+async function renderAll(){
   renderIdentity();
   renderGuild();
   renderPets();
   renderCart();
+  renderSocial();
+  renderVideos();
   renderVet();
   renderWall();
 }
