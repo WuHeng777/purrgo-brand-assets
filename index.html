@@ -561,9 +561,41 @@ function readAndResize(file, max=512, quality=0.8){
 }
 
 // 取代原本的 addPet：先縮圖，再存 state，最後 save()
-async function addPet(e){
+function addPet(e){
   e.preventDefault();
   const f = e.target;
+  const p = {
+    id: crypto.randomUUID(),
+    name: f.name.value.trim(),
+    sex: f.sex.value,
+    age: Number(f.age?.value || 0),     // 你若已改成生日，這行可改成你計算歲數的結果
+    breed: f.breed.value,
+    avatar: ''
+  };
+
+  const file = f.avatar.files[0];
+
+  // 統一收尾：push ->（若有頭像）同步放進相簿第一張 -> save -> 重繪 -> reset
+  const finalize = ()=>{
+    state.pets.push(p);
+    if(p.avatar){
+      (state.photos[p.id] = state.photos[p.id] || [])
+        .unshift({ src:p.avatar, likes:0, comments:[] });   // 自動成為相簿第一張
+    }
+    save();                   // 會觸發 renderAll()，包含 renderPets / renderWall
+    f.reset();
+  };
+
+  if(file){
+    const rd = new FileReader();
+    rd.onload = () => { p.avatar = rd.result; finalize(); };
+    rd.readAsDataURL(file);
+  }else{
+    finalize();
+  }
+  return false;
+}
+
 
   // 如果你已把「年齡」改成「生日」，這裡自動帶入歲數：
   const birthStr = f.birth ? f.birth.value : ''; // 若仍用 age 欄位則留空即可
@@ -767,28 +799,100 @@ function openDetail(p){
 }
 function closeModal(){ el('modal').close(); }
 
-/* ====== 照片牆 ====== */
+/* ===== 照片牆（IG 風格） ===== */
+
+/* 目前預覽中的照片（pet id + index）*/
+let _pm = { pid:null, idx:-1 };
+
+/* 支援一次多選上傳 */
 function addPhoto(e){
-  const pid=el('photoPet').value; if(!pid){ alert('請先建立主子'); return; }
-  const file=e.target.files[0]; if(!file) return;
-  const rd=new FileReader();
-  rd.onload=()=>{ (state.photos[pid]=state.photos[pid]||[]).push({src:rd.result, likes:0, comments:[]}); save(); };
-  rd.readAsDataURL(file);
+  const pid = el('photoPet').value;
+  if(!pid){ alert('請先建立主子'); return; }
+
+  const files = Array.from(e.target.files || []);
+  if(files.length === 0) return;
+
+  let left = files.length;
+  files.forEach(file=>{
+    const rd = new FileReader();
+    rd.onload = () => {
+      (state.photos[pid] = state.photos[pid] || [])
+        .push({ src: rd.result, likes: 0, comments: [] });
+      left--;
+      if(left === 0){ save(); }     // 全部檔案都讀完再 save + 重繪
+    };
+    rd.readAsDataURL(file);
+  });
+
+  // 清掉 input 值，避免下次選同樣檔案不觸發 change
+  e.target.value = '';
 }
-function likePhoto(pid,idx){ (state.photos[pid][idx].likes++); save(); }
-function commentPhoto(pid,idx){ const t=prompt('留言'); if(!t) return; (state.photos[pid][idx].comments.push({text:t,time:new Date().toLocaleString()})); save(); }
+
+/* 三欄方格牆（點圖開預覽） */
 function renderWall(){
-  const pid=el('photoPet').value || (state.pets[0]?.id||'');
-  if(el('photoPet').value!==pid) el('photoPet').value=pid;
-  const wall=el('wall'); wall.innerHTML='';
-  (state.photos[pid]||[]).forEach((ph,idx)=>{
-    const d=document.createElement('div'); d.className='card';
-    d.innerHTML=`<img src="${ph.src}" alt="" style="border-radius:12px;width:100%;height:180px;object-fit:cover">
-      <div class="inline mt-1"><button class="btn" onclick="likePhoto('${pid}',${idx})">♥ ${ph.likes}</button>
-      <button class="btn secondary" onclick="commentPhoto('${pid}',${idx})">留言</button></div>`;
-    wall.appendChild(d);
+  const pid = el('photoPet').value || (state.pets[0]?.id || '');
+  if(el('photoPet').value !== pid) el('photoPet').value = pid;
+
+  const list = state.photos[pid] || [];
+  const wall = el('wall'); wall.innerHTML = '';
+
+  list.forEach((ph, idx)=>{
+    const item = document.createElement('div');
+    item.className = 'wall-item';
+    item.innerHTML = `
+      <img src="${ph.src}" alt="">
+      <div class="wall-meta"><span>♥ ${ph.likes||0}</span><span>💬 ${ph.comments?.length||0}</span></div>
+    `;
+    item.onclick = () => openPhoto(pid, idx);
+    wall.appendChild(item);
   });
 }
+
+/* 開關預覽、愛心、留言 */
+function openPhoto(pid, idx){
+  _pm = { pid, idx };
+  const ph = (state.photos[pid]||[])[idx];
+  if(!ph) return;
+
+  el('pmImg').src = ph.src;
+  el('pmLike').textContent = ph.likes || 0;
+  el('pmMeta').textContent = `相片 ${idx+1} ／ 共 ${state.photos[pid].length} 張`;
+  renderPhotoComments(ph);
+
+  el('photoModal').showModal();
+}
+function closePhoto(){
+  el('photoModal').close();
+  _pm = { pid:null, idx:-1 };
+}
+function likeCurrent(){
+  if(!_pm.pid) return;
+  const ph = state.photos[_pm.pid][_pm.idx];
+  ph.likes = (ph.likes||0) + 1;
+  el('pmLike').textContent = ph.likes;
+  save();     // 牆上的 ♥ 數字會一起更新
+}
+function addCommentCurrent(){
+  if(!_pm.pid) return;
+  const t = prompt('留言內容');
+  if(!t) return;
+  const ph = state.photos[_pm.pid][_pm.idx];
+  (ph.comments = ph.comments || []).push({ text:t, time:new Date().toLocaleString() });
+  renderPhotoComments(ph);
+  save();
+}
+function renderPhotoComments(ph){
+  const box = el('pmComments'); box.innerHTML = '';
+  (ph.comments||[]).slice().reverse().forEach(c=>{
+    const d = document.createElement('div');
+    d.className = 'c';
+    d.textContent = `${c.text} · ${c.time}`;
+    box.appendChild(d);
+  });
+}
+
+/* clearWall 原本的可以保留不動 */
+
 function clearWall(){ const pid=el('photoPet').value; if(confirm('清除本機照片？')){ state.photos[pid]=[]; save(); }}
 
 /* ====== 社群 / 聊天 ====== */
