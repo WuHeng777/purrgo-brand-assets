@@ -601,28 +601,28 @@ function readAndResize(file, max=512, quality=0.8){
 }
 
 // 取代原本的 addPet：先縮圖，再存 state，最後 save()
-function addPet(e){
+unction addPet(e){
   e.preventDefault();
   const f = e.target;
   const p = {
     id: crypto.randomUUID(),
     name: f.name.value.trim(),
     sex: f.sex.value,
-    age: Number(f.age?.value || 0),     // 你若已改成生日，這行可改成你計算歲數的結果
+    // 你若用生日計算年齡，可自行替換：
+    age: Number(f.age?.value || 0),
     breed: f.breed.value,
     avatar: ''
   };
 
   const file = f.avatar.files[0];
 
-  // 統一收尾：push ->（若有頭像）同步放進相簿第一張 -> save -> 重繪 -> reset
   const finalize = ()=>{
     state.pets.push(p);
     if(p.avatar){
       (state.photos[p.id] = state.photos[p.id] || [])
-        .unshift({ src:p.avatar, likes:0, comments:[] });   // 自動成為相簿第一張
+        .unshift({ src:p.avatar, likes:0, comments:[] });
     }
-    save();                   // 會觸發 renderAll()，包含 renderPets / renderWall
+    save();
     f.reset();
   };
 
@@ -674,86 +674,83 @@ function addPet(e){
   f.reset();
   return false;
 }
+
 function renderPets(){
-  const row = el('petRow');
-  if(!row) return;
-  row.innerHTML = '';
-
+  const row = el('petRow'); if(!row) return;
+  row.innerHTML='';
   state.pets.forEach(pt=>{
-    // 安全預設
-    const name = pt.name || '未命名';
-    const breed = pt.breed || '未知';
-    const sexText = pt.sex === 'F' ? '母' : '公';
-
-    // 年齡字串：優先生日，沒有生日就用數字 age；都沒有就空字串
-    let ageText = '';
-    if (pt.birth) {
-      ageText = calcAgeText(pt.birth);
-    } else if (typeof pt.age === 'number') {
-      ageText = `${pt.age}歲`;
-    }
-
-    const card = document.createElement('div');
-    card.className = 'p-card';
+    const card=document.createElement('div');
+    card.className='p-card';
     card.innerHTML = `
       <img src="${pt.avatar || './logo/logo-192.png'}" alt="" class="p-avatar">
       <div class="p-meta">
-        <b>${name}</b>｜${breed}｜${sexText}${ageText ? `｜${ageText}` : ''}
-      </div>
-      <button class="btn secondary" style="margin-left:auto" onclick="editPet('${pt.id}')">編輯</button>
-    `;
+        <b>${pt.name || '未命名'}</b>｜${pt.breed||'未知'}｜${pt.sex==='M'?'公':'母'}${(pt.age||pt.birth)?'｜'+(pt.age?pt.age+'歲':''):''}
+      </div>`;
+    card.onclick = ()=>openPet(pt.id);   // ✅ 點整張卡片編輯
     row.appendChild(card);
   });
 
   // 同步下拉
   ['vetPet','photoPet'].forEach(id=>{
-    const s=el(id); if(!s) return;
-    s.innerHTML='';
+    const s=el(id); if(!s) return; s.innerHTML='';
     state.pets.forEach(pt=>{
-      const o=document.createElement('option');
-      o.value=pt.id; o.textContent=pt.name || '未命名';
-      s.appendChild(o);
+      const o=document.createElement('option'); o.value=pt.id; o.textContent=pt.name; s.appendChild(o);
     });
   });
 }
-
+  
 /* 編輯主子 */
-function openEditPet(id){
-  const pt=state.pets.find(p=>p.id===id); if(!pt) return;
-  const d=document.createElement('dialog');
-  d.innerHTML=`
-    <article class="auth-outer"><div class="auth-card">
-      <h3 class="mt-0">編輯主子</h3>
-      <div class="grid g-2">
-        <div><label>暱稱<input id="ep_name" class="input" value="${pt.name}"></label></div>
-        <div><label>性別<select id="ep_sex" class="input"><option value="M"${pt.sex==='M'?' selected':''}>公</option><option value="F"${pt.sex==='F'?' selected':''}>母</option></select></label></div>
-        <div class="gcol-2"><label>生日<input id="ep_birth" class="input" type="date" value="${pt.birthday||''}"></label></div>
-        <div><label>品種<input id="ep_breed" class="input" value="${pt.breed||''}"></label></div>
-        <div><label>大頭照<input id="ep_avatar" class="input" type="file" accept="image/*"></label></div>
-      </div>
-      <div class="inline mt-1">
-        <button class="btn" id="ep_save">儲存</button>
-        <button class="btn secondary" id="ep_del">刪除</button>
-        <button class="btn secondary" onclick="this.closest('dialog').close()">關閉</button>
-      </div>
-    </div></article>`;
-  d.addEventListener('close',()=>d.remove());
-  document.body.appendChild(d); d.showModal();
+let _editingPetId = null;
 
-  d.querySelector('#ep_save').onclick=()=>{
-    pt.name=d.querySelector('#ep_name').value.trim();
-    pt.sex=d.querySelector('#ep_sex').value;
-    pt.birthday=d.querySelector('#ep_birth').value;
-    pt.ageText=ageFromBirthday(pt.birthday);
-    pt.breed=d.querySelector('#ep_breed').value.trim();
-    const f=d.querySelector('#ep_avatar').files[0];
-    if(f){
-      const rd=new FileReader();
-      rd.onload=()=>{ pt.avatar=rd.result; save(); d.close(); };
-      rd.readAsDataURL(f);
-    }else{ save(); d.close(); }
-  };
-  d.querySelector('#ep_del').onclick=()=>{ if(confirm('確定刪除這位主子？')){ state.pets=state.pets.filter(x=>x.id!==id); save(); d.close(); } };
+function openPet(id){
+  const pt = state.pets.find(p=>p.id===id);
+  if(!pt) return;
+
+  _editingPetId = id;
+  el('petId').value = id;
+  el('petName').value = pt.name || '';
+  el('petSex').value = pt.sex || 'M';
+  el('petBirth').value = pt.birth || '';   // 若你有記生日可帶入
+  // 品種下拉沿用你現有 breeds.json 的內容
+  el('petBreed').innerHTML = el('breedSelect').innerHTML;
+  el('petBreed').value = pt.breed || '';
+
+  el('petModal').showModal();
+}
+function closePet(){ el('petModal').close(); _editingPetId=null; }
+
+function savePet(e){
+  e.preventDefault();
+  const id = _editingPetId;
+  const pt = state.pets.find(p=>p.id===id);
+  if(!pt) return closePet();
+
+  pt.name  = el('petName').value.trim();
+  pt.sex   = el('petSex').value;
+  pt.birth = el('petBirth').value || '';
+  pt.breed = el('petBreed').value || pt.breed;
+
+  const file = el('petAvatar').files[0];
+  const done = ()=>{ save(); closePet(); el('petForm').reset(); };
+
+  if(file){
+    const rd = new FileReader();
+    rd.onload = () => { pt.avatar = rd.result; done(); };
+    rd.readAsDataURL(file);
+  }else{
+    done();
+  }
+  return false;
+}
+
+function deletePet(){
+  if(!_editingPetId) return;
+  if(!confirm('確定要刪除這位主子嗎？（相簿也會一併移除）')) return;
+  const id = _editingPetId;
+  state.pets = state.pets.filter(p=>p.id!==id);
+  delete state.photos[id];
+  save();
+  closePet();
 }
 
 /* ====== 健檢 ====== */
@@ -840,8 +837,6 @@ function openDetail(p){
 function closeModal(){ el('modal').close(); }
 
 /* ===== 照片牆（IG 風格） ===== */
-
-/* 目前預覽中的照片（pet id + index）*/
 let _pm = { pid:null, idx:-1 };
 
 /* 支援一次多選上傳 */
@@ -851,6 +846,7 @@ function addPhoto(e){
 
   const files = Array.from(e.target.files || []);
   if(files.length === 0) return;
+  el('photoCount').textContent = ${files.length}張照片;
 
   let left = files.length;
   files.forEach(file=>{
@@ -859,18 +855,18 @@ function addPhoto(e){
       (state.photos[pid] = state.photos[pid] || [])
         .push({ src: rd.result, likes: 0, comments: [] });
       left--;
-      if(left === 0){ save(); }     // 全部檔案都讀完再 save + 重繪
+      if(left === 0){ save(); }
     };
     rd.readAsDataURL(file);
   });
 
-  // 清掉 input 值，避免下次選同樣檔案不觸發 change
+  // 讓同檔名也能再次觸發 change
   e.target.value = '';
 }
 
 /* 三欄方格牆（點圖開預覽） */
 function renderWall(){
-  const pid = el('photoPet').value || (state.pets[0]?.id || '');
+  const pid = el('photoPet').value  (state.pets[0]?.id  '');
   if(el('photoPet').value !== pid) el('photoPet').value = pid;
 
   const list = state.photos[pid] || [];
@@ -888,7 +884,7 @@ function renderWall(){
   });
 }
 
-/* 開關預覽、愛心、留言 */
+/* 預覽 / 關閉 / 愛心 / 留言 */
 function openPhoto(pid, idx){
   _pm = { pid, idx };
   const ph = (state.photos[pid]||[])[idx];
@@ -896,7 +892,7 @@ function openPhoto(pid, idx){
 
   el('pmImg').src = ph.src;
   el('pmLike').textContent = ph.likes || 0;
-  el('pmMeta').textContent = `相片 ${idx+1} ／ 共 ${state.photos[pid].length} 張`;
+  el('pmMeta').textContent = 相片 ${idx+1} ／ 共 ${state.photos[pid].length} 張;
   renderPhotoComments(ph);
 
   el('photoModal').showModal();
@@ -910,7 +906,7 @@ function likeCurrent(){
   const ph = state.photos[_pm.pid][_pm.idx];
   ph.likes = (ph.likes||0) + 1;
   el('pmLike').textContent = ph.likes;
-  save();     // 牆上的 ♥ 數字會一起更新
+  save();
 }
 function addCommentCurrent(){
   if(!_pm.pid) return;
@@ -926,12 +922,12 @@ function renderPhotoComments(ph){
   (ph.comments||[]).slice().reverse().forEach(c=>{
     const d = document.createElement('div');
     d.className = 'c';
-    d.textContent = `${c.text} · ${c.time}`;
+    d.textContent = ${c.text} · ${c.time};
     box.appendChild(d);
   });
 }
 
-/* clearWall 原本的可以保留不動 */
+/* 你原本的 clearWall 可以保留 */
 
 function clearWall(){ const pid=el('photoPet').value; if(confirm('清除本機照片？')){ state.photos[pid]=[]; save(); }}
 
