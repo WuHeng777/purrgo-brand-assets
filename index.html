@@ -85,10 +85,26 @@
     .oauths{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
     .oauths button{ border:1px solid rgba(255,255,255,.15); background:#111; color:#fff; border-radius:10px; padding:8px 10px; }
 
-    /* Hero logo：正方形、倒圓角、不裁切重點 */
-    .hero-visual img{ width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:18px; }
+    /* Hero 調整：標題單行；Logo 正方形倒圓角 */
+    .hero-title{
+      white-space:nowrap;               /* 不換行 */
+      font-size:clamp(22px, 4.6vw, 40px);
+      line-height:1.18;
+    }
+    .hero-visual img{
+      width:100%; aspect-ratio:1 / 1;   /* 正方形 */
+      object-fit:cover; border-radius:18px;
+    }
 
-    /* 讓頂部沒有 tabs，間距稍調 */
+    /* 主子卡片列：間距與外觀 */
+    #petRow{ display:flex; gap:12px; overflow:auto; padding:6px 2px; min-height:112px; }
+    .p-card{
+      display:flex; align-items:center; gap:8px;
+      background:#121314; border:1px solid rgba(255,255,255,.08);
+      padding:8px 10px; border-radius:14px; min-width:220px; cursor:pointer;
+    }
+    .p-avatar{ width:56px;height:56px;border-radius:12px;object-fit:cover; background:#222; }
+
     header.container{ padding-bottom:8px; }
   </style>
 </head>
@@ -142,12 +158,12 @@
       <form class="grid g-2" onsubmit="return addPet(event)">
         <div><label>暱稱<input class="input" name="name" required></label></div>
         <div><label>性別<select class="input" name="sex"><option value="M">公</option><option value="F">母</option></select></label></div>
-        <div><label>年齡（歲）<input class="input" name="age" type="number" min="0" step="0.1" required></label></div>
+        <div><label>生日<input class="input" name="dob" type="date" required></label></div>
         <div><label>品種<select class="input" id="breedSelect" name="breed"></select></label></div>
         <div class="gcol-2"><label>大頭照<input class="input" name="avatar" type="file" accept="image/*"></label></div>
         <div class="inline"><button class="btn" type="submit">新增主子</button></div>
       </form>
-      <div id="petRow" class="hscroll mt-2"></div>
+      <div id="petRow" class="mt-2"></div>
     </section>
   </section>
 
@@ -378,6 +394,25 @@
   </article>
 </dialog>
 
+<!-- 編輯主子 Modal -->
+<dialog id="petDialog" class="auth">
+  <article>
+    <h3>編輯主子</h3>
+    <input type="hidden" id="editPetId">
+    <div class="grid g-2">
+      <div><label>暱稱<input class="input" id="editName"></label></div>
+      <div><label>性別<select class="input" id="editSex"><option value="M">公</option><option value="F">母</option></select></label></div>
+      <div><label>生日<input class="input" id="editDob" type="date"></label></div>
+      <div><label>品種<select class="input" id="editBreed"></select></label></div>
+      <div class="gcol-2"><label>大頭照<input class="input" id="editAvatar" type="file" accept="image/*"></label></div>
+    </div>
+    <div class="inline" style="gap:8px;margin-top:10px">
+      <button class="btn" onclick="savePetEdit()">儲存</button>
+      <button class="btn secondary" onclick="closePetEditor()">取消</button>
+    </div>
+  </article>
+</dialog>
+
 <!-- 註冊/登入 Modal（Demo：ID+密碼+手機） -->
 <dialog id="authDialog" class="auth">
   <article>
@@ -423,11 +458,11 @@
 /* ===== 狀態 ===== */
 const LS_KEY = 'purrgoState';
 const state = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
-state.auth ||= { name:'' }; // 未登入 name=""
+state.auth ||= { name:'' };
 state.user ||= { phone:'', line:false, vipXp:0, lifetimeSpend:0, energy:0, lastCheckin:'' };
 state.guild ||= { name:'', level:0, contribution:0 };
 state.cart  ||= [];
-state.pets  ||= [];
+state.pets  ||= [];             // {id,name,sex,breed,avatar,dob}
 state.vet   ||= [];
 state.photos ||= {};
 state.friends ||= [];
@@ -441,7 +476,6 @@ function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 const pages = ["home","products","guild","kiosk","photos","social","chat","video","about","contact"];
 const PUBLIC_PAGES = new Set(["home","products","kiosk","about","contact"]);
 function showPage(sec){
-  // 未登入限制
   if(!state.auth.name && !PUBLIC_PAGES.has(sec)){ openAuth(); sec="home"; }
   pages.forEach(id=>{
     const el=document.getElementById('page-'+id);
@@ -449,7 +483,7 @@ function showPage(sec){
   });
   closeMenu();
   location.hash = '#'+sec;
-  window.scrollTo({top:0, behavior:'smooth'}); // 切頁回頂
+  window.scrollTo({top:0, behavior:'smooth'});
   if(sec==='kiosk'){ setTimeout(initMap,60); }
   if(sec==='photos'){ renderWall(); }
   if(sec==='guild'){ renderVet(); }
@@ -524,27 +558,76 @@ function renderIdentity(){
 /* ===== 主子（多貓） ===== */
 function loadBreeds(){
   fetch('./data/breeds.json').then(r=>r.json()).then(list=>{
-    const s = document.getElementById('breedSelect'); if(!s) return;
-    s.innerHTML=''; list.forEach(b=>{ const o=document.createElement('option'); o.textContent=b; o.value=b; s.appendChild(o); });
-  }).catch(()=>{});
+    const fall = ['米克斯','美國短毛貓','英國短毛貓','蘇格蘭摺耳貓','豹貓','布偶貓'];
+    const arr = Array.isArray(list)&&list.length? list:fall;
+    const setSel = (selId)=>{
+      const s = document.getElementById(selId); if(!s) return;
+      s.innerHTML=''; arr.forEach(b=>{ const o=document.createElement('option'); o.textContent=b; o.value=b; s.appendChild(o); });
+    };
+    setSel('breedSelect'); setSel('editBreed');
+  }).catch(()=>{
+    ['breedSelect','editBreed'].forEach(id=>{
+      const s=document.getElementById(id); if(s){ ['米克斯','美國短毛貓','布偶貓'].forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; s.appendChild(o); });}
+    });
+  });
+}
+function calcAgeText(dobStr){
+  if(!dobStr) return '0歲';
+  const dob = new Date(dobStr);
+  const now = new Date();
+  let y = now.getFullYear() - dob.getFullYear();
+  let m = now.getMonth() - dob.getMonth();
+  if (m < 0 || (m===0 && now.getDate() < dob.getDate())) { y--; m += 12; }
+  return `${y}歲${m>0? m+'月':''}`.trim();
 }
 function addPet(e){
   e.preventDefault();
   const f=e.target;
-  const p={ id: crypto.randomUUID(), name:f.name.value.trim(), sex:f.sex.value, age:Number(f.age.value), breed:f.breed.value, avatar:'' };
+  const p={ id: crypto.randomUUID(), name:f.name.value.trim(), sex:f.sex.value, dob:f.dob.value, breed:f.breed.value, avatar:'' };
   const done=()=>{ state.pets.push(p); save(); renderPets(); f.reset(); };
   const file=f.avatar.files[0];
   if(file){ const rd=new FileReader(); rd.onload=()=>{ p.avatar=rd.result; done(); }; rd.readAsDataURL(file); } else { done(); }
   return false;
+}
+function openPetEditor(pt){
+  document.getElementById('editPetId').value = pt.id;
+  document.getElementById('editName').value = pt.name||'';
+  document.getElementById('editSex').value  = pt.sex||'M';
+  document.getElementById('editDob').value  = pt.dob||'';
+  document.getElementById('editBreed').value= pt.breed||'';
+  document.getElementById('petDialog').showModal();
+}
+function closePetEditor(){ document.getElementById('petDialog').close(); }
+function savePetEdit(){
+  const id = document.getElementById('editPetId').value;
+  const p  = state.pets.find(x=>x.id===id); if(!p){ closePetEditor(); return; }
+  p.name  = document.getElementById('editName').value.trim();
+  p.sex   = document.getElementById('editSex').value;
+  p.dob   = document.getElementById('editDob').value;
+  p.breed = document.getElementById('editBreed').value;
+  const file = document.getElementById('editAvatar').files[0];
+  if(file){
+    const rd=new FileReader();
+    rd.onload=()=>{ p.avatar=rd.result; save(); renderPets(); closePetEditor(); document.getElementById('editAvatar').value=''; };
+    rd.readAsDataURL(file);
+  }else{
+    save(); renderPets(); closePetEditor();
+  }
 }
 function renderPets(){
   const row = document.getElementById('petRow'); if(!row) return; row.innerHTML='';
   state.pets.forEach(pt=>{
     const card=document.createElement('div');
     card.className='p-card';
-    card.innerHTML = `<img src="${pt.avatar || './logo/logo-192.png'}" alt="" class="p-avatar"><div class="p-meta"><b>${pt.name}</b>｜${pt.breed||'未知'}｜${pt.sex==='M'?'公':'母'}｜${pt.age||0}歲</div>`;
+    card.innerHTML = `
+      <img src="${pt.avatar || './logo/logo-192.png'}" alt="" class="p-avatar">
+      <div class="p-meta">
+        <b>${pt.name||'未命名'}</b>｜${pt.breed||'未知'}｜${pt.sex==='M'?'公':'母'}｜${calcAgeText(pt.dob)}
+      </div>`;
+    card.addEventListener('click', ()=>openPetEditor(pt));
     row.appendChild(card);
   });
+  // 同步下拉
   ['vetPet','photoPet'].forEach(id=>{
     const s=document.getElementById(id); if(!s) return; s.innerHTML='';
     state.pets.forEach(pt=>{ const o=document.createElement('option'); o.value=pt.id; o.textContent=pt.name; s.appendChild(o); });
