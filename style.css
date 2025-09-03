@@ -1,239 +1,291 @@
-/* -----------------------------------------------------------
-   PurrGo 品牌站 - 全站樣式（完整版）
-   合併：99% 完成版 + 近期所有修正/新增
-   區塊：
-   1) 變數 / Reset
-   2) 容器 / 工具類
-   3) 頂部列（品牌、分頁籤、漢堡）
-   4) 手機抽屜選單 + 背景遮罩（含鎖捲動）
-   5) 區塊 / 卡片 / Hero 區
-   6) 表單 / 按鈕 / 列表 / 表格
-   7) 右下 Top 浮動鈕（單顆）
-   8) 產品卡
-   9) 主子卡 & 頭像
-  10) 照片牆（IG 風 3 欄）+ 預覽 Dialog
-  11) 聊天框
-  12) 地圖（層級避免覆蓋選單）
-  13) 登入 Dialog（深/淺色外框）
-  14) 響應式調整 & Light 模式
------------------------------------------------------------ */
+/* =========================================================
+   PurrGo 喵來速 — 全站樣式（最終整合版）
+   - 以行動裝置優先 (mobile-first)
+   - 變數色票 + 暗/亮主題
+   - 漢堡抽屜選單、Hero、表單、卡片、IG 相簿、地圖層級等
+   ========================================================= */
 
-/* === 1) 變數 / Reset ==================================== */
+/* ---------- CSS 變數（暗色主題預設） ---------- */
 :root{
   --bg:#0f1011;
   --bg-2:#151618;
   --card:#131416;
   --text:#eaeaea;
   --muted:#9aa0a6;
-  --brand:#ff7f50;
-  --chip:#ffe0d3;
-  --chip-text:#2b2b2b;
-  --line:#2a2b2d;
-  --line-soft:#1d1e21;
 
-  --radius:18px;
-  --radius-lg:22px;
+  --brand:#ff7f50;       /* 品牌橘 */
+  --chip:#ffe0d3;        /* 膠囊底色（淺） */
+  --chip-text:#2b2b2b;
+
+  --border:#1d1e21;
+  --border-2:#26272a;
+
+  --radius-lg:18px;
+  --radius-md:14px;
+  --radius-sm:10px;
 }
 
-*{ box-sizing:border-box }
-html,body{ height:100% }
+/* ---------- Reset / 基本排版 ---------- */
+*{box-sizing:border-box}
+html,body{height:100%}
 body{
   margin:0;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
   line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,
+               "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
 }
-a{ color:inherit; text-decoration:none }
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
 
-/* === 2) 容器 / 工具類 ==================================== */
-.container{ max-width:1120px; margin:0 auto; padding:0 16px }
-.hide-mobile{ display:none }
-@media (min-width:960px){ .hide-desktop{display:none} .hide-mobile{display:flex} }
+/* ---------- 容器 ---------- */
+.container{max-width:1120px;margin:0 auto;padding:0 16px}
 
-.mt-0{margin-top:0}.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}
-.muted{ color:var(--muted) }
-.inline{ display:flex; align-items:center; gap:10px; flex-wrap:wrap }
-.grid{ display:grid }
-.g-2{ grid-template-columns:repeat(2,1fr); gap:14px }
-.g-3{ grid-template-columns:repeat(3,1fr); gap:14px }
-.gcol-2{ grid-column:span 2 }
-.hscroll{ display:flex; gap:12px; overflow:auto; scroll-snap-type:x mandatory; padding-bottom:6px }
-.hwrap{ position:relative }
-.hbtn{ position:absolute; top:50%; transform:translateY(-50%); z-index:3; border:0; background:#1a1b1e; color:#fff; width:36px; height:36px; border-radius:50% }
-.hbtn.prev{ left:-6px } .hbtn.next{ right:-6px }
-.empty{ padding:22px; border:1px dashed var(--line); border-radius:14px; text-align:center }
-
-/* 區塊頂部小標（深底白字、淺底橘字由 light 模式覆寫） */
-.section-caption{ font-size:.95rem; color:var(--muted); margin:6px 0 10px }
-
-/* === 3) 頂部列（品牌、分頁籤、漢堡） ==================== */
-header .nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 0 }
-.brand{ display:flex; align-items:center; gap:10px; font-weight:700 }
-
-.tabs{ gap:8px; display:flex; flex-wrap:wrap }
-.tab{ padding:8px 14px; border:1px solid var(--line); border-radius:999px; opacity:.85 }
-.tab[aria-current="page"]{ background:var(--brand); color:#1a1a1a; border-color:transparent; opacity:1 }
-
-/* 漢堡按鈕：深色=白線，淺色=黑線（見下方 light 覆寫） */
-.menu-toggle{ width:48px; height:48px; border-radius:14px; background:#232427; border:0; display:grid; place-items:center }
-.menu-ico, .menu-ico::before, .menu-ico::after{
-  content:""; display:block; width:22px; height:2px; background:#fff; border-radius:2px; position:relative
+/* ---------- 顯示/隱藏工具 ---------- */
+.hide-mobile{display:none}
+@media (min-width:960px){
+  .hide-desktop{display:none}
+  .hide-mobile{display:flex}
 }
-.menu-ico::before{ position:absolute; top:-6px }
-.menu-ico::after{ position:absolute; top:6px }
 
-/* === 4) 手機抽屜選單 + 背景遮罩（含鎖捲動） ============== */
-/* 預設關閉、靠右、最高層，避免被地圖蓋住 */
+/* =========================================================
+   Header（LOGO / 訪客|登入 / 漢堡）
+   ========================================================= */
+header .nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 0;gap:12px;
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.brand img{width:28px;height:28px;border-radius:8px;object-fit:cover}
+
+/* 訪客/登入 chip：與漢堡高度對齊、水平排字置中 */
+.auth-chip{
+  display:flex;align-items:center;gap:12px;
+  height:48px;padding:0 16px;border-radius:16px;
+  background:#1b1c1f;border:1px solid var(--border-2);
+}
+.auth-chip .sep{opacity:.4}
+.auth-chip b{font-weight:800}
+
+/* 漢堡按鈕 */
+.menu-toggle{
+  width:48px;height:48px;border-radius:14px;
+  background:#232427;border:0;display:grid;place-items:center;
+}
+.menu-ico,
+.menu-ico::before,
+.menu-ico::after{
+  content:"";display:block;width:22px;height:2px;background:#fff;
+  border-radius:2px;position:relative;
+}
+.menu-ico::before{top:-6px;position:absolute}
+.menu-ico::after{top:6px;position:absolute}
+
+/* =========================================================
+   手機抽屜選單（含背景遮罩）
+   - z-index 拉到 1002，避免被地圖覆蓋
+   ========================================================= */
 .menu{
-  position:fixed; top:0; right:0; bottom:0; left:auto;
+  position:fixed;inset:0 0 0 auto;
   width:min(86vw,340px);
   transform:translateX(100%);
-  visibility:hidden;
-  pointer-events:none;
-  transition:transform .25s ease, visibility .25s ease;
-  background:#0d0e10;
-  z-index:1200;
-  padding:16px;
-  border-left:1px solid #202124;
+  transition:transform .25s ease;
+  background:#0d0e10;z-index:1002;padding:16px;
+  overflow:auto;
 }
-.menu.open{ transform:none; visibility:visible; pointer-events:auto }
+.menu.open{transform:none}
 .menu a{
-  display:block; padding:14px 16px; margin:10px 0; border-radius:14px;
-  background:#1b1c1f; border:1px solid #24262a
+  display:block;padding:14px 16px;margin:10px 0;border-radius:var(--radius-md);
+  background:#1b1c1f;border:1px solid var(--border-2);
+}
+.menu a[aria-current="page"]{
+  background:var(--brand);color:#1a1a1a;border-color:transparent;
 }
 .menu-backdrop{
-  position:fixed; inset:0; background:rgba(0,0,0,.5); backdrop-filter:blur(2px);
-  opacity:0; pointer-events:none; transition:opacity .2s; z-index:1100;
+  position:fixed;inset:0;background:rgba(0,0,0,.5);
+  backdrop-filter:blur(2px);opacity:0;pointer-events:none;
+  transition:opacity .2s;z-index:1001;
 }
-.menu-backdrop.show{ opacity:1; pointer-events:auto }
-body.menu-open{ overflow:hidden } /* 開啟抽屜時禁止背景滾動 */
+.menu-backdrop.show{opacity:1;pointer-events:auto}
 
-/* === 5) 區塊 / 卡片 / Hero 區 ============================ */
-.page{ padding:8px 0 40px }
+/* =========================================================
+   Page / 標題 / 卡片
+   ========================================================= */
+.page{padding:8px 0 40px}
+
+.section-caption{
+  font-size:.95rem;color:var(--muted);margin:6px 0 10px
+}
+
 .card{
   background:radial-gradient(130% 120% at 100% 0%,#1a1b1e 0%,#111214 60%);
-  border-radius:var(--radius);
-  padding:22px;
-  border:1px solid var(--line-soft);
+  border-radius:var(--radius-lg);padding:22px;border:1px solid var(--border);
 }
-.band .section-head{ margin-bottom:12px }
-.pill{ display:inline-block; background:var(--chip); color:var(--chip-text); padding:8px 14px; border-radius:999px; font-weight:700 }
+.band .section-head{margin-bottom:12px}
 
-/* Hero：兩欄 + 方形導圓角 Logo（與 CTA 區塊對齊） */
-.hero{ display:grid; grid-template-columns:1.2fr .9fr; gap:16px; align-items:center }
-.hero-title{ font-size:clamp(24px,5.6vw,40px); line-height:1.25; margin:.2rem 0 1rem }
-.hero-copy .btn{ margin-right:10px; margin-bottom:10px }
-.hero-visual{ display:flex; align-items:center; justify-content:center }
+.pill{
+  display:inline-block;background:var(--chip);color:var(--chip-text);
+  padding:8px 14px;border-radius:999px;font-weight:700
+}
+
+/* =========================================================
+   首頁 Hero（右圖正方形倒圓角）
+   ========================================================= */
+.hero{
+  display:grid;grid-template-columns:1.2fr .9fr;gap:16px;align-items:center
+}
+.hero-title{
+  font-size:clamp(24px,5.6vw,40px);
+  line-height:1.25;margin:.2rem 0 1rem
+}
+.hero-copy .btn{margin-right:10px;margin-bottom:10px}
+.hero-visual{display:flex;align-items:center;justify-content:flex-end}
 .hero-logo{
-  width:min(54vw,220px);
-  aspect-ratio:1/1;            /* 正方形 */
-  border-radius:20px;
-  object-fit:cover;
-  box-shadow:0 8px 20px rgba(0,0,0,.35);
+  width:min(56vw,240px);aspect-ratio:1/1;border-radius:20px;object-fit:cover;
+  box-shadow:0 8px 20px rgba(0,0,0,.35)
 }
 @media (max-width:900px){
-  .hero{ grid-template-columns:1fr; align-items:center }
-  .hero-visual{ justify-content:flex-end }
+  .hero{grid-template-columns:1fr}
+  .hero-visual{justify-content:flex-end}
 }
 
-/* === 6) 表單 / 按鈕 / 列表 / 表格 ========================= */
+/* =========================================================
+   表單/按鈕/網格
+   ========================================================= */
 .input, select.input, textarea.input{
-  width:100%; padding:14px 14px; border-radius:12px;
-  border:1px solid var(--line); background:#101113; color:var(--text)
+  width:100%;padding:14px 14px;border-radius:12px;
+  border:1px solid #2a2b2d;background:#101113;color:var(--text)
 }
 .btn{
-  background:var(--brand); color:#1b1b1b; border:0; border-radius:14px;
-  padding:12px 16px; font-weight:800
+  background:var(--brand);color:#1b1b1b;border:0;border-radius:14px;
+  padding:12px 16px;font-weight:800
 }
-.btn.secondary{ background:#26272a; color:#ddd; border:1px solid #2b2c2f }
-.btn.ghost{ background:transparent; border:1px dashed #3a3b3f; color:#bbb }
+.btn.secondary{background:#26272a;color:#ddd;border:1px solid #2b2c2f}
+.btn.ghost{background:transparent;border:1px dashed #3a3b3f;color:#bbb}
 
-.table{ width:100%; border-collapse:collapse }
-.table th,.table td{ padding:10px; border-bottom:1px solid #222 }
+.inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
-.list{ list-style:none; margin:0; padding-left:0 }
+.grid{display:grid}
+.g-2{grid-template-columns:repeat(2,1fr);gap:14px}
+.g-3{grid-template-columns:repeat(3,1fr);gap:14px}
+.gcol-2{grid-column:span 2}
 
-/* 共用 <dialog>（產品詳情 / 照片預覽 / 登入） */
-dialog{ border:0; border-radius:18px; padding:0; max-width:min(92vw,560px) }
-dialog::backdrop{ background:rgba(0,0,0,.55) }
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:10px;border-bottom:1px solid #222}
 
-/* === 7) 右下 Top 浮動鈕（單顆） ========================== */
-.fab{ position:fixed; right:14px; bottom:14px; z-index:1000 }
-.fab-btn{
-  width:56px; height:56px; border-radius:50%;
-  background:linear-gradient(180deg,#ff895f,#e76938);
-  border:0; color:#1c1c1c; font-weight:900;
-  box-shadow:0 10px 20px rgba(0,0,0,.35);
+/* =========================================================
+   水平滑區（產品列表）
+   ========================================================= */
+.hwrap{position:relative}
+.hscroll{
+  display:flex;gap:12px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:6px
 }
+.hbtn{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+  border:0;background:#1a1b1e;color:#fff;width:36px;height:36px;border-radius:50%
+}
+.hbtn.prev{left:-6px}.hbtn.next{right:-6px}
 
-/* === 8) 產品卡 =========================================== */
-.product{ min-width:280px; scroll-snap-align:start }
-.prod-img{ width:100%; height:180px; object-fit:cover; border-radius:14px }
+.product{min-width:280px;scroll-snap-align:start}
+.prod-img{width:100%;height:180px;object-fit:cover;border-radius:14px}
 
-/* === 9) 主子卡 & 頭像 ==================================== */
+/* =========================================================
+   主子卡片（可點編輯）
+   ========================================================= */
 .p-card{
-  min-width:220px; display:flex; gap:12px; align-items:center;
-  background:#17181b; border:1px solid #232427; border-radius:14px; padding:10px
+  min-width:220px;display:flex;gap:12px;align-items:center;
+  background:#17181b;border:1px solid #232427;border-radius:14px;padding:10px
 }
-.p-avatar{ width:56px; height:56px; border-radius:12px; object-fit:cover }
+.p-avatar{width:56px;height:56px;border-radius:12px;object-fit:cover;cursor:pointer}
 
-/* === 10) 照片牆（IG 風 3 欄）+ 預覽 Dialog =============== */
-/* 縮圖牆：3 欄正方、緊密排列；超小螢幕自動 2 欄（下方） */
-#wall{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px }
-.wall-item{ position:relative; aspect-ratio:1/1; overflow:hidden; border-radius:10px; cursor:pointer }
-.wall-item img{ width:100%; height:100%; object-fit:cover; display:block }
+/* =========================================================
+   登入/一般 Dialog（置中、暗色外框；亮色時改淺外框）
+   ========================================================= */
+dialog{border:0;border-radius:18px;padding:0;max-width:min(92vw,520px)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
 
-/* 右下角 ♥/留言數徽章（可由 JS 填值） */
-.wall-badge{
-  position:absolute; right:6px; bottom:6px;
-  padding:2px 6px; font-size:12px; border-radius:999px;
-  background:rgba(0,0,0,.55); color:#fff;
+.auth-outer{
+  background:#0b0c0d;border:1px solid #1c1d21;padding:16px;border-radius:20px
 }
+.auth-card{
+  background:var(--bg-2);border:1px solid #24262a;border-radius:18px;padding:18px
+}
+.auth-actions{display:flex;gap:10px;flex-wrap:wrap}
+.auth-actions .btn{flex:1}
 
-/* 預覽 Dialog  */
-#photoModal{ max-width:min(94vw,900px) }
-.photo-wrap{ padding:0; background:var(--bg-2); border-radius:var(--radius); overflow:hidden }
-.photo-body{ padding:12px }
-#pmImg{ width:100%; max-height:68vh; object-fit:contain; background:#000 }
-.photo-tools{ display:flex; align-items:center; gap:10px; padding:12px }
-.photo-tools .btn{ padding:10px 14px }
-#pmComments{ padding:0 12px 12px }
-#pmComments .c{ padding:8px 10px; border-radius:10px; background:#202124; margin-top:8px; color:#ddd }
-
-/* === 11) 聊天框 ========================================== */
-.chatbox{ height:220px; overflow:auto; border:1px solid #242529; border-radius:14px; padding:10px }
-.msg{ padding:8px 12px; border-radius:12px; margin:6px 0; display:inline-block }
-.msg.me{ background:#2a2b2f } .msg.other{ background:#202124 }
-
-/* === 12) 地圖層級（避免覆蓋抽屜） ======================== */
-#map{ border-radius:12px; overflow:hidden; position:relative; z-index:1 }
-/* 抽屜與遮罩 z-index：.menu=1200、.menu-backdrop=1100 → 高於地圖 */
-
-/* === 13) 登入 Dialog（深/淺色外框） ====================== */
-.auth-outer{ background:#0b0c0d; border:1px solid #1c1d21; padding:10px; border-radius:20px }
-.auth-card{ background:var(--bg-2); border:1px solid #24262a; border-radius:18px; padding:18px }
-
-/* === 14) 響應式 & Light 模式 ============================= */
-@media (max-width:900px){
-  @media (max-width:380px){
-    #wall{ grid-template-columns:repeat(2,1fr) }
-  }
+/* =========================================================
+   IG 6 宮格照片牆 + 預覽 Modal
+   ========================================================= */
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media (min-width:760px){.ig-grid{grid-template-columns:repeat(6,1fr)}}
+.ig-cell{
+  position:relative;aspect-ratio:1/1;border-radius:14px;overflow:hidden;
+  background:#0e0f10;border:1px solid #222
+}
+.ig-cell img{width:100%;height:100%;object-fit:cover;display:block}
+.ig-like{
+  position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.5);color:#fff;
+  border:0;border-radius:999px;padding:6px 10px;font-weight:800
 }
 
-/* 淺色模式：顏色翻轉、漢堡線改黑、區塊小標用品牌橘 */
+/* 照片預覽（右側留言區） */
+.ph-modal{padding:0;max-width:min(96vw,860px)}
+.ph-body{display:grid;grid-template-columns:1fr 320px;gap:0}
+.ph-img{max-height:72vh;object-fit:contain;background:#000}
+.ph-side{padding:16px;background:#121315;border-left:1px solid #1f2023}
+.ph-meta{font-size:.9rem;color:var(--muted);margin-bottom:10px}
+.ph-c-list{max-height:40vh;overflow:auto;border:1px solid #222;border-radius:12px;padding:8px}
+.ph-c{padding:6px 8px;border-bottom:1px dashed #2a2b2d}
+.ph-c:last-child{border-bottom:0}
+.ph-actions{display:flex;gap:10px;margin-top:10px}
+
+/* =========================================================
+   聊天框
+   ========================================================= */
+.msg{padding:8px 12px;border-radius:12px;margin:6px 0;display:inline-block}
+.msg.me{background:#2a2b2f}.msg.other{background:#202124}
+.chatbox{height:220px;overflow:auto;border:1px solid #242529;border-radius:14px;padding:10px}
+
+/* =========================================================
+   右下 Top（單顆 FAB）
+   ========================================================= */
+.fab{position:fixed;right:14px;bottom:14px;z-index:40}
+.fab-btn{
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(180deg,#ff895f,#e76938);
+  border:0;color:#1c1c1c;font-weight:900;
+  box-shadow:0 10px 20px rgba(0,0,0,.35)
+}
+.fab-btn:active{transform:translateY(1px)}
+
+/* =========================================================
+   地圖層級（避免覆蓋抽屜選單）
+   ========================================================= */
+#map{position:relative;z-index:1;border-radius:12px;overflow:hidden}
+.leaflet-container{z-index:1}
+
+/* =========================================================
+   亮色主題（跟隨系統）
+   ========================================================= */
 @media (prefers-color-scheme: light){
-  body{ background:#fbfbfb; color:#222 }
-  .card{ background:#fff; border-color:#eee }
-  .menu{ background:#fff; border-left:1px solid #eee }
-  .menu a{ background:#f3f4f6; border-color:#e9eaee }
-  .auth-outer{ background:#f6f7f8; border-color:#e6e7ea }
-  .auth-card{ background:#fff; border-color:#e9e9ee }
-  .section-caption{ color:#ff7f50 }
-  .menu-toggle{ background:#f2f3f5 }
-  .menu-ico, .menu-ico::before, .menu-ico::after{ background:#111 }
-  .input, select.input, textarea.input{ background:#fff; color:#222; border-color:#e0e0e4 }
-  .btn.secondary{ background:#f2f3f5; color:#222; border-color:#e1e2e6 }
-  .p-card{ background:#fff; border-color:#ececf0 }
-  .msg.me{ background:#eceef2 } .msg.other{ background:#f2f3f6 }
+  body{background:#fbfbfb;color:#222}
+  .card{background:#fff;border-color:#eee}
+  .menu{background:#fff}
+  .menu a{background:#f3f4f6}
+  .auth-outer{background:#f6f7f8;border-color:#e6e7ea}
+  .auth-card{background:#fff;border-color:#e9e9ee}
+}
+
+/* =========================================================
+   小工具 / 間距 / 輕文字
+   ========================================================= */
+.mt-0{margin-top:0}
+.mt-1{margin-top:.5rem}
+.mt-2{margin-top:1rem}
+.muted{color:var(--muted)}
+.empty{
+  padding:22px;border:1px dashed #2b2c30;border-radius:14px;text-align:center
 }
