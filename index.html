@@ -12,6 +12,16 @@
   <link rel="apple-touch-icon" sizes="512x512" href="./logo/logo-512.png">
   <meta name="theme-color" content="#ff7f50">
   <link rel="stylesheet" href="./style.css?v=20250904-1">
+  <style>
+/* Fallback：避免 CSS 未載入時畫面走鐘 */
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC",sans-serif}
+.container{max-width:1120px;margin:0 auto;padding:0 16px}
+.card{border:1px solid #ececec;border-radius:18px;padding:22px}
+.hero-visual img.hero-logo{width:220px;height:220px;object-fit:cover;border-radius:20px}
+.menu{display:none} .menu.open{display:block;position:fixed;right:0;top:0;bottom:0;background:#111;width:86vw;z-index:1200}
+.menu-backdrop{display:none} .menu-backdrop.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1100}
+.fab-btn{position:fixed;right:14px;bottom:14px;width:56px;height:56px;border-radius:50%}
+</style>
 </head>
 <body>
 
