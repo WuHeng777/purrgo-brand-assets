@@ -215,22 +215,48 @@
     </section>
   </section>
 
-  <!-- ============ 照片牆 ============ -->
-  <section id="page-photos" class="page" hidden>
-    <div class="section-caption">Photos</div>
-    <section class="card">
-      <span class="pill">Photos</span>
-      <h2 class="mt-0">照片牆（依主子分相簿）</h2>
-      <div class="inline">
-        <label>主子
-          <select class="input" id="photoPet" onchange="renderWall()"></select>
-        </label>
-        <input type="file" accept="image/*" onchange="addPhoto(event)">
-        <button class="btn secondary" onclick="clearWall()">清除本機照片</button>
-      </div>
-      <div id="wall" class="grid g-3 mt-2"></div>
-    </section>
+<!-- ============ 照片牆 ============ -->
+<section id="page-photos" class="page" hidden>
+  <section class="card">
+    <span class="pill">Photos</span>
+    <h2 class="mt-0">照片牆（依主子分相簿）</h2>
+
+    <div class="inline">
+      <label>主子
+        <select class="input" id="photoPet" onchange="renderWall()"></select>
+      </label>
+
+      <!-- 支援一次多選 -->
+      <input id="photoInput" type="file" accept="image/*" multiple onchange="addPhoto(event)">
+      <button class="btn secondary" onclick="clearWall()">清除本機照片</button>
+    </div>
+
+    <!-- 三欄方格 -->
+    <div id="wall" class="wall-grid mt-2"></div>
   </section>
+</section>
+
+<!-- 照片預覽 Modal（IG 風格） -->
+<dialog id="photoModal">
+  <article class="photo-modal">
+    <header class="photo-modal-head">
+      <div id="pmMeta" class="muted"></div>
+      <button class="close" onclick="closePhoto()">×</button>
+    </header>
+
+    <div class="photo-modal-body">
+      <img id="pmImg" alt="">
+      <aside class="photo-side">
+        <div class="pm-actions">
+          <button class="btn" id="pmLikeBtn" onclick="likeCurrent()">♥ <span id="pmLike">0</span></button>
+          <button class="btn secondary" onclick="addCommentCurrent()">留言</button>
+        </div>
+        <div id="pmComments" class="pm-comments"></div>
+      </aside>
+    </div>
+  </article>
+</dialog>
+
 
   <!-- ============ 社群 ============ -->
   <section id="page-social" class="page" hidden>
