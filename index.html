@@ -410,8 +410,16 @@ function navTo(id){ closeMenu(); showPage(id); return false; }
 function restorePage(){ const h=(location.hash||'#home').slice(1); showPage(pages.includes(h)?h:'home'); }
 
 /* ====== 手機選單 ====== */
-function openMenu(){ menu.classList.add('open'); menuBackdrop.classList.add('show'); }
-function closeMenu(){ menu.classList.remove('open'); menuBackdrop.classList.remove('show'); }
+function openMenu(){
+  document.getElementById('menu').classList.add('open');
+  document.getElementById('menuBackdrop').classList.add('show');
+  document.body.classList.add('menu-open'); // ★ 新增
+}
+function closeMenu(){
+  document.getElementById('menu').classList.remove('open');
+  document.getElementById('menuBackdrop').classList.remove('show');
+  document.body.classList.remove('menu-open'); // ★ 新增
+}
 
 /* ====== 登入 / 註冊 ====== */
 function openAuth(){ document.getElementById('authDialog').showModal(); }
