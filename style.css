@@ -1,213 +1,191 @@
-/* ===== Design System ===== */
+/* ===============================
+   PurrGo 基礎樣式（for Demo）
+   - 深/淺色主題皆可
+   - 搭配 index.html 修正版
+   =============================== */
+
 :root{
-  --brand:#ff7f50; --brand-ink:#111;
-  --bg:#0b0b0c; --ink:#eee; --muted:#aaa; --line:#222;
-  --card:#141516;
-  --radius:14px; --radius-lg:20px; --shadow:0 12px 30px rgba(0,0,0,.35);
-  --shadow-strong:0 18px 40px rgba(0,0,0,.45);
-  --ease:cubic-bezier(.2,.8,.2,1);
-  --container:min(1100px,92vw);
+  --bg:#0f1011;
+  --bg-2:#151618;
+  --card:#131416;
+  --text:#eaeaea;
+  --muted:#9aa0a6;
+  --brand:#ff7f50;
+  --chip:#ffe0d3;
+  --chip-text:#2b2b2b;
+
+  --border:#1d1e21;
+  --border-2:#2a2b2d;
 }
-@media (prefers-color-scheme: light){
-  :root{ --bg:#fff; --ink:#111; --muted:#666; --line:#eee; --card:#fff; --brand-ink:#000; --shadow:0 8px 24px rgba(0,0,0,.08); --shadow-strong:0 12px 30px rgba(0,0,0,.12); }
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  line-height:1.6;
 }
-*{ box-sizing:border-box }
-html,body{ margin:0; padding:0 }
-body{ background:var(--bg); color:var(--ink); font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC",sans-serif }
-a{ color:inherit; text-decoration:none }
-img{ max-width:100%; display:block }
-.container{ width:var(--container); margin:auto }
+a{ color:inherit; text-decoration:none; }
+img{ max-width:100%; display:block; }
 
-/* ===== Header / Nav ===== */
-.site-header{ position:sticky; top:0; z-index:60; backdrop-filter:saturate(180%) blur(10px);
-  background:color-mix(in oklab,var(--bg),transparent 12%); border-bottom:1px solid var(--line) }
-.nav{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; gap:12px }
-.brand{ display:flex; align-items:center; gap:10px; font-weight:800 }
-.brand-logo{ width:32px; height:32px; border-radius:10px; background:var(--brand); object-fit:cover }
-
-.tabs{ display:flex; gap:8px; flex-wrap:wrap }
-.tab{ padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-weight:600; opacity:.9 }
-.tab:hover{ opacity:1 }
-.tab[aria-current="page"], .tab.active{ background:var(--brand); color:var(--brand-ink); border-color:var(--brand) }
-
-/* Hamburger */
-.menu-toggle{ width:46px;height:40px; border-radius:12px; border:1px solid var(--line); background:transparent; display:grid; place-items:center; cursor:pointer }
-.menu-ico{ position:relative; width:22px; height:2px; background:currentColor; display:block }
-.menu-ico::before,.menu-ico::after{ content:""; position:absolute; left:0; width:22px; height:2px; background:currentColor }
-.menu-ico::before{ top:-7px } .menu-ico::after{ top:7px }
-
-/* Drawer menu + backdrop */
-.menu{ position:fixed; inset:0 auto 0 0; width:min(320px,86vw); background:rgba(20,20,20,.96); border-right:1px solid var(--line); transform:translateX(-100%);
-  transition:transform .28s var(--ease); padding:16px; z-index:98; overflow:auto }
-.menu[aria-hidden="false"]{ transform:translateX(0) }
-.menu a{ display:block; padding:16px; margin:10px 0; background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:16px; font-weight:800 }
-.menu-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:97; backdrop-filter: blur(2px) }
-body.noscroll{ overflow:hidden }
-
-/* ===== Layout ===== */
-main{ padding:26px 0 60px }
-.page{ margin:18px auto }
-.card{ background:linear-gradient(180deg,color-mix(in oklab,var(--card),#fff 5%),color-mix(in oklab,var(--bg),#000 8%));
-  border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px }
-.radius-xl{ border-radius:24px }
-.pill{ display:inline-block; padding:6px 12px; border-radius:999px; background:color-mix(in oklab,var(--brand),#fff 75%); color:#000; font-weight:800; font-size:14px }
-.btn{ display:inline-grid; place-items:center; height:44px; padding:0 18px; border-radius:12px; font-weight:800; border:1.5px solid #000;
-  background:var(--brand); color:var(--brand-ink); cursor:pointer; box-shadow:var(--shadow); transition:transform .12s var(--ease), box-shadow .25s var(--ease) }
-.btn:hover{ transform:translateY(-1px); box-shadow:var(--shadow-strong) }
-.btn.secondary{ background:transparent; border-color:var(--line); color:var(--ink) }
-.btn.tertiary{ background:transparent; border-color:var(--line); color:var(--muted) }
-.input,textarea,select{ width:100%; height:44px; border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:transparent; color:inherit }
-textarea{ height:120px; resize:vertical }
-.inline{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
-.grid{ display:grid; gap:16px }
-.g-2{ grid-template-columns:repeat(2,1fr) } .g-3{ grid-template-columns:repeat(3,1fr) }
-.gcol-2{ grid-column:1/-1 } @media(max-width:900px){ .g-2,.g-3{ grid-template-columns:1fr } }
-
-/* Sections */
-.section-head{ display:flex; align-items:end; justify-content:space-between; margin:0 0 10px }
-.section-sub{ color:var(--muted) }
-
-/* Hero */
-.hero{ display:grid; grid-template-columns:1.2fr .8fr; gap:22px; align-items:center }
-.hero-title{ margin:.2em 0 .3em; font-size:clamp(28px,3.4vw,44px); line-height:1.15 }
-.hero-visual{ aspect-ratio:16/10; border-radius:20px; overflow:hidden; background:radial-gradient(60% 60% at 70% 20%, rgba(255,255,255,.08), transparent 50%),
-                             radial-gradient(60% 60% at 20% 80%, rgba(255,127,80,.18), transparent 50%) }
-.hero-logo{ width:100%; height:100%; object-fit:contain; padding:18px }
-
-/* Horizontal cards */
-.hwrap{ position:relative }
-.hscroll{ display:grid; grid-auto-flow:column; grid-auto-columns: min(320px, 82vw); gap:16px; overflow:auto; padding:6px 8px 6px 6px; scroll-behavior:smooth }
-.hbtn{ position:absolute; top:50%; transform:translateY(-50%); width:42px;height:42px;border-radius:999px;border:1px solid var(--line); background:var(--card); color:var(--ink); box-shadow:var(--shadow) }
-.hbtn.prev{ left:-8px } .hbtn.next{ right:-8px }
-
-/* Product card */
-.pro-card{ border:1px solid var(--line); border-radius:16px; overflow:hidden; background:color-mix(in oklab,var(--card),#fff 4%); box-shadow:var(--shadow) }
-.pro-img{ aspect-ratio:4/3; background:#0d0d0e; display:block; overflow:hidden }
-.pro-img img{ width:100%; height:100%; object-fit:cover }
-.pro-body{ padding:14px }
-
-/* Cat cards */
-.cards-row{ padding:6px 8px; }
-.cat-card{ display:grid; grid-template-columns:64px 1fr auto; gap:12px; align-items:center; border:1px solid var(--line); border-radius:14px; padding:10px; background:color-mix(in oklab,var(--card),#fff 3%) }
-.cat-avatar{ width:64px;height:64px;border-radius:14px;object-fit:cover }
-.cat-name{ font-weight:800 }
-
-/* Progress */
-.progress{ height:8px; background:#1113; border-radius:999px; overflow:hidden; margin-top:8px }
-.progress span{ display:block; height:100%; background:linear-gradient(90deg,var(--brand),#ff9a73) }
-
-/* Map */
-.map{ height:360px; border-radius:14px; overflow:hidden; border:1px solid var(--line) }
-.leaflet-container{ outline:none } /* 避免選單開啟時陰影穿透 */
-
-/* Photo wall */
-.wall-item{ border-radius:14px; overflow:hidden; border:1px solid var(--line) }
-.wall-item img{ width:100%; height:100%; object-fit:cover; cursor:zoom-in }
-
-/* Dialog */
-.dlg::backdrop{ background:rgba(0,0,0,.5) }
-.dlg{ border:0; padding:0; background:transparent }
-.dlg-body{ position:relative }
-.dlg-close{ position:absolute; right:10px; top:10px; border:0; background:#0008; color:#fff; border-radius:999px; width:34px;height:34px; cursor:pointer }
-
-/* FAB (single) */
-.fab-col{ position:fixed; right:16px; bottom:18px; z-index:55 }
-.fab{ width:64px;height:64px; border-radius:999px; border:0; font-weight:900; box-shadow:var(--shadow-strong);
-  background:radial-gradient(120% 120% at 30% 20%, #ffb08f, var(--brand)); color:#000; cursor:pointer; }
-.fab:active{ transform:scale(.98); opacity:.9 }
-
-/* Utils */
-.mt-0{ margin-top:0 } .mt-1{ margin-top:10px } .mt-2{ margin-top:18px }
-.muted{ color:var(--muted) }
-.empty{ text-align:center; padding:22px; border:1px dashed var(--line); border-radius:12px }
-.list{ padding-left:18px } .list li{ margin:6px 0 }
-
-/* ===== Drawer / Overlay 修補 ===== */
-.menu-backdrop{
-  position: fixed; inset: 0;
-  background: color-mix(in oklab, var(--brand) 30%, #000 15%);
-  backdrop-filter: blur(2px);
-  opacity: 0; pointer-events: none;
-  transition: opacity .2s var(--ease);
-  z-index: 9980;
+.container{ max-width:1120px; margin:0 auto; padding:0 16px; }
+.hide-mobile{ display:none; }
+@media (min-width:960px){
+  .hide-mobile{ display:flex; }
+  .hide-desktop{ display:none; }
 }
-.menu-panel{
-  position: fixed; top: 0; right: 0; height: 100dvh; width: min(84vw, 360px);
-  background: var(--card); border-left: 1px solid var(--line);
-  transform: translateX(100%); transition: transform .22s var(--ease);
-  z-index: 9990; padding: 16px;
-  overflow: auto;
-  box-shadow: -10px 0 30px rgba(0,0,0,.35);
+
+/* ===== Header ===== */
+header .nav{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 0;
 }
-.menu-panel a{ display:block; padding:14px 12px; margin:8px 0; border:1px solid var(--line); border-radius:14px; }
+.brand{ display:flex; align-items:center; gap:10px; font-weight:700; }
+.tabs{ gap:8px; display:flex; flex-wrap:wrap; }
+.tab{
+  padding:8px 14px; border:1px solid var(--border-2); border-radius:999px; opacity:.85;
+}
+.tab[aria-current="page"]{
+  background:var(--brand); color:#1a1a1a; border-color:transparent; opacity:1;
+}
 
-/* 開啟狀態 */
-.menu-open .menu-backdrop{ opacity:.98; pointer-events:auto; }
-.menu-open .menu-panel{ transform: translateX(0); }
-.menu-open, .menu-open body{ overflow: hidden; } /* 鎖捲動 */
-
-/* 讓任何互動區在抽屜開啟時不可點（避免 Leaflet/影片吃走點擊） */
-.menu-open #map,
-.menu-open .hwrap,
-.menu-open .page,
-.menu-open .fab { pointer-events: none; }
-.menu-open .menu-panel,
-.menu-open .menu-backdrop { pointer-events: auto; }
-
-/* ===== 漢堡 icon 修補（用 currentColor） ===== */
+/* ===== Mobile Menu Button (Hamburger) ===== */
 .menu-toggle{
-  width: 46px; height: 46px; border-radius: 12px;
-  border: 1px solid var(--line); background: rgba(255,255,255,.06);
-  display:grid; place-items:center; cursor:pointer; z-index:9995;
-  color: #fff; /* 深色背景預設白線 */
+  width:48px; height:48px; border-radius:14px; background:#232427; border:0;
+  display:grid; place-items:center;
 }
-.menu-toggle .bar{
-  width: 22px; height: 2px; background: currentColor; border-radius: 2px; display:block;
+.menu-ico,
+.menu-ico::before,
+.menu-ico::after{
+  content:""; display:block; width:22px; height:2px; background:#fff; border-radius:2px; position:relative;
 }
-.menu-toggle .bar + .bar{ margin-top: 5px; }
+.menu-ico::before{ position:absolute; top:-6px; }
+.menu-ico::after{ position:absolute; top:6px; }
 
-/* 抽屜面板是淺色底，icon 切為黑線；也可依你的 header theme 切換 */
-.menu-open .menu-toggle{ color:#111; background: #fff; border-color: #eee; }
+/* Light mode：漢堡線條黑色 */
+@media (prefers-color-scheme: light){
+  .menu-toggle{ background:#eceef2; }
+  .menu-ico, .menu-ico::before, .menu-ico::after{ background:#111; }
+}
 
-/* ===== 右下只留一顆 Top FAB ===== */
-.fab{ position: fixed; right: 18px; bottom: 18px; z-index: 60; }
+/* ===== Drawer Menu ===== */
+.menu{
+  position:fixed; inset:0 0 0 auto; width:min(86vw,340px);
+  transform:translateX(100%); transition:transform .25s ease;
+  background:#0d0e10; z-index:60; padding:16px; overflow-y:auto;
+  box-shadow:-14px 0 30px rgba(0,0,0,.4);
+}
+.menu.open{ transform:none; }
+.menu a{
+  display:block; padding:14px 16px; margin:10px 0; border-radius:14px; background:#1b1c1f;
+}
+.menu-backdrop{
+  position:fixed; inset:0; background:rgba(0,0,0,.5); backdrop-filter:blur(2px);
+  opacity:0; pointer-events:none; transition:opacity .2s; z-index:50;
+}
+.menu-backdrop.show{ opacity:1; pointer-events:auto; }
+
+/* ===== Page / Card ===== */
+.page{ padding:8px 0 40px; }
+.card{
+  background:radial-gradient(130% 120% at 100% 0%,#1a1b1e 0%,#111214 60%);
+  border-radius:18px; padding:22px; border:1px solid var(--border);
+}
+.band .section-head{ margin-bottom:12px; }
+.pill{
+  display:inline-block; background:var(--chip); color:var(--chip-text);
+  padding:8px 14px; border-radius:999px; font-weight:700;
+}
+
+/* ===== Hero ===== */
+.hero{ display:grid; grid-template-columns:1.2fr .9fr; gap:16px; align-items:center; }
+.hero-title{ font-size:clamp(24px,5.6vw,40px); line-height:1.25; margin:.2rem 0 1rem; }
+.hero-copy .btn{ margin-right:10px; margin-bottom:10px; }
+.hero-visual{ display:flex; align-items:center; justify-content:center; }
+.hero-logo{
+  width:min(54vw,180px); aspect-ratio:1/1; border-radius:20px; object-fit:cover;
+  box-shadow:0 8px 20px rgba(0,0,0,.35);
+}
+@media (max-width:900px){
+  .hero{ grid-template-columns:1fr; align-items:center; }
+  .hero-visual{ justify-content:flex-end; }
+}
+
+/* ===== Form/UI ===== */
+.input, select.input, textarea.input{
+  width:100%; padding:14px 14px; border-radius:12px;
+  border:1px solid var(--border-2); background:#101113; color:var(--text);
+}
+.btn{ background:var(--brand); color:#1b1b1b; border:0; border-radius:14px; padding:12px 16px; font-weight:800; }
+.btn.secondary{ background:#26272a; color:#ddd; border:1px solid #2b2c2f; }
+.btn.ghost{ background:transparent; border:1px dashed #3a3b3f; color:#bbb; }
+.inline{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+.grid{ display:grid; }
+.g-2{ grid-template-columns:repeat(2,1fr); gap:14px; }
+.g-3{ grid-template-columns:repeat(3,1fr); gap:14px; }
+.gcol-2{ grid-column:span 2; }
+
+.hscroll{ display:flex; gap:12px; overflow:auto; scroll-snap-type:x mandatory; padding-bottom:6px; }
+.hwrap{ position:relative; }
+.hbtn{
+  position:absolute; top:50%; transform:translateY(-50%); z-index:3;
+  border:0; background:#1a1b1e; color:#fff; width:36px; height:36px; border-radius:50%;
+}
+.hbtn.prev{ left:-6px; } .hbtn.next{ right:-6px; }
+
+.table{ width:100%; border-collapse:collapse; }
+.table th,.table td{ padding:10px; border-bottom:1px solid #222; }
+
+.list{ list-style:none; margin:0; padding-left:0; }
+
+.msg{ padding:8px 12px; border-radius:12px; margin:6px 0; display:inline-block; }
+.msg.me{ background:#2a2b2f; } .msg.other{ background:#202124; }
+.chatbox{ height:220px; overflow:auto; border:1px solid #242529; border-radius:14px; padding:10px; }
+
+/* ===== Right-bottom FAB (Top only) ===== */
+.fab{ position:fixed; right:14px; bottom:14px; z-index:40; }
 .fab-btn{
-  height: 54px; width: 54px; border-radius: 999px;
-  border: 1px solid var(--line);
-  background: radial-gradient(120% 120% at 30% 20%, #ff9a6a 0%, #ff7f50 60%, #e9683c 100%);
-  color: #111; font-weight: 900; font-size: 14px;
-  display:grid; place-items:center; cursor:pointer;
-  box-shadow: 0 6px 18px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.22);
-  transition: transform .1s var(--ease), box-shadow .2s var(--ease), opacity .2s ease;
+  width:64px; height:64px; border-radius:50%;
+  background:linear-gradient(180deg,#ff895f,#e76938); border:0; color:#1c1c1c; font-weight:900;
+  box-shadow:0 10px 20px rgba(0,0,0,.35);
 }
-.fab-btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,.32), 0 3px 10px rgba(0,0,0,.25); }
-.fab-btn:active{ transform: translateY(0); opacity:.85; }
 
-/* 讓 header 之下的內容不會蓋到抽屜（保險，再墊一層） */
-header{ position: relative; z-index: 30; }
-main, .page, .band{ position: relative; z-index: 1; }
+/* ===== Products ===== */
+.product{ min-width:280px; scroll-snap-align:start; }
+.prod-img{ width:100%; height:180px; object-fit:cover; border-radius:14px; }
 
-/* 讓抽屜與背板永遠以視窗為基準，不受祖先影響 */
-.menu, .menu-backdrop { position: fixed; }
+/* ===== Pet cards ===== */
+.p-card{
+  min-width:220px; display:flex; gap:12px; align-items:center;
+  background:#17181b; border:1px solid #232427; border-radius:14px; padding:10px;
+}
+.p-avatar{ width:56px; height:56px; border-radius:12px; object-fit:cover; }
 
-/* 背板全幅覆蓋（你已有 inset:0；這裡確保層級最高且不被其他層遮） */
-.menu-backdrop{ inset:0; z-index: 9998; }
+/* ===== Dialogs (detail & auth) ===== */
+dialog{ border:0; border-radius:18px; padding:0; max-width:min(92vw,480px); }
+dialog::backdrop{ background:rgba(0,0,0,.55); }
 
-/* 抽屜在背板之上 */
-.menu{ top:0; right:0; height:100dvh; z-index: 9999; }
+/* 外層與卡片：深色=深灰；淺色=淺白灰 */
+.auth-outer{ background:#0b0c0d; border:1px solid #1c1d21; padding:10px; border-radius:20px; }
+.auth-card{ background:var(--bg-2); border:1px solid #24262a; border-radius:18px; padding:18px; }
+@media (prefers-color-scheme: light){
+  body{ background:#fbfbfb; color:#222; }
+  .card{ background:#fff; border-color:#eee; }
+  .menu{ background:#fff; }
+  .menu a{ background:#f3f4f6; }
+  .auth-outer{ background:#f6f7f8; border-color:#e6e7ea; }
+  .auth-card{ background:#fff; border-color:#e9e9ee; }
+}
 
-/* 開啟抽屜時，主畫面與地圖完全不吃點擊也不滾動 */
-html.menu-open, body.menu-open { overflow: hidden; }
-html.menu-open main,
-html.menu-open #map,
-html.menu-open .fab { pointer-events: none; }
+/* ===== Section Caption ===== */
+.section-caption{ font-size:.95rem; color:var(--muted); margin:6px 0 10px; }
 
-/* Leaflet 控制與圖層也一併遮住（避免穿透） */
-html.menu-open .leaflet-pane,
-html.menu-open .leaflet-control-container { pointer-events: none !important; }
-
-/* 抽屜開啟時，右下 Top 按鈕淡出，避免視覺干擾 */
-html.menu-open .fab { opacity: 0; }
-
-
-header, header * { transform: none !important; }
+/* ===== Spacing helpers ===== */
+.mt-0{ margin-top:0; }
+.mt-1{ margin-top:.5rem; }
+.mt-2{ margin-top:1rem; }
+.muted{ color:var(--muted); }
+.empty{ padding:22px; border:1px dashed #2b2c30; border-radius:14px; text-align:center; }
