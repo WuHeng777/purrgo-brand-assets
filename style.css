@@ -189,3 +189,19 @@ dialog::backdrop{ background:rgba(0,0,0,.55); }
 .mt-2{ margin-top:1rem; }
 .muted{ color:var(--muted); }
 .empty{ padding:22px; border:1px dashed #2b2c30; border-radius:14px; text-align:center; }
+/* === 修正地圖覆蓋選單問題 === */
+.menu{ z-index: 4000; }
+.menu-backdrop{ z-index: 3500; }
+.fab{ z-index: 3200; }
+
+.leaflet-top, .leaflet-bottom{ z-index: 300 !important; }
+.leaflet-pane{ z-index: 200 !important; }
+
+body.menu-open #map,
+body.menu-open .leaflet-container,
+body.menu-open .leaflet-pane,
+body.menu-open .leaflet-top,
+body.menu-open .leaflet-bottom{
+  pointer-events: none !important;
+  filter: brightness(.85); /* 想保留變暗效果就留著，不要的話刪掉這行 */
+}
