@@ -1,5 +1,5 @@
 /* PurrGo Service Worker — clean single version */
-const CACHE = 'purrgo-v11'; // ← 每次前端改版請改這個字串
+const CACHE = 'purrgo-v12'; // ← 每次前端改版請改這個字串
 const ASSETS = [
   './',
   './index.html',
