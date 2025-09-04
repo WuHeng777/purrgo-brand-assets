@@ -133,3 +133,36 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
   .auth-card{background:#fff;border-color:#e9e9ee}
   .auth-title{color:#111}
 }
+/* === Drawer 的最高優先權與安全區 === */
+.menu{
+  position: fixed;
+  inset: 0 0 0 auto;               /* 右側抽屜 */
+  width: min(86vw, 360px);
+  transform: translateX(100%);
+  transition: transform .25s ease;
+  background: #0d0e10;
+  overflow: auto;
+  /* 安全區避免被瀏海/底部手勢遮住 */
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 10000;                  /* <<< 抽屜放最上層 */
+}
+.menu.open{ transform: none; }
+
+.menu-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+  z-index: 9999;                   /* <<< 僅次於抽屜 */
+}
+.menu-backdrop.show{ opacity: 1; pointer-events: auto; }
+
+/* 讓其他浮動件確定在抽屜之下 */
+.fab{ z-index: 1200; }             /* Top 按鈕 */
+header, .container, .card{ position: relative; z-index: auto; }
+
+/* 若你有其它自訂很高的 z-index，請確保 < 9999 */
