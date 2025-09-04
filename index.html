@@ -493,6 +493,37 @@ function renderIdentity(){
   el('vipNext').textContent = nextVipNeed(u.vipXp|0)>0? `$${nextVipNeed(u.vipXp|0)}`:'已達頂級';
 }
 
+/* ===== 影像壓縮工具（avatar 專用：max=960, quality=0.75） ===== */
+function blobToDataURL(blob){
+  return new Promise((resolve,reject)=>{
+    const rd = new FileReader();
+    rd.onload = () => resolve(rd.result);
+    rd.onerror = reject;
+    rd.readAsDataURL(blob);
+  });
+}
+function loadBitmap(file){
+  if (window.createImageBitmap) return createImageBitmap(file);
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+/** 壓縮圖片到 dataURL */
+async function compressImage(file, opt={}){
+  const { max=960, quality=0.75, type='image/jpeg' } = opt;
+  const bm = await loadBitmap(file);
+  let w=bm.width, h=bm.height;
+  const long = Math.max(w,h);
+  if(long>max){ const r=max/long; w=Math.round(w*r); h=Math.round(h*r); }
+  const cvs=document.createElement('canvas'); cvs.width=w; cvs.height=h;
+  const ctx=cvs.getContext('2d'); ctx.drawImage(bm,0,0,w,h);
+  const blob = await new Promise(res=>cvs.toBlob(res, type, quality));
+  return blobToDataURL(blob);
+}
+
 /* ===== 主子 ===== */
 function ageText(birth){ if(!birth) return ''; const d=new Date(birth); if(isNaN(d)) return ''; const now=new Date(); let y=now.getFullYear()-d.getFullYear(); let m=now.getMonth()-d.getMonth(); if(m<0){y--;m+=12} return `${y}歲${m}月`; }
 function loadBreeds(){
@@ -502,21 +533,20 @@ function loadBreeds(){
     list.forEach(b=>{ const o=document.createElement('option'); o.textContent=b; o.value=b; s.appendChild(o.cloneNode(true)); se.appendChild(o); });
   }).catch(()=>{});
 }
-function addPet(e){
+async function addPet(e){
   e.preventDefault();
   const f=e.target;
-  const p = { id: crypto.randomUUID(), name: f.name.value.trim(), sex: f.sex.value, birth: f.birth.value, breed: f.breed.value, avatar:'' };
+  const p = { id: (crypto?.randomUUID?.()||Date.now().toString(36)), name: f.name.value.trim(), sex: f.sex.value, birth: f.birth.value, breed: f.breed.value, avatar:'' };
   const file = f.avatar.files[0];
-  const finish = ()=>{
-    state.pets.push(p);
-    if(p.avatar){ (state.photos[p.id]=state.photos[p.id]||[]).unshift({src:p.avatar, likes:0, comments:[]}); }
-    save(); f.reset();
-  };
+
   if(file){
-    const rd=new FileReader();
-    rd.onload=()=>{ p.avatar=rd.result; finish(); };
-    rd.readAsDataURL(file);
-  }else finish();
+    try { p.avatar = await compressImage(file, { max:960, quality:0.75 }); }
+    catch(err){ alert('圖片處理失敗，將以預設頭像替代'); }
+  }
+  state.pets.push(p);
+  if(p.avatar){ (state.photos[p.id]=state.photos[p.id]||[]).unshift({src:p.avatar, likes:0, comments:[]}); }
+  try { save(); } catch(e2){ alert('儲存失敗：可能超出瀏覽器容量，請換較小的照片'); }
+  f.reset();
   return false;
 }
 function openPetEdit(pt){
@@ -525,14 +555,22 @@ function openPetEdit(pt){
   el('petDlg').showModal();
 }
 function closePetDlg(){ el('petDlg').close(); }
-function savePetEdit(e){
+async function savePetEdit(e){
   e.preventDefault();
   const f=e.target, id=f.id.value, pt=state.pets.find(x=>x.id===id);
   if(!pt) return closePetDlg();
   pt.name=f.name.value.trim(); pt.sex=f.sex.value; pt.birth=f.birth.value; pt.breed=f.breed.value;
   const file=f.avatar.files[0];
-  if(file){ const rd=new FileReader(); rd.onload=()=>{ pt.avatar=rd.result; save(); closePetDlg(); }; rd.readAsDataURL(file); }
-  else { save(); closePetDlg(); }
+  if(file){
+    try{
+      pt.avatar = await compressImage(file, { max:960, quality:0.75 });
+      if(!(state.photos[id] && state.photos[id].length)){
+        (state.photos[id]=state.photos[id]||[]).unshift({src:pt.avatar, likes:0, comments:[]});
+      }
+    }catch(err){ alert('圖片處理失敗，已略過更換頭像'); }
+  }
+  try { save(); } catch(e2){ alert('儲存失敗：可能超出瀏覽器容量，請換較小的照片'); }
+  closePetDlg();
   return false;
 }
 function renderPets(){
@@ -640,7 +678,7 @@ function openDetail(p){
 }
 function closeModal(){ el('modal').close(); }
 
-/* ===== 照片牆 ===== */
+/* ===== 照片牆（維持原規格；如需也壓縮，再套 compressImage） ===== */
 function addPhoto(e){
   const pid=el('photoPet').value; if(!pid){ alert('請先建立主子'); return; }
   const files=[...e.target.files||[]]; if(!files.length) return;
@@ -794,19 +832,21 @@ function boot(){
 window.addEventListener('hashchange', restorePage);
 window.addEventListener('DOMContentLoaded', boot);
 </script>
+
 <!-- 手機：抽屜選單＋背景遮罩（項目完整） -->
-  <nav id="menu" class="menu" aria-label="主選單">
-    <a href="#home"     onclick="navTo('home')">首頁</a>
-    <a href="#products" onclick="navTo('products')">產品</a>
-    <a href="#guild"    onclick="navTo('guild')">公會</a>
-    <a href="#kiosk"    onclick="navTo('kiosk')">據點</a>
-    <a href="#photos"   onclick="navTo('photos')">照片牆</a>
-    <a href="#social"   onclick="navTo('social')">社群</a>
-    <a href="#chat"     onclick="navTo('chat')">聊天</a>
-    <a href="#video"    onclick="navTo('video')">短影片</a>
-    <a href="#about"    onclick="navTo('about')">理念</a>
-    <a href="#contact"  onclick="navTo('contact')">聯絡</a>
-  </nav>
-  <div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()"></div>
+<nav id="menu" class="menu" aria-label="主選單">
+  <a href="#home"     onclick="navTo('home')">首頁</a>
+  <a href="#products" onclick="navTo('products')">產品</a>
+  <a href="#guild"    onclick="navTo('guild')">公會</a>
+  <a href="#kiosk"    onclick="navTo('kiosk')">據點</a>
+  <a href="#photos"   onclick="navTo('photos')">照片牆</a>
+  <a href="#social"   onclick="navTo('social')">社群</a>
+  <a href="#chat"     onclick="navTo('chat')">聊天</a>
+  <a href="#video"    onclick="navTo('video')">短影片</a>
+  <a href="#about"    onclick="navTo('about')">理念</a>
+  <a href="#contact"  onclick="navTo('contact')">聯絡</a>
+</nav>
+<div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()"></div>
+
 </body>
 </html>
