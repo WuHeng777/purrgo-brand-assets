@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" sizes="512x512" href="./logo/logo-512.png">
   <meta name="theme-color" content="#ff7f50">
 
-  <!-- 主要樣式（全部已拆到這支） -->
+  <!-- 主要樣式 -->
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -27,7 +27,7 @@
     <!-- 訪客 / 登入（橫向晶片） -->
     <div class="chipbar">
       <div class="chip" id="whoChip">
-        <span id="whoText">訪客</span>
+        <span id="whoText" class="who">訪客</span>
         <span class="sep">｜</span>
         <a class="btn secondary compact" onclick="openAuth()">登入</a>
       </div>
@@ -60,14 +60,16 @@
         </div>
       </div>
       <div class="hero-visual">
+        <!-- 正方形圓角 Logo -->
         <img class="hero-logo" src="./logo/logo-512.png" alt="PurrGo Logo">
       </div>
     </section>
 
-    <!-- 建立主子角色 -->
+    <!-- 建立主子角色（多貓家庭） -->
     <section class="card mt-2">
       <span class="pill">主子</span>
       <h2 class="mt-0">建立主子角色</h2>
+      <!-- 用生日自動換算歲/月；第一隻就能上傳頭像 -->
       <form class="grid g-2" onsubmit="return addPet(event)">
         <div><label>暱稱<input class="input" name="name" required></label></div>
         <div><label>性別
@@ -117,16 +119,14 @@
   <!-- ============ 公會 / 健檢 ============ -->
   <section id="page-guild" class="page" hidden>
     <div class="section-caption">公會</div>
-
     <section class="band">
-      <header class="section-head">
-        <div>
-          <span class="pill">Guild</span>
-          <h2 class="mt-0">公會制度：一起成長、一起更省</h2>
-          <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務…</p>
-        </div>
-      </header>
+      <header class="section-head"><div>
+        <span class="pill">Guild</span>
+        <h2 class="mt-0">公會制度：一起成長、一起更省</h2>
+        <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務…</p>
+      </div></header>
 
+      <!-- 身分綁定 / VIP -->
       <section class="card">
         <h3 class="mt-0">身份綁定 / VIP</h3>
         <div class="grid g-2">
@@ -149,6 +149,7 @@
         </div>
       </section>
 
+      <!-- 健檢報告上傳（需先有主子） -->
       <section class="card">
         <h3 class="mt-0">免費健檢（每年 1 次 / 需加入公會）</h3>
         <div class="grid g-3">
@@ -179,6 +180,7 @@
         <div id="vetList" class="muted mt-1">目前無健檢紀錄</div>
       </section>
 
+      <!-- 公會基本：創立 / 貢獻條 -->
       <section class="card">
         <div class="inline">
           <button class="btn" onclick="createGuild()">創立門檻（示意）</button>
@@ -222,7 +224,7 @@
     </section>
   </section>
 
-  <!-- ============ 社群（好友/封鎖） ============ -->
+  <!-- ============ 社群（好友名單 / 追蹤） ============ -->
   <section id="page-social" class="page" hidden>
     <div class="section-caption">社群</div>
     <section class="card">
@@ -245,7 +247,7 @@
     </section>
   </section>
 
-  <!-- ============ 聊天（長條輸入 + 清除） ============ -->
+  <!-- ============ 聊天（新版輸入列） ============ -->
   <section id="page-chat" class="page" hidden>
     <div class="section-caption">Chat</div>
     <section class="card">
@@ -257,6 +259,7 @@
             <select class="input" id="chatWith" onchange="renderChat()"></select>
           </label>
           <div id="chatBox" class="chatbox mt-1"></div>
+          <!-- 底部長條輸入列：送出 / 清除 -->
           <div class="inline mt-1 fullrow">
             <input class="input flex-1" id="chatMsg" placeholder="輸入訊息…">
             <button class="btn" onclick="sendMsg()">送出</button>
@@ -313,12 +316,12 @@
   © PurrGo 喵來速 ｜ 公開 Demo（不含投資人資訊）
 </footer>
 
-<!-- 右下 Top -->
+<!-- 右下 Top（單顆） -->
 <div class="fab" id="fab" aria-label="快速導覽">
   <button class="fab-btn" title="回頂端" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top</button>
 </div>
 
-<!-- 產品詳情 Modal -->
+<!-- ===== 產品詳情 Modal ===== -->
 <dialog id="modal">
   <article class="auth-card">
     <header class="inline space-between">
@@ -333,7 +336,7 @@
   </article>
 </dialog>
 
-<!-- 登入 Dialog（開啟時不自動聚焦，避免手機鍵盤放大畫面） -->
+<!-- ===== 登入 Dialog（開啟時不自動聚焦） ===== -->
 <dialog id="authDlg">
   <div class="auth-outer">
     <div class="auth-card">
@@ -365,7 +368,7 @@
   </div>
 </dialog>
 
-<!-- 主子編輯 Dialog -->
+<!-- ===== 主子編輯 Dialog ===== -->
 <dialog id="petDlg">
   <div class="auth-outer">
     <div class="auth-card">
@@ -388,7 +391,7 @@
   </div>
 </dialog>
 
-<!-- 照片預覽 Dialog（去白邊） -->
+<!-- ===== 照片預覽 Dialog ===== -->
 <dialog id="photoModal">
   <div class="auth-outer">
     <div class="auth-card">
@@ -438,7 +441,7 @@ function showPage(sec){
   });
   closeMenu();
   location.hash = '#'+sec;
-  if(sec==='kiosk'){ setTimeout(initMap, 60); }
+  if(sec==='kiosk'){ setTimeout(initMap, 60); } // 地圖大小校正
   if(sec==='photos') { renderWall(); }
   if(sec==='guild')  { renderVet(); }
   if(sec==='chat')   { renderChatSelectors(); renderChat(); }
@@ -453,7 +456,7 @@ function closeMenu(){ el('menu').classList.remove('open'); el('menuBackdrop').cl
 /* ===== 水平捲動 ===== */
 function scrollH(id,dir){ const el=document.getElementById(id); if(!el) return; el.scrollBy({left: dir*(el.clientWidth*0.9), behavior:'smooth'}); }
 
-/* ===== 登入 / 登出（不自動聚焦，避免手機鍵盤彈出） ===== */
+/* ===== 登入 / 登出（不自動聚焦） ===== */
 function openAuth(){ el('authDlg').showModal(); setTimeout(()=>el('authNoFocus').focus(),0); }
 function closeAuth(){ el('authDlg').close(); }
 function doLogin(){
@@ -465,9 +468,20 @@ function doLogin(){
   save(); closeAuth();
 }
 function logout(){ state.user.id=''; save(); }
+
+/* ===== 智慧顯示 ID（自動縮放 + 前4後4） ===== */
+function compactId(id){
+  if(!id) return '訪客';
+  const s = String(id);
+  if(s.length <= 12) return s;
+  return `${s.slice(0,4)}…${s.slice(-4)}`;
+}
 function renderWho(){
-  const who = state.user.id ? state.user.id : '訪客';
-  el('whoText').textContent = who;
+  const raw = state.user.id || '';
+  const who = raw ? compactId(raw) : '訪客';
+  const whoEl = el('whoText');
+  whoEl.textContent = who;
+  whoEl.title = raw || '訪客'; // 長按/滑鼠可看完整
   const btn = el('whoChip').querySelector('.btn');
   btn.textContent = state.user.id? '登出':'登入';
   btn.onclick = state.user.id? logout: openAuth;
@@ -511,7 +525,6 @@ function loadBitmap(file){
     img.src = URL.createObjectURL(file);
   });
 }
-/** 壓縮圖片到 dataURL */
 async function compressImage(file, opt={}){
   const { max=960, quality=0.75, type='image/jpeg' } = opt;
   const bm = await loadBitmap(file);
@@ -524,7 +537,7 @@ async function compressImage(file, opt={}){
   return blobToDataURL(blob);
 }
 
-/* ===== 主子 ===== */
+/* ===== 主子（多貓，生日自動換算） ===== */
 function ageText(birth){ if(!birth) return ''; const d=new Date(birth); if(isNaN(d)) return ''; const now=new Date(); let y=now.getFullYear()-d.getFullYear(); let m=now.getMonth()-d.getMonth(); if(m<0){y--;m+=12} return `${y}歲${m}月`; }
 function loadBreeds(){
   fetch('./data/breeds.json').then(r=>r.json()).then(list=>{
@@ -536,15 +549,23 @@ function loadBreeds(){
 async function addPet(e){
   e.preventDefault();
   const f=e.target;
-  const p = { id: (crypto?.randomUUID?.()||Date.now().toString(36)), name: f.name.value.trim(), sex: f.sex.value, birth: f.birth.value, breed: f.breed.value, avatar:'' };
+  const p = {
+    id: (crypto?.randomUUID?.()||Date.now().toString(36)),
+    name: f.name.value.trim(),
+    sex: f.sex.value,
+    birth: f.birth.value,
+    breed: f.breed.value,
+    avatar: ''
+  };
   const file = f.avatar.files[0];
-
   if(file){
     try { p.avatar = await compressImage(file, { max:960, quality:0.75 }); }
     catch(err){ alert('圖片處理失敗，將以預設頭像替代'); }
   }
   state.pets.push(p);
-  if(p.avatar){ (state.photos[p.id]=state.photos[p.id]||[]).unshift({src:p.avatar, likes:0, comments:[]}); }
+  if(p.avatar){
+    (state.photos[p.id]=state.photos[p.id]||[]).unshift({src:p.avatar, likes:0, comments:[]});
+  }
   try { save(); } catch(e2){ alert('儲存失敗：可能超出瀏覽器容量，請換較小的照片'); }
   f.reset();
   return false;
@@ -586,13 +607,14 @@ function renderPets(){
       <button class="btn secondary edit-btn" onclick="openPetEdit(${JSON.stringify(pt).replace(/"/g,'&quot;')})">編輯</button>`;
     row.appendChild(card);
   });
+  // 同步下拉
   ['vetPet','photoPet'].forEach(id=>{
     const s=el(id); if(!s) return; s.innerHTML='';
     state.pets.forEach(pt=>{ const o=document.createElement('option'); o.value=pt.id; o.textContent=pt.name; s.appendChild(o); });
   });
 }
 
-/* ===== 健檢 ===== */
+/* ===== 健檢（需加入公會/有主子） ===== */
 function renderHospitals(){
   const city = el('vetCity').value;
   fetch('./data/hospitals.json').then(r=>r.json()).then(list=>{
@@ -606,7 +628,8 @@ function uploadVet(){
   const pid=el('vetPet').value, city=el('vetCity').value, hosp=el('vetHospital').value;
   const f=el('vetFile').files[0]; if(!f) return alert('請選擇檔案');
   state.vet.push({ petId: pid, city, hospital:hosp, fileName:f.name, time:new Date().toLocaleString() });
-  state.guild.contribution+=200; save();
+  state.guild.contribution+=200;
+  save();
   alert('已上傳（示範）並獲得 +200 公會貢獻');
 }
 function renderVet(){
@@ -678,7 +701,7 @@ function openDetail(p){
 }
 function closeModal(){ el('modal').close(); }
 
-/* ===== 照片牆（維持原規格；如需也壓縮，再套 compressImage） ===== */
+/* ===== 照片牆 ===== */
 function addPhoto(e){
   const pid=el('photoPet').value; if(!pid){ alert('請先建立主子'); return; }
   const files=[...e.target.files||[]]; if(!files.length) return;
@@ -705,7 +728,8 @@ function clearWall(){ const pid=el('photoPet').value; if(confirm('清除本機�
 let _pm = { pid:null, idx:-1 };
 function openPhoto(pid, idx){
   _pm = { pid, idx };
-  const ph = (state.photos[pid]||[])[idx]; if(!ph) return;
+  const ph = (state.photos[pid]||[])[idx];
+  if(!ph) return;
   el('pmImg').src = ph.src;
   el('pmLike').textContent = ph.likes || 0;
   el('pmMeta').textContent = `相片 ${idx+1} ／ 共 ${state.photos[pid].length} 張`;
@@ -713,12 +737,27 @@ function openPhoto(pid, idx){
   el('photoModal').showModal();
 }
 function closePhoto(){ el('photoModal').close(); _pm = { pid:null, idx:-1 }; }
-function likeCurrent(){ if(!_pm.pid) return; const ph = state.photos[_pm.pid][_pm.idx]; ph.likes = (ph.likes||0) + 1; el('pmLike').textContent = ph.likes; save(); }
-function addCommentCurrent(){ if(!_pm.pid) return; const t = prompt('留言內容'); if(!t) return; const ph = state.photos[_pm.pid][_pm.idx]; (ph.comments = ph.comments || []).push({ text:t, time:new Date().toLocaleString() }); renderPhotoComments(ph); save(); }
+function likeCurrent(){
+  if(!_pm.pid) return;
+  const ph = state.photos[_pm.pid][_pm.idx];
+  ph.likes = (ph.likes||0) + 1;
+  el('pmLike').textContent = ph.likes;
+  save();
+}
+function addCommentCurrent(){
+  if(!_pm.pid) return;
+  const t = prompt('留言內容'); if(!t) return;
+  const ph = state.photos[_pm.pid][_pm.idx];
+  (ph.comments = ph.comments || []).push({ text:t, time:new Date().toLocaleString() });
+  renderPhotoComments(ph); save();
+}
 function renderPhotoComments(ph){
   const box = el('pmComments'); box.innerHTML = '';
   (ph.comments||[]).slice().reverse().forEach(c=>{
-    const d = document.createElement('div'); d.className = 'c'; d.textContent = `${c.text} · ${c.time}`; box.appendChild(d);
+    const d = document.createElement('div');
+    d.className = 'c';
+    d.textContent = `${c.text} · ${c.time}`;
+    box.appendChild(d);
   });
 }
 
@@ -732,11 +771,13 @@ function removeFriend(n){ state.friends=state.friends.filter(x=>x!==n); delete s
 function blockFriend(n){ if(!state.blocks.includes(n)) state.blocks.push(n); save(); }
 function unblock(n){ state.blocks=state.blocks.filter(x=>x!==n); save(); }
 function renderSocial(){
+  // friends
   const fl=el('friendList'); fl.innerHTML='';
   state.friends.forEach(n=>{
     const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="blockFriend('${n}')">封鎖</button> <button class="btn secondary" onclick="removeFriend('${n}')">刪除</button>`;
     fl.appendChild(li);
   });
+  // blocks
   const bl=el('blockList'); bl.innerHTML='';
   state.blocks.forEach(n=>{
     const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="unblock('${n}')">解除</button>`;
