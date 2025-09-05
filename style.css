@@ -15,7 +15,7 @@ a{color:inherit;text-decoration:none}
 .container{max-width:1120px;margin:0 auto;padding:0 16px}
 .page{padding:8px 0 40px}
 .section-caption{font-size:.95rem;color:var(--muted);margin:6px 0 10px}
-.footer{padding:26px 0 60px;color:var(--muted)}
+.footer{padding:26px 0 60px;color:var(--muted);text-align:center}
 .muted{color:var(--muted)}
 .mt-0{margin-top:0}.mt-1{margin-top:1rem}.mt-2{margin-top:1.4rem}
 .inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -41,12 +41,16 @@ textarea.input{min-height:120px}
 .list li{margin:.4rem 0}
 
 /* Header */
-header{position:sticky;top:0;z-index:80;background:linear-gradient(#0f1011cc,#0f1011cc);backdrop-filter:saturate(120%) blur(2px)}
+header{position:sticky;top:0;z-index:90;background:linear-gradient(#0f1011cc,#0f1011cc);backdrop-filter:saturate(120%) blur(2px)}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800}
 .brand img{width:28px;height:28px;border-radius:8px;object-fit:cover}
+
+/* 晶片列與長ID自動適配 */
 .chipbar{display:flex;align-items:center;gap:10px}
-.chip{display:flex;align-items:center;gap:8px;height:48px;padding:0 16px;border-radius:16px;background:#212225;border:1px solid #2a2b2d}
+.chip{display:flex;align-items:center;gap:8px;height:48px;padding:0 12px;border-radius:16px;background:#212225;border:1px solid #2a2b2d;max-width:min(72vw,560px)}
+.chip .who{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800;text-align:center;
+  font-size:clamp(12px,2.6vw,16px)}
 .chip .sep{opacity:.35}
 
 /* Hamburger + Drawer */
@@ -55,12 +59,34 @@ header{position:sticky;top:0;z-index:80;background:linear-gradient(#0f1011cc,#0f
 .menu-ico::before{top:-6px;position:absolute}
 .menu-ico::after{top:6px;position:absolute}
 
-.menu{position:fixed;inset:0 0 0 auto;width:min(86vw,340px);transform:translateX(100%);
-  transition:transform .25s ease;background:#0d0e10;z-index:2000;padding:16px;overflow:auto;border-left:1px solid var(--stroke)}
-.menu.open{transform:none}
+/* === Drawer 的最高優先權與安全區 === */
+.menu{
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(86vw, 360px);
+  transform: translateX(100%);
+  transition: transform .25s ease;
+  background: #0d0e10;
+  overflow: auto;
+  /* 安全區避免被瀏海/底部手勢遮住 */
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 10000; /* 抽屜最上層 */
+  border-left:1px solid var(--stroke);
+}
+.menu.open{ transform: none; }
 .menu a{display:block;padding:14px 16px;margin:10px 0;border-radius:14px;background:#1b1c1f;border:1px solid var(--stroke)}
-.menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:1500}
+.menu-backdrop{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); backdrop-filter: blur(2px);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+  z-index: 9999; /* 其次 */
+}
 .menu-backdrop.show{opacity:1;pointer-events:auto}
+
+/* 讓其他浮動件確定在抽屜之下 */
+.fab{ z-index: 1200; }
+header, .container, .card{ position: relative; z-index: auto; }
 
 /* Hero */
 .hero{display:grid;grid-template-columns:1.2fr .9fr;gap:16px;align-items:center}
@@ -118,7 +144,7 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 .nofocus{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 
 /* FAB */
-.fab{position:fixed;right:14px;bottom:16px;z-index:90}
+.fab{position:fixed;right:14px;bottom:16px;z-index:1200}
 .fab-btn{width:66px;height:66px;border-radius:50%;
   background:linear-gradient(180deg,#ff8d63,#e56d3b);border:0;color:#181818;font-weight:900;
   box-shadow:0 10px 22px rgba(0,0,0,.35)}
@@ -133,36 +159,3 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
   .auth-card{background:#fff;border-color:#e9e9ee}
   .auth-title{color:#111}
 }
-/* === Drawer 的最高優先權與安全區 === */
-.menu{
-  position: fixed;
-  inset: 0 0 0 auto;               /* 右側抽屜 */
-  width: min(86vw, 360px);
-  transform: translateX(100%);
-  transition: transform .25s ease;
-  background: #0d0e10;
-  overflow: auto;
-  /* 安全區避免被瀏海/底部手勢遮住 */
-  padding-top: max(16px, env(safe-area-inset-top));
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
-  z-index: 10000;                  /* <<< 抽屜放最上層 */
-}
-.menu.open{ transform: none; }
-
-.menu-backdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.5);
-  backdrop-filter: blur(2px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .2s;
-  z-index: 9999;                   /* <<< 僅次於抽屜 */
-}
-.menu-backdrop.show{ opacity: 1; pointer-events: auto; }
-
-/* 讓其他浮動件確定在抽屜之下 */
-.fab{ z-index: 1200; }             /* Top 按鈕 */
-header, .container, .card{ position: relative; z-index: auto; }
-
-/* 若你有其它自訂很高的 z-index，請確保 < 9999 */
