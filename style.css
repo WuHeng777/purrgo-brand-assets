@@ -15,7 +15,7 @@ a{color:inherit;text-decoration:none}
 .container{max-width:1120px;margin:0 auto;padding:0 16px}
 .page{padding:8px 0 40px}
 .section-caption{font-size:.95rem;color:var(--muted);margin:6px 0 10px}
-.footer{padding:26px 0 60px;color:var(--muted);text-align:center}
+.footer{padding:26px 0 60px;color:var(--muted)}
 .muted{color:var(--muted)}
 .mt-0{margin-top:0}.mt-1{margin-top:1rem}.mt-2{margin-top:1.4rem}
 .inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -29,7 +29,7 @@ a{color:inherit;text-decoration:none}
   border:1px solid var(--stroke-2);border-radius:18px;padding:22px;
 }
 .pill{display:inline-block;background:var(--chip);color:var(--chip-text);padding:8px 14px;border-radius:999px;font-weight:800}
-.btn{background:var(--brand);color:#191919;border:0;border-radius:14px;padding:12px 16px;font-weight:900}
+.btn{background:var(--brand);color:#191919;border:0;border-radius:14px;padding:12px 16px;font-weight:900;white-space:nowrap}
 .btn.secondary{background:#26282b;color:#ddd;border:1px solid var(--stroke)}
 .btn.compact{height:34px;padding:6px 10px;border-radius:10px}
 .input,select.input,textarea.input{width:100%;padding:14px;border-radius:12px;border:1px solid var(--stroke);background:#0f1113;color:var(--text)}
@@ -41,51 +41,40 @@ textarea.input{min-height:120px}
 .list li{margin:.4rem 0}
 
 /* Header */
-header{position:sticky;top:0;z-index:90;background:linear-gradient(#0f1011cc,#0f1011cc);backdrop-filter:saturate(120%) blur(2px)}
+header{position:sticky;top:0;z-index:80;background:linear-gradient(#0f1011cc,#0f1011cc);backdrop-filter:saturate(120%) blur(2px)}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800}
 .brand img{width:28px;height:28px;border-radius:8px;object-fit:cover}
-
-/* 晶片列與長ID自動適配 */
 .chipbar{display:flex;align-items:center;gap:10px}
-.chip{display:flex;align-items:center;gap:8px;height:48px;padding:0 12px;border-radius:16px;background:#212225;border:1px solid #2a2b2d;max-width:min(72vw,560px)}
-.chip .who{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800;text-align:center;
-  font-size:clamp(12px,2.6vw,16px)}
+.chip{
+  display:flex;align-items:center;gap:8px;height:48px;padding:0 16px;border-radius:16px;
+  background:#212225;border:1px solid #2a2b2d;white-space:nowrap;max-width:60vw;
+}
+.chip .who{
+  display:inline-block;max-width:44vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 .chip .sep{opacity:.35}
 
 /* Hamburger + Drawer */
-.menu-toggle{width:48px;height:48px;border-radius:14px;background:#232427;border:0;display:grid;place-items:center}
+.menu-toggle{width:48px;height:48px;border-radius:14px;background:#232427;border:0;display:grid;place-items:center;flex:0 0 auto}
 .menu-ico,.menu-ico::before,.menu-ico::after{content:"";display:block;width:22px;height:2px;background:#fff;border-radius:2px;position:relative}
 .menu-ico::before{top:-6px;position:absolute}
 .menu-ico::after{top:6px;position:absolute}
 
-/* === Drawer 的最高優先權與安全區 === */
+/* Drawer（最高權重與安全區） */
 .menu{
-  position: fixed;
-  inset: 0 0 0 auto;
-  width: min(86vw, 360px);
-  transform: translateX(100%);
-  transition: transform .25s ease;
-  background: #0d0e10;
-  overflow: auto;
-  /* 安全區避免被瀏海/底部手勢遮住 */
-  padding-top: max(16px, env(safe-area-inset-top));
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
-  z-index: 10000; /* 抽屜最上層 */
-  border-left:1px solid var(--stroke);
+  position:fixed;inset:0 0 0 auto;width:min(86vw,360px);transform:translateX(100%);
+  transition:transform .25s ease;background:#0d0e10;z-index:10000;padding:16px;
+  padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom));
+  overflow:auto;border-left:1px solid var(--stroke)
 }
-.menu.open{ transform: none; }
+.menu.open{transform:none}
 .menu a{display:block;padding:14px 16px;margin:10px 0;border-radius:14px;background:#1b1c1f;border:1px solid var(--stroke)}
-.menu-backdrop{
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.5); backdrop-filter: blur(2px);
-  opacity: 0; pointer-events: none; transition: opacity .2s;
-  z-index: 9999; /* 其次 */
-}
+.menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:9999}
 .menu-backdrop.show{opacity:1;pointer-events:auto}
 
-/* 讓其他浮動件確定在抽屜之下 */
-.fab{ z-index: 1200; }
+/* 讓其他浮動件在抽屜之下 */
+.fab{ z-index: 1200; }             /* Top 按鈕 */
 header, .container, .card{ position: relative; z-index: auto; }
 
 /* Hero */
@@ -133,18 +122,18 @@ header, .container, .card{ position: relative; z-index: auto; }
 .mapbox{height:360px;border-radius:12px;overflow:hidden;border:1px solid var(--stroke)}
 .leaflet-container,.leaflet-pane,.leaflet-control{z-index:100}
 
-/* Dialogs（深色/淺色皆無白邊） */
+/* Dialogs */
 dialog{border:0;border-radius:18px;padding:0;max-width:min(92vw,560px);background:transparent}
 dialog::backdrop{background:rgba(0,0,0,.55)}
 .auth-outer{background:#0b0c0d;border:1px solid var(--stroke);padding:10px;border-radius:20px}
 .auth-card{background:var(--bg-2);border:1px solid var(--stroke-2);border-radius:18px;padding:18px}
-.auth-title{font-weight:900;font-size:1.4rem;margin:0 0 12px}
+.auth-title{font-weight:900;font-size:1.4rem;margin:0 0 12px;color:#fff} /* 深色白字 */
 .pm-img{width:100%;border-radius:12px;object-fit:contain;max-height:60vh;background:#0c0d0e}
 .pm-comments{max-height:180px;overflow:auto}
 .nofocus{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 
 /* FAB */
-.fab{position:fixed;right:14px;bottom:16px;z-index:1200}
+.fab{position:fixed;right:14px;bottom:16px;z-index:90}
 .fab-btn{width:66px;height:66px;border-radius:50%;
   background:linear-gradient(180deg,#ff8d63,#e56d3b);border:0;color:#181818;font-weight:900;
   box-shadow:0 10px 22px rgba(0,0,0,.35)}
@@ -157,5 +146,5 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
   .menu a{background:#f3f4f6}
   .auth-outer{background:#f6f7f8;border-color:#e6e7ea}
   .auth-card{background:#fff;border-color:#e9e9ee}
-  .auth-title{color:#111}
+  .auth-title{color:#111}  /* 淺色深字 */
 }
