@@ -27,7 +27,7 @@
     <!-- 訪客 / 登入（橫向晶片） -->
     <div class="chipbar">
       <div class="chip" id="whoChip">
-        <span id="whoText" class="who">訪客</span>
+        <span id="whoText" class="who" title="訪客">訪客</span>
         <span class="sep">｜</span>
         <a class="btn secondary compact" onclick="openAuth()">登入</a>
       </div>
@@ -60,16 +60,14 @@
         </div>
       </div>
       <div class="hero-visual">
-        <!-- 正方形圓角 Logo -->
         <img class="hero-logo" src="./logo/logo-512.png" alt="PurrGo Logo">
       </div>
     </section>
 
-    <!-- 建立主子角色（多貓家庭） -->
+    <!-- 建立主子角色 -->
     <section class="card mt-2">
       <span class="pill">主子</span>
       <h2 class="mt-0">建立主子角色</h2>
-      <!-- 用生日自動換算歲/月；第一隻就能上傳頭像 -->
       <form class="grid g-2" onsubmit="return addPet(event)">
         <div><label>暱稱<input class="input" name="name" required></label></div>
         <div><label>性別
@@ -119,14 +117,16 @@
   <!-- ============ 公會 / 健檢 ============ -->
   <section id="page-guild" class="page" hidden>
     <div class="section-caption">公會</div>
-    <section class="band">
-      <header class="section-head"><div>
-        <span class="pill">Guild</span>
-        <h2 class="mt-0">公會制度：一起成長、一起更省</h2>
-        <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務…</p>
-      </div></header>
 
-      <!-- 身分綁定 / VIP -->
+    <section class="band">
+      <header class="section-head">
+        <div>
+          <span class="pill">Guild</span>
+          <h2 class="mt-0">公會制度：一起成長、一起更省</h2>
+          <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務…</p>
+        </div>
+      </header>
+
       <section class="card">
         <h3 class="mt-0">身份綁定 / VIP</h3>
         <div class="grid g-2">
@@ -149,7 +149,6 @@
         </div>
       </section>
 
-      <!-- 健檢報告上傳（需先有主子） -->
       <section class="card">
         <h3 class="mt-0">免費健檢（每年 1 次 / 需加入公會）</h3>
         <div class="grid g-3">
@@ -180,7 +179,6 @@
         <div id="vetList" class="muted mt-1">目前無健檢紀錄</div>
       </section>
 
-      <!-- 公會基本：創立 / 貢獻條 -->
       <section class="card">
         <div class="inline">
           <button class="btn" onclick="createGuild()">創立門檻（示意）</button>
@@ -224,7 +222,7 @@
     </section>
   </section>
 
-  <!-- ============ 社群（好友名單 / 追蹤） ============ -->
+  <!-- ============ 社群（好友/封鎖） ============ -->
   <section id="page-social" class="page" hidden>
     <div class="section-caption">社群</div>
     <section class="card">
@@ -247,7 +245,7 @@
     </section>
   </section>
 
-  <!-- ============ 聊天（新版輸入列） ============ -->
+  <!-- ============ 聊天 ============ -->
   <section id="page-chat" class="page" hidden>
     <div class="section-caption">Chat</div>
     <section class="card">
@@ -259,7 +257,6 @@
             <select class="input" id="chatWith" onchange="renderChat()"></select>
           </label>
           <div id="chatBox" class="chatbox mt-1"></div>
-          <!-- 底部長條輸入列：送出 / 清除 -->
           <div class="inline mt-1 fullrow">
             <input class="input flex-1" id="chatMsg" placeholder="輸入訊息…">
             <button class="btn" onclick="sendMsg()">送出</button>
@@ -316,12 +313,12 @@
   © PurrGo 喵來速 ｜ 公開 Demo（不含投資人資訊）
 </footer>
 
-<!-- 右下 Top（單顆） -->
+<!-- 右下 Top -->
 <div class="fab" id="fab" aria-label="快速導覽">
   <button class="fab-btn" title="回頂端" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top</button>
 </div>
 
-<!-- ===== 產品詳情 Modal ===== -->
+<!-- 產品詳情 Modal -->
 <dialog id="modal">
   <article class="auth-card">
     <header class="inline space-between">
@@ -336,7 +333,7 @@
   </article>
 </dialog>
 
-<!-- ===== 登入 Dialog（開啟時不自動聚焦） ===== -->
+<!-- 登入 Dialog -->
 <dialog id="authDlg">
   <div class="auth-outer">
     <div class="auth-card">
@@ -362,13 +359,12 @@
         <button class="btn secondary">使用 Instagram 登入（示意）</button>
         <button class="btn secondary">使用 Gmail 登入（示意）</button>
       </div>
-      <!-- 轉移焦點用（避免 iOS 自動彈鍵盤） -->
       <button id="authNoFocus" class="nofocus" aria-hidden="true"></button>
     </div>
   </div>
 </dialog>
 
-<!-- ===== 主子編輯 Dialog ===== -->
+<!-- 主子編輯 Dialog -->
 <dialog id="petDlg">
   <div class="auth-outer">
     <div class="auth-card">
@@ -391,7 +387,7 @@
   </div>
 </dialog>
 
-<!-- ===== 照片預覽 Dialog ===== -->
+<!-- 照片預覽 Dialog（含分享） -->
 <dialog id="photoModal">
   <div class="auth-outer">
     <div class="auth-card">
@@ -401,6 +397,7 @@
         <div class="inline">
           <button class="btn" onclick="likeCurrent()">♥ <span id="pmLike">0</span></button>
           <button class="btn secondary" onclick="addCommentCurrent()">留言</button>
+          <button class="btn secondary" onclick="shareCurrent()">分享</button>
           <button class="btn secondary" onclick="closePhoto()">關閉</button>
         </div>
       </div>
@@ -413,7 +410,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 
-<!-- ===== Main Script（整合 99% 版本 + 修正補強） ===== -->
+<!-- ===== Main Script ===== -->
 <script>
 /* ===== 全域狀態（localStorage） ===== */
 const LS_KEY = 'purrgoState';
@@ -429,7 +426,6 @@ state.blocks  ||= [];
 state.chats   ||= {};           // name -> [{text, me:true/false, time}]
 state.videos  ||= [];
 save();
-
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); renderAll(); }
 
 /* ===== SPA 分頁 ===== */
@@ -441,10 +437,10 @@ function showPage(sec){
   });
   closeMenu();
   location.hash = '#'+sec;
-  if(sec==='kiosk'){ setTimeout(initMap, 60); } // 地圖大小校正
-  if(sec==='photos') { renderWall(); }
-  if(sec==='guild')  { renderVet(); }
-  if(sec==='chat')   { renderChatSelectors(); renderChat(); }
+  if(sec==='kiosk'){ setTimeout(initMap, 60); }
+  if(sec==='photos'){ renderWall(); }
+  if(sec==='guild'){ renderVet(); }
+  if(sec==='chat'){ renderChatSelectors(); renderChat(); }
 }
 function navTo(id){ closeMenu(); showPage(id); return false; }
 function restorePage(){ const h=(location.hash||'#home').slice(1); showPage(pages.includes(h)?h:'home'); }
@@ -456,7 +452,7 @@ function closeMenu(){ el('menu').classList.remove('open'); el('menuBackdrop').cl
 /* ===== 水平捲動 ===== */
 function scrollH(id,dir){ const el=document.getElementById(id); if(!el) return; el.scrollBy({left: dir*(el.clientWidth*0.9), behavior:'smooth'}); }
 
-/* ===== 登入 / 登出（不自動聚焦） ===== */
+/* ===== 登入 / 登出 ===== */
 function openAuth(){ el('authDlg').showModal(); setTimeout(()=>el('authNoFocus').focus(),0); }
 function closeAuth(){ el('authDlg').close(); }
 function doLogin(){
@@ -469,7 +465,7 @@ function doLogin(){
 }
 function logout(){ state.user.id=''; save(); }
 
-/* ===== 智慧顯示 ID（自動縮放 + 前4後4） ===== */
+/* ===== 智慧顯示 ID（≤12 全顯；>12 前4後4） ===== */
 function compactId(id){
   if(!id) return '訪客';
   const s = String(id);
@@ -481,7 +477,7 @@ function renderWho(){
   const who = raw ? compactId(raw) : '訪客';
   const whoEl = el('whoText');
   whoEl.textContent = who;
-  whoEl.title = raw || '訪客'; // 長按/滑鼠可看完整
+  whoEl.title = raw || '訪客';
   const btn = el('whoChip').querySelector('.btn');
   btn.textContent = state.user.id? '登出':'登入';
   btn.onclick = state.user.id? logout: openAuth;
@@ -507,7 +503,7 @@ function renderIdentity(){
   el('vipNext').textContent = nextVipNeed(u.vipXp|0)>0? `$${nextVipNeed(u.vipXp|0)}`:'已達頂級';
 }
 
-/* ===== 影像壓縮工具（avatar 專用：max=960, quality=0.75） ===== */
+/* ===== 影像壓縮工具（max=960, quality=0.75） ===== */
 function blobToDataURL(blob){
   return new Promise((resolve,reject)=>{
     const rd = new FileReader();
@@ -537,7 +533,7 @@ async function compressImage(file, opt={}){
   return blobToDataURL(blob);
 }
 
-/* ===== 主子（多貓，生日自動換算） ===== */
+/* ===== 主子 ===== */
 function ageText(birth){ if(!birth) return ''; const d=new Date(birth); if(isNaN(d)) return ''; const now=new Date(); let y=now.getFullYear()-d.getFullYear(); let m=now.getMonth()-d.getMonth(); if(m<0){y--;m+=12} return `${y}歲${m}月`; }
 function loadBreeds(){
   fetch('./data/breeds.json').then(r=>r.json()).then(list=>{
@@ -563,9 +559,7 @@ async function addPet(e){
     catch(err){ alert('圖片處理失敗，將以預設頭像替代'); }
   }
   state.pets.push(p);
-  if(p.avatar){
-    (state.photos[p.id]=state.photos[p.id]||[]).unshift({src:p.avatar, likes:0, comments:[]});
-  }
+  if(p.avatar){ (state.photos[p.id]=state.photos[p.id]||[]).unshift({src:p.avatar, likes:0, comments:[]}); }
   try { save(); } catch(e2){ alert('儲存失敗：可能超出瀏覽器容量，請換較小的照片'); }
   f.reset();
   return false;
@@ -607,14 +601,13 @@ function renderPets(){
       <button class="btn secondary edit-btn" onclick="openPetEdit(${JSON.stringify(pt).replace(/"/g,'&quot;')})">編輯</button>`;
     row.appendChild(card);
   });
-  // 同步下拉
   ['vetPet','photoPet'].forEach(id=>{
     const s=el(id); if(!s) return; s.innerHTML='';
     state.pets.forEach(pt=>{ const o=document.createElement('option'); o.value=pt.id; o.textContent=pt.name; s.appendChild(o); });
   });
 }
 
-/* ===== 健檢（需加入公會/有主子） ===== */
+/* ===== 健檢 ===== */
 function renderHospitals(){
   const city = el('vetCity').value;
   fetch('./data/hospitals.json').then(r=>r.json()).then(list=>{
@@ -628,8 +621,7 @@ function uploadVet(){
   const pid=el('vetPet').value, city=el('vetCity').value, hosp=el('vetHospital').value;
   const f=el('vetFile').files[0]; if(!f) return alert('請選擇檔案');
   state.vet.push({ petId: pid, city, hospital:hosp, fileName:f.name, time:new Date().toLocaleString() });
-  state.guild.contribution+=200;
-  save();
+  state.guild.contribution+=200; save();
   alert('已上傳（示範）並獲得 +200 公會貢獻');
 }
 function renderVet(){
@@ -701,16 +693,17 @@ function openDetail(p){
 }
 function closeModal(){ el('modal').close(); }
 
-/* ===== 照片牆 ===== */
-function addPhoto(e){
+/* ===== 照片牆（壓縮 + 3欄方格） ===== */
+async function addPhoto(e){
   const pid=el('photoPet').value; if(!pid){ alert('請先建立主子'); return; }
   const files=[...e.target.files||[]]; if(!files.length) return;
-  let count=0;
-  files.forEach(file=>{
-    const rd=new FileReader();
-    rd.onload=()=>{ (state.photos[pid]=state.photos[pid]||[]).push({src:rd.result, likes:0, comments:[]}); count++; if(count===files.length){ save(); e.target.value=''; } };
-    rd.readAsDataURL(file);
-  });
+  for(const file of files){
+    try{
+      const dataURL = await compressImage(file, { max:960, quality:0.75 });
+      (state.photos[pid]=state.photos[pid]||[]).push({src:dataURL, likes:0, comments:[]});
+    }catch(err){ /* 略過單張失敗 */ }
+  }
+  save(); e.target.value='';
 }
 function renderWall(){
   const pid=el('photoPet').value || (state.pets[0]?.id||'');
@@ -719,7 +712,7 @@ function renderWall(){
   (state.photos[pid]||[]).forEach((ph,idx)=>{
     const d=document.createElement('div'); d.className='tile';
     d.onclick=()=>openPhoto(pid,idx);
-    d.innerHTML = `<img src="${ph.src}" alt="">`;
+    d.innerHTML = `<img src="${ph.src}" alt="" loading="lazy">`;
     wall.appendChild(d);
   });
 }
@@ -728,8 +721,7 @@ function clearWall(){ const pid=el('photoPet').value; if(confirm('清除本機�
 let _pm = { pid:null, idx:-1 };
 function openPhoto(pid, idx){
   _pm = { pid, idx };
-  const ph = (state.photos[pid]||[])[idx];
-  if(!ph) return;
+  const ph = (state.photos[pid]||[])[idx]; if(!ph) return;
   el('pmImg').src = ph.src;
   el('pmLike').textContent = ph.likes || 0;
   el('pmMeta').textContent = `相片 ${idx+1} ／ 共 ${state.photos[pid].length} 張`;
@@ -737,28 +729,25 @@ function openPhoto(pid, idx){
   el('photoModal').showModal();
 }
 function closePhoto(){ el('photoModal').close(); _pm = { pid:null, idx:-1 }; }
-function likeCurrent(){
-  if(!_pm.pid) return;
-  const ph = state.photos[_pm.pid][_pm.idx];
-  ph.likes = (ph.likes||0) + 1;
-  el('pmLike').textContent = ph.likes;
-  save();
-}
-function addCommentCurrent(){
-  if(!_pm.pid) return;
-  const t = prompt('留言內容'); if(!t) return;
-  const ph = state.photos[_pm.pid][_pm.idx];
-  (ph.comments = ph.comments || []).push({ text:t, time:new Date().toLocaleString() });
-  renderPhotoComments(ph); save();
-}
+function likeCurrent(){ if(!_pm.pid) return; const ph = state.photos[_pm.pid][_pm.idx]; ph.likes = (ph.likes||0) + 1; el('pmLike').textContent = ph.likes; save(); }
+function addCommentCurrent(){ if(!_pm.pid) return; const t = prompt('留言內容'); if(!t) return; const ph = state.photos[_pm.pid][_pm.idx]; (ph.comments = ph.comments || []).push({ text:t, time:new Date().toLocaleString() }); renderPhotoComments(ph); save(); }
 function renderPhotoComments(ph){
   const box = el('pmComments'); box.innerHTML = '';
   (ph.comments||[]).slice().reverse().forEach(c=>{
-    const d = document.createElement('div');
-    d.className = 'c';
-    d.textContent = `${c.text} · ${c.time}`;
-    box.appendChild(d);
+    const d = document.createElement('div'); d.className = 'c'; d.textContent = `${c.text} · ${c.time}`; box.appendChild(d);
   });
+}
+async function shareCurrent(){
+  if(!_pm.pid) return;
+  const ph = state.photos[_pm.pid][_pm.idx];
+  try{
+    if(navigator.share){
+      await navigator.share({ title:'PurrGo Photo', text:'我的主子照片', url: ph.src });
+    }else{
+      await navigator.clipboard.writeText(ph.src);
+      alert('連結已複製（本機 dataURL）');
+    }
+  }catch(e){}
 }
 
 /* ===== 社群 / 聊天 ===== */
@@ -771,13 +760,11 @@ function removeFriend(n){ state.friends=state.friends.filter(x=>x!==n); delete s
 function blockFriend(n){ if(!state.blocks.includes(n)) state.blocks.push(n); save(); }
 function unblock(n){ state.blocks=state.blocks.filter(x=>x!==n); save(); }
 function renderSocial(){
-  // friends
   const fl=el('friendList'); fl.innerHTML='';
   state.friends.forEach(n=>{
     const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="blockFriend('${n}')">封鎖</button> <button class="btn secondary" onclick="removeFriend('${n}')">刪除</button>`;
     fl.appendChild(li);
   });
-  // blocks
   const bl=el('blockList'); bl.innerHTML='';
   state.blocks.forEach(n=>{
     const li=document.createElement('li'); li.innerHTML=`${n} <button class="btn secondary" onclick="unblock('${n}')">解除</button>`;
@@ -874,7 +861,7 @@ window.addEventListener('hashchange', restorePage);
 window.addEventListener('DOMContentLoaded', boot);
 </script>
 
-<!-- 手機：抽屜選單＋背景遮罩（項目完整） -->
+<!-- 手機：抽屜選單＋背景遮罩 -->
 <nav id="menu" class="menu" aria-label="主選單">
   <a href="#home"     onclick="navTo('home')">首頁</a>
   <a href="#products" onclick="navTo('products')">產品</a>
