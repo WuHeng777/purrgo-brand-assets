@@ -1,244 +1,199 @@
-/* ========== PurrGo V11 Design System ========== */
+/* ===== 基本 ===== */
 :root{
-  --brand:#ff7f50;
-  --radius-xl:20px;
-  --radius-lg:16px;
-  --radius-md:12px;
-  --radius-sm:10px;
-
-  /* Dark as default */
   --bg:#0f1113;
+  --bg-soft:#171a1d;
+  --text:#eef0f1;
+  --muted:#aeb6bd;
   --card:#15181b;
-  --card-soft:#1b1f23;
-  --elev:#111417;
-  --muted:#9aa3ad;
-  --border:#22262a;
-  --text:#e8eaed;
-  --text-strong:#ffffff;
-  --text-inv:#0f1113;
+  --ink:#111315;
 
-  --chip-bg:#262a2f;
-  --chip-text:#e8eaed;
+  /* 亮色主題（預設） */
+  --l-bg:#ffffff;
+  --l-bg-soft:#f5f7f8;
+  --l-card:#ffffff;
+  --l-text:#161819;
+  --l-muted:#6b7280;
 
-  --btn:#ff7f50;
-  --btn-text:#172025;
-  --btn-sec:#2a2f34;
-  --btn-sec-text:#e8eaed;
+  --brand:#ff7f50;
+  --btn-dark:#24272a;
+  --ring:rgba(0,0,0,.08);
+  --shadow:0 10px 30px rgba(0,0,0,.08);
+  --radius:18px;
 
-  --pill:#ffd8c7;
+  /* z-index 統一控管 */
+  --z-map: 10;
+  --z-fab: 1000;
+  --z-menu-backdrop: 1100;
+  --z-menu: 1200;
+  --z-dialog: 1300;
 }
 
-/* Light mode — 視覺一致：卡片與 band header 皆近白色 */
-@media (prefers-color-scheme: light){
-  :root{
-    --bg:#fbfbfb;
-    --card:#ffffff;
-    --card-soft:#f6f7f9;
-    --elev:#ffffff;
-    --muted:#6b7280;
-    --border:#e6e8ec;
-    --text:#111418;
-    --text-strong:#0d1117;
-    --text-inv:#ffffff;
-
-    --chip-bg:#111418;
-    --chip-text:#ffffff;
-
-    --btn:#ff7f50;
-    --btn-text:#172025;
-    --btn-sec:#2c3136;
-    --btn-sec-text:#ffffff;
-
-    --pill:#ffe7dc;
-  }
-}
-
-/* ===== Base ===== */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;
-  font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
-  background:var(--bg);
-  color:var(--text);
+  font:16px/1.55 ui-sans-serif, system-ui, -apple-system, "PingFang TC",
+       "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+  color:var(--l-text);
+  background:var(--l-bg);
 }
 
-/* Utilities */
-.container{max-width:980px;margin:0 auto;padding:16px}
-.mt-0{margin-top:0}
-.mt-1{margin-top:12px}
-.mt-2{margin-top:20px}
-.mt-3{margin-top:28px}
-.inline{display:flex;gap:12px;align-items:center}
-.inline.space-between{justify-content:space-between}
-.fullrow{width:100%}
-.flex-1{flex:1}
-.muted{color:var(--muted)}
-.pill{display:inline-block;padding:10px 16px;border-radius:999px;background:var(--pill);color:#1d1f20;font-weight:700}
+/* 容器 */
+.container{max-width:960px;margin:0 auto;padding:0 16px}
 
-/* ===== Nav / Header ===== */
-header.container{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:saturate(180%) blur(6px)}
-.nav{display:flex;justify-content:space-between;align-items:center}
-.brand{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--text);font-weight:900}
-.brand img{width:30px;height:30px;border-radius:8px}
-
+/* ===== 導覽列 ===== */
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;
+}
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
+.brand img{width:28px;height:28px;border-radius:8px}
 .chipbar{display:flex;align-items:center;gap:12px}
 .chip{
   display:flex;align-items:center;gap:6px;
-  background:var(--chip-bg); color:var(--chip-text);
-  padding:10px 14px;border-radius:999px;
+  padding:8px 14px;border-radius:999px;background:#111418;color:#fff;
+  box-shadow:var(--shadow);
 }
+.chip .who{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .chip .sep{opacity:.35}
-.chip .who{
-  max-width:8.5em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
+
 .menu-toggle{
-  border:0; background:var(--btn-sec); color:var(--btn-sec-text);
-  padding:10px 12px;border-radius:14px
+  border:0;background:#1c1f22;color:#fff;border-radius:14px;padding:10px 12px;
 }
-.menu-ico{display:block;width:22px;height:2px;background:currentColor;position:relative}
-.menu-ico:before,.menu-ico:after{content:"";position:absolute;left:0;right:0;height:2px;background:currentColor}
-.menu-ico:before{top:-6px}.menu-ico:after{top:6px}
+.menu-ico{display:inline-block;width:20px;height:2px;background:#fff;position:relative}
+.menu-ico::before,.menu-ico::after{content:"";position:absolute;left:0;width:20px;height:2px;background:#fff}
+.menu-ico::before{top:-6px}.menu-ico::after{top:6px}
 
-/* ===== Buttons ===== */
+/* ===== 共用元件 ===== */
 .btn{
-  background:var(--btn); color:var(--btn-text);
-  padding:12px 18px;border:0;border-radius:16px;font-weight:800;cursor:pointer
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:10px 16px;border-radius:16px;border:0;background:var(--brand);
+  color:#111;font-weight:700;cursor:pointer;box-shadow:var(--shadow)
 }
-.btn.secondary{background:var(--btn-sec);color:var(--btn-sec-text)}
-.btn.compact{padding:8px 12px;border-radius:12px}
+.btn.secondary{background:#22272b;color:#fff}
+.btn.compact{padding:6px 10px}
+.inline{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.space-between{justify-content:space-between}
+.mt-0{margin-top:0}.mt-1{margin-top:.75rem}.mt-2{margin-top:1.25rem}
+.fullrow{width:100%}
+.flex-1{flex:1}
 
-/* ===== Layout / Cards ===== */
-.page{padding:8px 0}
+.pill{
+  display:inline-block;background:#fdd9cc;color:#111;padding:8px 14px;border-radius:999px;
+  font-weight:800;letter-spacing:.5px
+}
+
+.section-caption{color:#9aa3ab;margin:8px 0 10px}
+
+/* 卡片 */
 .card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius-xl);padding:18px 18px;
-  box-shadow:0 8px 24px rgba(0,0,0,.25)
+  background:var(--l-card); color:var(--l-text);
+  border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);
 }
-.section-caption{color:var(--muted);margin:6px 0 12px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:center}
+.hero-logo{width:100%;border-radius:22px;box-shadow:var(--shadow)}
+.hero-title{font-size:28px;letter-spacing:1px;margin:.4rem 0 0}
+.muted{color:var(--l-muted)}
 
-/* band：標題/說明區（修正：淺色主題時不應為深灰遮罩） */
-.band{display:block}
-.section-head{
-  background:var(--card-soft); /* ← 修正 */
-  border:1px solid var(--border);
-  border-radius:var(--radius-xl);
-  padding:18px;margin-bottom:14px
-}
-.section-sub{color:var(--muted)}
-
-/* ===== Hero ===== */
-.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:center}
-.hero-visual{text-align:center}
-.hero-logo{width:100%;max-width:360px;border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.hero-title{
-  margin:10px 0 6px;
-  font-size:clamp(28px,6vw,44px);
-  font-weight:900;
-  color:var(--text-strong); /* 淺色主題會是深色文字 */
-}
-
-/* ===== Forms ===== */
+/* 表單 */
 .input{
-  width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--border);
-  background:var(--elev);color:var(--text)
+  width:100%;padding:12px 14px;border-radius:14px;border:1px solid #e5e7eb;
+  background:#fff;color:#111;outline:none;box-shadow:inset 0 1px 0 rgba(0,0,0,.03);
 }
-select.input{appearance:none;padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);
-  background-position:calc(100% - 18px) calc(50% - 2px), calc(100% - 12px) calc(50% - 2px);
-  background-size:6px 6px, 6px 6px;background-repeat:no-repeat
-}
-textarea.input{min-height:140px}
+.input:focus{border-color:#cbd5e1;box-shadow:0 0 0 4px rgba(2,132,199,.12)}
+label{display:block;gap:6px;color:var(--l-muted);font-weight:600}
+label>.input{margin-top:6px}
 
-/* ===== Grid ===== */
-.grid{display:grid;gap:14px}
+.grid{display:grid;gap:12px}
 .g-2{grid-template-columns:1fr 1fr}
-.g-3{grid-template-columns:1fr 1fr 1fr}
+.g-3{grid-template-columns:repeat(3,1fr)}
 .gcol-2{grid-column:span 2}
-@media (max-width:720px){
+@media (max-width:640px){
   .hero{grid-template-columns:1fr}
   .g-2,.g-3{grid-template-columns:1fr}
-  .gcol-2{grid-column:auto}
+  .gcol-2{grid-column:span 1}
 }
 
-/* ===== Product Row (horizontal scroll) ===== */
+/* 產品橫捲 */
 .hwrap{position:relative}
-.hscroll{display:flex;gap:16px;overflow:auto;scroll-snap-type:x mandatory;padding:12px 2px}
-.hscroll>.card{min-width:290px;scroll-snap-align:start}
-.hbtn{
-  position:absolute;top:50%;transform:translateY(-50%);z-index:5;
-  width:40px;height:40px;border-radius:999px;border:0;background:var(--btn-sec);color:var(--btn-sec-text)
-}
+.hscroll{display:grid;grid-auto-flow:column;grid-auto-columns:80%;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory}
+.hscroll>.card{scroll-snap-align:start}
+.hbtn{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:999px;border:0;background:#111;color:#fff;opacity:.85}
 .hbtn.prev{left:-6px}.hbtn.next{right:-6px}
-.product .prod-img{width:100%;height:230px;object-fit:cover;border-radius:16px}
+.product .prod-img{width:100%;border-radius:16px}
 
-/* ===== Cart / Table ===== */
+/* 表格 */
 .table{width:100%;border-collapse:collapse}
-.table th,.table td{padding:10px 8px;border-bottom:1px solid var(--border);text-align:left}
+.table th,.table td{padding:10px;border-bottom:1px solid #eef2f4;text-align:left}
 
-/* ===== Kiosk Map ===== */
-.mapbox{height:360px;border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+/* 主子卡 */
+.p-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.p-card{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;background:#f8fafb;border-radius:16px;padding:10px}
+.p-avatar{width:64px;height:64px;object-fit:cover;border-radius:14px}
+.p-meta{color:#1f2937}
 
-/* ===== Pets ===== */
-.p-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.p-card{display:grid;grid-template-columns:84px 1fr auto;gap:12px;align-items:center;background:var(--card-soft);border:1px solid var(--border);padding:12px;border-radius:16px}
-.p-avatar{width:84px;height:84px;object-fit:cover;border-radius:16px;border:1px solid var(--border)}
-.p-meta{color:var(--text)}
+/* 照片牆 */
+#wall{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:#f1f5f9;cursor:pointer}
+.tile img{width:100%;height:100%;object-fit:cover}
 
-@media (max-width:680px){.p-row{grid-template-columns:1fr}}
+/* 聊天 */
+.chatbox{height:280px;border-radius:16px;background:#f8fafc;padding:10px;overflow:auto}
+.msg{padding:8px 10px;border-radius:14px;margin:6px 0;max-width:75%}
+.msg.me{background:#fde1d4;margin-left:auto}
+.msg.other{background:#e5e7eb}
 
-/* ===== Photos Wall — 3 tiles per row on mobile ===== */
-#wall{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.tile{aspect-ratio:1/1;border-radius:14px;overflow:hidden;cursor:pointer;border:1px solid var(--border);background:#000}
-.tile img{width:100%;height:100%;object-fit:cover;display:block}
+/* 影片 */
+.video{width:100%;border-radius:14px}
 
-/* Photo modal */
-.pm-img{width:100%;max-height:60vh;object-fit:contain;border-radius:12px;background:#000}
-.pm-comments .c{padding:8px 10px;border-radius:10px;background:var(--card-soft);border:1px solid var(--border);margin-top:8px}
+/* 地圖 */
+.mapbox{height:360px;border-radius:16px;overflow:hidden;position:relative}
+.leaflet-container{height:100%;z-index:var(--z-map)}          /* ⬅ 降低地圖層級 */
+.leaflet-pane,.leaflet-top,.leaflet-bottom{z-index:var(--z-map)}
 
-/* ===== Chat ===== */
-.chatbox{
-  height:280px;overflow:auto;border-radius:14px;padding:10px;background:var(--card-soft);
-  border:1px solid var(--border)
-}
-.msg{margin:8px 0;padding:10px 12px;border-radius:14px;background:var(--card);display:inline-block;max-width:80%}
-.msg.me{background:var(--btn);color:var(--btn-text);margin-left:auto}
+/* Footer */
+.footer{color:#9aa3ab;padding:30px 0 60px}
 
-/* ===== Video ===== */
-.video{width:100%;border-radius:16px;border:1px solid var(--border)}
-
-/* ===== Dialogs ===== */
-dialog{border:0;padding:0;background:transparent}
-.auth-outer{display:grid;place-items:center}
+/* ===== Dialog ===== */
+dialog{border:0;padding:0;background:transparent;z-index:var(--z-dialog)}
+.auth-outer{padding:20px;display:grid;place-items:center}
 .auth-card{
-  background:var(--card);border:1px solid var(--border);border-radius:22px;padding:16px;max-width:680px;width:min(92vw,680px);
-  box-shadow:0 18px 48px rgba(0,0,0,.4)
+  width:min(680px,92vw);background:#fff;color:#111;border-radius:22px;
+  padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)
 }
-.auth-title{margin:4px 0 14px}
-.nofocus{position:absolute;left:-9999px;opacity:0}
+.auth-title{margin:0 0 12px}
+.pm-img{width:100%;border-radius:16px;background:#000}
+.pm-comments .c{padding:6px 0;border-bottom:1px dashed #e5e7eb}
 
-/* Modal header（V11：改為淺灰/近白的一致感） */
-.sheet-head{
-  background:var(--card-soft);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:10px 12px;
-  margin-bottom:12px;
+/* 使 dialog 開啟時，後景半透明 */
+dialog::backdrop{background:rgba(0,0,0,.45)}
+
+/* ===== 社群登入（新版） ===== */
+.social-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px
 }
+@media (min-width:480px){ .social-grid{grid-template-columns:repeat(4,1fr)} }
+.provider{width:100%;padding:14px 8px;background:#23282c;color:#fff;font-weight:800}
 
-/* ===== FAB ===== */
-.fab{position:fixed;right:16px;bottom:16px;z-index:15}
-.fab-btn{width:84px;height:84px;border-radius:999px;border:0;background:linear-gradient(180deg,var(--brand),#ff7a4a);color:#222;font-weight:900;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+/* ===== 漂浮鈕（層級最高） ===== */
+.fab{position:fixed;right:18px;bottom:18px;z-index:var(--z-fab)}
+.fab-btn{width:88px;height:88px;border-radius:999px;background:linear-gradient(180deg,#ff9a6a,#ff7f50);color:#111;font-weight:900;border:0;box-shadow:0 14px 36px rgba(0,0,0,.25)}
 
-/* ===== Drawer Menu ===== */
+/* ===== 手機抽屜選單（層級高於地圖） ===== */
 .menu{
-  position:fixed;inset:0 0 0 auto;width:min(86vw,420px);transform:translateX(100%);
-  background:var(--card);padding:16px;border-left:1px solid var(--border);z-index:30;transition:.25s ease
+  position:fixed;inset:0 30% 0 0;transform:translateX(-100%);
+  background:#fff;z-index:var(--z-menu);padding:18px;overflow:auto;
+  box-shadow:20px 0 50px rgba(0,0,0,.1);border-radius:0 22px 22px 0
 }
-.menu.open{transform:translateX(0)}
-.menu a{display:block;text-decoration:none;color:var(--text);background:var(--card-soft);border:1px solid var(--border);
-  padding:14px 16px;border-radius:16px;margin:10px 0;font-weight:700}
-.menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:.2s}
+.menu a{
+  display:block;background:#f0f4f6;border-radius:16px;padding:16px 14px;margin:10px 0;
+  text-decoration:none;color:#111;font-weight:800;
+}
+.menu.open{transform:none;transition:transform .24s ease}
+.menu-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;z-index:var(--z-menu-backdrop)
+}
 .menu-backdrop.show{opacity:1;pointer-events:auto}
 
-/* ===== Footer ===== */
-.footer{color:var(--muted);padding-bottom:120px}
+/* ===== 深色主題支援（可選） ===== */
+/* 如果之後要做自動判斷，可加 prefers-color-scheme: dark 的變體 */
