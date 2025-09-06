@@ -14,6 +14,10 @@
 
   <!-- 主要樣式 -->
   <link rel="stylesheet" href="./style.css">
+  <!-- Leaflet -->
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        crossorigin="anonymous">
 </head>
 <body>
 
@@ -127,7 +131,6 @@
         </div>
       </header>
 
-      <!-- 身分綁定 / VIP -->
       <section class="card">
         <h3 class="mt-0">身份綁定 / VIP</h3>
         <div class="grid g-2">
@@ -150,7 +153,6 @@
         </div>
       </section>
 
-      <!-- 健檢 -->
       <section class="card">
         <h3 class="mt-0">免費健檢（每年 1 次 / 需加入公會）</h3>
         <div class="grid g-3">
@@ -181,7 +183,6 @@
         <div id="vetList" class="muted mt-1">目前無健檢紀錄</div>
       </section>
 
-      <!-- 公會基本 -->
       <section class="card">
         <div class="inline">
           <button class="btn" onclick="createGuild()">創立門檻（示意）</button>
@@ -342,10 +343,10 @@
   <button class="fab-btn" title="回頂端" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top</button>
 </div>
 
-<!-- 產品詳情 Modal（V11: 標題採 sheet-head 淺灰底） -->
+<!-- 產品詳情 Modal -->
 <dialog id="modal">
   <article class="auth-card">
-    <header class="sheet-head inline space-between">
+    <header class="inline space-between">
       <h3 id="mTitle" class="mt-0">產品詳情</h3>
       <button class="btn secondary" onclick="closeModal()">關閉</button>
     </header>
@@ -377,12 +378,15 @@
         <button class="btn" onclick="doLogin()">開始使用</button>
         <button class="btn secondary" onclick="closeAuth()">取消</button>
       </div>
-      <div class="inline mt-1">
-        <button class="btn secondary">使用 LINE 登入（示意）</button>
-        <button class="btn secondary">使用 Facebook 登入（示意）</button>
-        <button class="btn secondary">使用 Instagram 登入（示意）</button>
-        <button class="btn secondary">使用 Gmail 登入（示意）</button>
+
+      <!-- ✅ 新版社群登入：手機 2 欄／桌機 4 欄，自適應不超框 -->
+      <div class="social-grid">
+        <button class="btn secondary provider">LINE（示意）</button>
+        <button class="btn secondary provider">Facebook（示意）</button>
+        <button class="btn secondary provider">Instagram（示意）</button>
+        <button class="btn secondary provider">Gmail（示意）</button>
       </div>
+
       <button id="authNoFocus" class="nofocus" aria-hidden="true"></button>
     </div>
   </div>
@@ -429,11 +433,9 @@
   </div>
 </dialog>
 
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
 
-<!-- ===== Main Script（沿用 V10 + 小修） ===== -->
+<!-- ===== Main Script（延續 v11） ===== -->
 <script>
 /* ===== 全域狀態（localStorage） ===== */
 const LS_KEY = 'purrgoState';
@@ -920,7 +922,7 @@ window.addEventListener('hashchange', restorePage);
 window.addEventListener('DOMContentLoaded', boot);
 </script>
 
-<!-- 手機：抽屜選單＋背景遮罩 -->
+<!-- 手機：抽屜選單＋背景遮罩（z-index 已提高，確保不被地圖蓋） -->
 <nav id="menu" class="menu" aria-label="主選單">
   <a href="#home"      onclick="navTo('home')">首頁</a>
   <a href="#products"  onclick="navTo('products')">產品</a>
