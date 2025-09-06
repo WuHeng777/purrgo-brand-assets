@@ -222,26 +222,36 @@
     </section>
   </section>
 
-  <!-- ============ 社群 / 聊天（合併） ============ -->
-  <section id="page-community" class="page" hidden>
-    <div class="section-caption">社群 / 聊天</div>
+  <!-- ============ 社群與聊天（仍分頁存在者可保留；未動） ============ -->
+  <section id="page-social" class="page" hidden>
+    <div class="section-caption">社群</div>
     <section class="card">
-      <span class="pill">Community</span>
-      <h2 class="mt-0">好友與私訊</h2>
+      <span class="pill">Social</span>
+      <h2 class="mt-0">社群</h2>
       <div class="grid g-2">
         <div>
-          <h3 class="mt-0">好友名單</h3>
+          <h3 class="mt-0">好友</h3>
           <div class="inline">
             <input class="input" id="friendName" placeholder="輸入好友暱稱">
             <button class="btn" onclick="addFriend()">新增</button>
           </div>
           <ul id="friendList" class="list mt-1"></ul>
-
-          <h3 class="mt-1">封鎖名單</h3>
-          <ul id="blockList" class="list"></ul>
         </div>
         <div>
-          <h3 class="mt-0">聊天</h3>
+          <h3 class="mt-0">封鎖</h3>
+          <ul id="blockList" class="list"></ul>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="page-chat" class="page" hidden>
+    <div class="section-caption">Chat</div>
+    <section class="card">
+      <span class="pill">Chat</span>
+      <h2 class="mt-0">私訊聊天（示範）</h2>
+      <div class="grid g-2">
+        <div>
           <label>選擇好友
             <select class="input" id="chatWith" onchange="renderChat()"></select>
           </label>
@@ -252,40 +262,8 @@
             <button class="btn secondary" onclick="document.getElementById('chatMsg').value=''">清除</button>
           </div>
         </div>
+        <div class="muted">示範用途：所有內容僅存本機，不會上傳。</div>
       </div>
-      <div class="muted mt-1">示範用途：所有內容僅存本機，不會上傳。</div>
-    </section>
-  </section>
-
-  <!-- ============ 配送與服務（新） ============ -->
-  <section id="page-delivery" class="page" hidden>
-    <div class="section-caption">配送與服務</div>
-    <section class="card">
-      <span class="pill">Delivery</span>
-      <h2 class="mt-0">台中區預購寄砂服務（示意）</h2>
-      <p class="muted">目前開放 <b>台中</b> 區域。預購 / 寄砂 <b>≥ 20 包</b> 即可配送。勾選「當日缺砂」可顯示「當日送達（示意）」。</p>
-
-      <form class="grid g-2" onsubmit="return submitDelivery(event)">
-        <div><label>收件人姓名<input class="input" name="name" required></label></div>
-        <div><label>聯絡電話<input class="input" name="phone" required></label></div>
-        <div class="gcol-2"><label>收件地址<input class="input" name="addr" placeholder="例：台中市西屯區市政路 999 號" required></label></div>
-        <div>
-          <label>數量（包）
-            <input class="input" name="qty" type="number" min="1" step="1" value="20" required>
-          </label>
-        </div>
-        <div>
-          <label class="inline">
-            <input type="checkbox" id="urgent"> <span>當日缺砂（示意）</span>
-          </label>
-        </div>
-        <div class="gcol-2 inline">
-          <button class="btn" type="submit">檢查配送與預購</button>
-          <button class="btn secondary" type="button" onclick="clearDelivery()">清除表單</button>
-        </div>
-      </form>
-
-      <div id="deliveryResult" class="mt-1 muted">尚未檢查配送條件。</div>
     </section>
   </section>
 
@@ -342,7 +320,7 @@
 <!-- 產品詳情 Modal -->
 <dialog id="modal">
   <article class="auth-card">
-    <header class="inline space-between">
+    <header class="sheet-head inline space-between">
       <h3 id="mTitle" class="mt-0">產品詳情</h3>
       <button class="btn secondary" onclick="closeModal()">關閉</button>
     </header>
@@ -445,13 +423,12 @@ state.friends ||= [];
 state.blocks  ||= [];
 state.chats   ||= {};           // name -> [{text, me:true/false, time}]
 state.videos  ||= [];
-state.delivery ||= [];          // 配送申請紀錄
 save();
 
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); renderAll(); }
 
 /* ===== SPA 分頁 ===== */
-const pages = ["home","products","guild","kiosk","photos","community","delivery","video","about","contact"];
+const pages = ["home","products","guild","kiosk","photos","social","chat","video","about","contact"];
 function showPage(sec){
   pages.forEach(id=>{
     const el = document.getElementById('page-'+id);
@@ -462,7 +439,7 @@ function showPage(sec){
   if(sec==='kiosk'){ setTimeout(initMap, 60); }
   if(sec==='photos') { renderWall(); }
   if(sec==='guild')  { renderVet(); }
-  if(sec==='community'){ renderChatSelectors(); renderChat(); }
+  if(sec==='chat')   { renderChatSelectors(); renderChat(); }
 }
 function navTo(id){ closeMenu(); showPage(id); return false; }
 function restorePage(){ const h=(location.hash||'#home').slice(1); showPage(pages.includes(h)?h:'home'); }
@@ -474,7 +451,7 @@ function closeMenu(){ el('menu').classList.remove('open'); el('menuBackdrop').cl
 /* ===== 水平捲動 ===== */
 function scrollH(id,dir){ const el=document.getElementById(id); if(!el) return; el.scrollBy({left: dir*(el.clientWidth*0.9), behavior:'smooth'}); }
 
-/* ===== 登入 / 登出（不自動聚焦） ===== */
+/* ===== 登入 / 登出 ===== */
 function openAuth(){ el('authDlg').showModal(); setTimeout(()=>el('authNoFocus').focus(),0); }
 function closeAuth(){ el('authDlg').close(); }
 function doLogin(){
@@ -487,7 +464,7 @@ function doLogin(){
 }
 function logout(){ state.user.id=''; save(); }
 
-/* ===== 智慧顯示 ID（自動截斷前4後4） ===== */
+/* ===== 智慧顯示 ID（前4後4＋中間省略；避免推擠） ===== */
 function compactId(id){
   if(!id) return '訪客';
   const s = String(id);
@@ -680,8 +657,8 @@ async function loadProducts(){
     list.forEach(p=>{
       const elc=document.createElement('div'); elc.className='card product';
       elc.innerHTML = `
+        <div class="prod-head">${p.name}</div>
         <img src="${p.img||'./logo/logo-512.png'}" alt="" class="prod-img">
-        <h3 class="mt-0">${p.name}</h3>
         <div class="muted">規格：${p.spec||'-'}</div>
         <div class="mt-1"><b>NT$ ${p.price.toLocaleString()}</b></div>
         <div class="inline mt-1">
@@ -717,23 +694,19 @@ function openDetail(p){
 }
 function closeModal(){ el('modal').close(); }
 
-/* ===== 照片牆（上傳即壓縮） ===== */
+/* ===== 照片牆（上傳也壓縮） ===== */
 async function addPhoto(e){
   const pid=el('photoPet').value; if(!pid){ alert('請先建立主子'); return; }
-  const files=[...(e.target.files||[])]; if(!files.length) return;
-  for(const file of files){
+  const files=[...e.target.files||[]]; if(!files.length) return;
+  let ok=0;
+  for (const f of files){
     try{
-      const data = await compressImage(file, { max:960, quality:0.75 });
-      (state.photos[pid]=state.photos[pid]||[]).unshift({src:data, likes:0, comments:[]});
-    }catch(err){
-      await new Promise((resolve)=>{
-        const rd=new FileReader();
-        rd.onload=()=>{ (state.photos[pid]=state.photos[pid]||[]).unshift({src:rd.result, likes:0, comments:[]}); resolve(); };
-        rd.readAsDataURL(file);
-      });
-    }
+      const data = await compressImage(f, { max:960, quality:0.75 });
+      (state.photos[pid]=state.photos[pid]||[]).push({src:data, likes:0, comments:[]});
+      ok++;
+    }catch(_){}
   }
-  try { save(); } catch(e2){ alert('儲存失敗：可能超出容量，請換較小圖片'); }
+  if(ok>0) save();
   e.target.value='';
 }
 function renderWall(){
@@ -769,7 +742,7 @@ function renderPhotoComments(ph){
   });
 }
 
-/* ===== 社群 / 聊天（合併頁） ===== */
+/* ===== 社群 / 聊天 ===== */
 function addFriend(){
   const n=el('friendName').value.trim(); if(!n) return;
   if(state.friends.includes(n)) return alert('已存在');
@@ -811,43 +784,6 @@ function sendMsg(){
   (state.chats[withN]=state.chats[withN]||[]).push({text:t, me:true, time:new Date().toLocaleTimeString()});
   el('chatMsg').value=''; save();
   setTimeout(()=>{ (state.chats[withN]=state.chats[withN]||[]).push({text:'（自動回覆）喵喵～', me:false, time:new Date().toLocaleTimeString()}); save(); }, 400);
-}
-
-/* ===== 配送與服務：台中 + 數量≥20 ===== */
-function clearDelivery(){
-  const form = document.querySelector('#page-delivery form');
-  form.reset();
-  el('deliveryResult').textContent = '尚未檢查配送條件。';
-}
-function isTaichung(addr){
-  const a = (addr||'').toLowerCase();
-  return a.includes('台中') || a.includes('臺中') || a.includes('taichung');
-}
-function submitDelivery(e){
-  e.preventDefault();
-  const f = e.target;
-  const name = f.name.value.trim();
-  const phone = f.phone.value.trim();
-  const addr = f.addr.value.trim();
-  const qty  = parseInt(f.qty.value||'0',10);
-  const urgent = el('urgent').checked;
-
-  const eligibleCity = isTaichung(addr);
-  const eligibleQty  = qty >= 20;
-
-  let msg = '';
-  if(eligibleCity && eligibleQty){
-    msg = `✅ 可配送：台中區符合；數量 ${qty} 包。` +
-          (urgent ? ' 今日可送達（示意）。' : ' 依您排程出貨。');
-    state.delivery.push({name, phone, addr, qty, urgent, time:new Date().toLocaleString()});
-    save();
-  }else{
-    const cityTxt = eligibleCity ? '符合' : '僅限台中區';
-    const qtyTxt  = eligibleQty ? '符合' : '需滿 20 包';
-    msg = `❌ 尚未符合配送條件：城市 ${cityTxt}、數量 ${qtyTxt}。`;
-  }
-  el('deliveryResult').textContent = msg;
-  return false;
 }
 
 /* ===== 短影片 ===== */
@@ -919,16 +855,16 @@ window.addEventListener('DOMContentLoaded', boot);
 
 <!-- 手機：抽屜選單＋背景遮罩 -->
 <nav id="menu" class="menu" aria-label="主選單">
-  <a href="#home"      onclick="navTo('home')">首頁</a>
-  <a href="#products"  onclick="navTo('products')">產品</a>
-  <a href="#guild"     onclick="navTo('guild')">公會</a>
-  <a href="#kiosk"     onclick="navTo('kiosk')">據點</a>
-  <a href="#photos"    onclick="navTo('photos')">照片牆</a>
-  <a href="#community" onclick="navTo('community')">社群 / 聊天</a>
-  <a href="#delivery"  onclick="navTo('delivery')">配送與服務</a>
-  <a href="#video"     onclick="navTo('video')">短影片</a>
-  <a href="#about"     onclick="navTo('about')">理念</a>
-  <a href="#contact"   onclick="navTo('contact')">聯絡</a>
+  <a href="#home"     onclick="navTo('home')">首頁</a>
+  <a href="#products" onclick="navTo('products')">產品</a>
+  <a href="#guild"    onclick="navTo('guild')">公會</a>
+  <a href="#kiosk"    onclick="navTo('kiosk')">據點</a>
+  <a href="#photos"   onclick="navTo('photos')">照片牆</a>
+  <a href="#social"   onclick="navTo('social')">社群</a>
+  <a href="#chat"     onclick="navTo('chat')">聊天</a>
+  <a href="#video"    onclick="navTo('video')">短影片</a>
+  <a href="#about"    onclick="navTo('about')">理念</a>
+  <a href="#contact"  onclick="navTo('contact')">聯絡</a>
 </nav>
 <div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()"></div>
 
