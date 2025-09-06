@@ -2,6 +2,8 @@
   --bg:#0f1011; --bg-2:#151618; --text:#eaeaea; --muted:#9aa0a6;
   --brand:#ff7f50; --chip:#ffe0d3; --chip-text:#2b2b2b;
   --stroke:#222428; --stroke-2:#1d1f22;
+  --card-head-d:#1b1c1f;            /* 深色：卡片/彈窗標頭底色 */
+  --card-head-l:#f3f4f6;            /* 淺色：卡片/彈窗標頭底色 */
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -27,7 +29,6 @@ a{color:inherit;text-decoration:none}
 .card{
   background:radial-gradient(130% 120% at 100% 0%,#1a1b1e 0%,#111214 60%);
   border:1px solid var(--stroke-2);border-radius:18px;padding:22px;
-  color:var(--text); /* 深色主題：卡片內文字預設淺色 */
 }
 .pill{display:inline-block;background:var(--chip);color:var(--chip-text);padding:8px 14px;border-radius:999px;font-weight:800}
 .btn{background:var(--brand);color:#191919;border:0;border-radius:14px;padding:12px 16px;font-weight:900}
@@ -41,40 +42,36 @@ textarea.input{min-height:120px}
 .list{list-style:none;padding-left:1rem}
 .list li{margin:.4rem 0}
 
-/* 確保卡片與對話框內的標題/段落都繼承顏色 */
-.card :where(h1,h2,h3,h4,h5,h6,p,ul,ol,li,span,small,b,strong,label,div),
-.auth-card :where(h1,h2,h3,h4,h5,h6,p,ul,ol,li,span,small,b,strong,label,div){
-  color:inherit;
-}
-
 /* Header */
 header{position:sticky;top:0;z-index:80;background:linear-gradient(#0f1011cc,#0f1011cc);backdrop-filter:saturate(120%) blur(2px)}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800}
 .brand img{width:28px;height:28px;border-radius:8px;object-fit:cover}
 .chipbar{display:flex;align-items:center;gap:10px}
-.chip{display:flex;align-items:center;gap:8px;height:48px;padding:0 16px;border-radius:16px;background:#212225;border:1px solid #2a2b2d;min-width:0}
+.chip{display:flex;align-items:center;gap:8px;height:48px;padding:0 16px;border-radius:16px;background:#212225;border:1px solid #2a2b2d}
 .chip .sep{opacity:.35}
-.chip .who{
-  max-width:38vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
+/* 防止 ID 擠壓：固定最大寬＋省略號（JS 也已做前4後4） */
+.chip .who{max-width:8.5em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Hamburger + Drawer */
-.menu-toggle{width:48px;height:48px;border-radius:14px;background:#232427;border:0;display:grid;place-items:center}
+.menu-toggle{width:48px;height:48px;border-radius:14px;background:#232427;display:grid;place-items:center;border:0}
 .menu-ico,.menu-ico::before,.menu-ico::after{content:"";display:block;width:22px;height:2px;background:#fff;border-radius:2px;position:relative}
 .menu-ico::before{top:-6px;position:absolute}
 .menu-ico::after{top:6px;position:absolute}
 
+/* Drawer */
 .menu{position:fixed;inset:0 0 0 auto;width:min(86vw,360px);transform:translateX(100%);
   transition:transform .25s ease;background:#0d0e10;z-index:10000;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom));overflow:auto;border-left:1px solid var(--stroke)}
 .menu.open{transform:none}
 .menu a{display:block;padding:14px 16px;margin:10px 0;border-radius:14px;background:#1b1c1f;border:1px solid var(--stroke)}
 .menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:9999}
 .menu-backdrop.show{opacity:1;pointer-events:auto}
+.fab{z-index:1200}
+header,.container,.card{position:relative;z-index:auto}
 
 /* Hero */
 .hero{display:grid;grid-template-columns:1.2fr .9fr;gap:16px;align-items:center}
-.hero-title{font-size:clamp(24px,5.6vw,40px);line-height:1.25;margin:.2rem 0 1rem;white-space:nowrap}
+.hero-title{font-size:clamp(24px,5.6vw,40px);line-height:1.25;margin:.2rem 0 1rem;white-space:nowrap;color:#fff}
 .hero-visual{display:flex;align-items:center;justify-content:center}
 .hero-logo{width:min(54vw,220px);aspect-ratio:1/1;border-radius:20px;object-fit:cover;box-shadow:0 8px 20px rgba(0,0,0,.35)}
 @media (max-width:900px){.hero{grid-template-columns:1fr}.hero-visual{justify-content:flex-end}}
@@ -92,6 +89,7 @@ header{position:sticky;top:0;z-index:80;background:linear-gradient(#0f1011cc,#0f
 .hbtn.prev{left:-6px}.hbtn.next{right:-6px}
 .hscroll{display:flex;gap:12px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
 .product{min-width:280px;scroll-snap-align:start}
+.prod-head{font-weight:900;padding:10px 12px;border-radius:12px;background:var(--card-head-d);margin-bottom:8px}
 .prod-img{width:100%;height:180px;object-fit:cover;border-radius:14px;border:1px solid var(--stroke)}
 
 /* Pets */
@@ -121,94 +119,40 @@ header{position:sticky;top:0;z-index:80;background:linear-gradient(#0f1011cc,#0f
 dialog{border:0;border-radius:18px;padding:0;max-width:min(92vw,560px);background:transparent}
 dialog::backdrop{background:rgba(0,0,0,.55)}
 .auth-outer{background:#0b0c0d;border:1px solid var(--stroke);padding:10px;border-radius:20px}
-.auth-card{background:var(--bg-2);border:1px solid var(--stroke-2);border-radius:18px;padding:18px;color:var(--text)}
-.auth-title{font-weight:900;font-size:1.4rem;margin:0 0 12px;color:var(--text)}
+.auth-card{background:var(--bg-2);border:1px solid var(--stroke-2);border-radius:18px;padding:18px}
+.auth-title{font-weight:900;font-size:1.4rem;margin:0 0 12px}
+.sheet-head{background:var(--card-head-d);border:1px solid var(--stroke);padding:10px 12px;border-radius:12px;margin-bottom:12px}
 .pm-img{width:100%;border-radius:12px;object-fit:contain;max-height:60vh;background:#0c0d0e}
 .pm-comments{max-height:180px;overflow:auto}
 .nofocus{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 
 /* FAB */
-.fab{position:fixed;right:14px;bottom:16px;z-index:1200}
+.fab{position:fixed;right:14px;bottom:16px;z-index:90}
 .fab-btn{width:66px;height:66px;border-radius:50%;
   background:linear-gradient(180deg,#ff8d63,#e56d3b);border:0;color:#181818;font-weight:900;
   box-shadow:0 10px 22px rgba(0,0,0,.35)}
 
-/* Light mode — 改善對比與可讀性 */
+/* Light mode adjustments */
 @media (prefers-color-scheme: light){
-  /* 全域變數與一般底色 */
-  body{ background:#fbfbfb; color:#222 }
-  .muted{ color:#60656b }
-  header{ background:linear-gradient(#ffffffcc,#ffffffcc); backdrop-filter:saturate(120%) blur(2px) }
-
-  /* 卡片 / 框線 */
-  .card{ background:#fff; border-color:#ececf0 }
-  .table th,.table td{ border-bottom:1px solid #ececf0 }
-  .empty{ color:#80858b; border-color:#e7e7ea }
-  .prod-img{ border-color:#ececf0 }
-
-  /* 按鈕與晶片 */
-  .btn{ color:#191919 } /* 主色在淺色仍為橘，深字即可 */
-  .btn.secondary{ background:#2a2c2f; color:#fff; border-color:#2a2c2f } /* 深底白字 */
-  .btn.compact{ color:#fff } /* 晶片區的次要鈕保持白字 */
-
-  /* 導覽列的訪客/登入晶片：深底白字 */
-  .chip{ background:#212225; border:1px solid #2a2b2d; color:#f1f1f1 }
-  .chip .sep{ color:#bbb; opacity:1 }
-
-  /* 漢堡抽屜 */
-  .menu{ background:#fff; border-left:1px solid #ececf0 }
-  .menu a{ background:#f5f6f8; border:1px solid #ececf0; color:#111 }
-  .menu-backdrop{ background:rgba(0,0,0,.45) }
-
-  /* Hero 區與標題對比 */
-  .section-caption{ color:#8b9096 }
-
-  /* 水平滑動箭頭在淺色模式採深底白字，對比更好 */
-  .hbtn{ background:#1f2023; color:#fff; border:0 }
-
-  /* 對話盒 / 彈窗（去白邊 + 標題深底白字） */
-  .auth-outer{ background:#f6f7f8; border-color:#ececf0 }
-  .auth-card{ background:#fff; border-color:#ececf0; color:#222 }
-  /* 產品詳情標題列做成深底白字，避免你截圖的黑字落在深底 */
-  dialog .auth-card header{
-    background:#1f2023;
-    color:#fff;
-    border-radius:12px;
-    padding:10px 12px;
-    margin:-8px -8px 12px;
-  }
-  dialog .auth-card header .btn.secondary{ background:#34363a } /* 右上關閉鈕反差 */
-  .pm-img{ background:#fff }  /* 照片預覽白底 */
-
-  /* 地圖框線 */
-  .mapbox{ border:1px solid #ececf0 }
-
-  /* Drawer/浮動件層級維持不變 */
+  :root{--text:#222}
+  body{background:#fbfbfb;color:#222}
+  .card{background:#fff;border-color:#eee}
+  .hero-title{color:#222}                    /* 便利×可愛×永續×共創：在淺色主題改為深字色 */
+  .menu{background:#fff}
+  .menu a{background:#f3f4f6;border-color:#e9e9ee}
+  .auth-outer{background:#f6f7f8;border-color:#e6e7ea}
+  .auth-card{background:#fff;border-color:#e9e9ee}
+  .auth-title{color:#111}
+  .sheet-head{background:var(--card-head-l);border-color:#e9e9ee}      /* 產品詳情標題底色改淺灰 */
+  .prod-head{background:var(--card-head-l);color:#111;border:1px solid #e9e9ee}
+  .input,select.input,textarea.input{background:#fff;color:#111;border:1px solid #ddd}  /* 表單在淺色不可是黑底 */
+  .p-card{background:#fff;border-color:#eee}
+  .chatbox{background:#fff}
+  .msg.me{background:#f1f2f4}.msg.other{background:#e7e9ee}
 }
 
-/* Drawer 的優先權與安全區（避免被遮） */
-.menu{
-  position: fixed;
-  inset: 0 0 0 auto;
-  width: min(86vw, 360px);
-  transform: translateX(100%);
-  transition: transform .25s ease;
-  background: #0d0e10;
-  overflow: auto;
-  padding-top: max(16px, env(safe-area-inset-top));
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
-  z-index: 10000;
-}
+/* === Drawer 的最高優先權與安全區（保留） === */
+.menu{ position: fixed; inset: 0 0 0 auto; width: min(86vw, 360px); transform: translateX(100%); transition: transform .25s ease; background: #0d0e10; overflow: auto; padding-top: max(16px, env(safe-area-inset-top)); padding-bottom: max(16px, env(safe-area-inset-bottom)); z-index: 10000; }
 .menu.open{ transform: none; }
-
-.menu-backdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.5);
-  backdrop-filter: blur(2px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .2s;
-  z-index: 9999;
-}
+.menu-backdrop{ position: fixed; inset: 0; background: rgba(0,0,0,.5); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 9999; }
 .menu-backdrop.show{ opacity: 1; pointer-events: auto; }
