@@ -133,15 +133,57 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
   background:linear-gradient(180deg,#ff8d63,#e56d3b);border:0;color:#181818;font-weight:900;
   box-shadow:0 10px 22px rgba(0,0,0,.35)}
 
-/* Light mode adjustments */
+/* Light mode — 改善對比與可讀性 */
 @media (prefers-color-scheme: light){
-  body{background:#fbfbfb;color:#222}
-  .card{background:#fff;border-color:#eee;color:#222}
-  .menu{background:#fff}
-  .menu a{background:#f3f4f6}
-  .auth-outer{background:#f6f7f8;border-color:#e6e7ea}
-  .auth-card{background:#fff;border-color:#e9e9ee;color:#222}
-  .auth-title{color:#111}
+  /* 全域變數與一般底色 */
+  body{ background:#fbfbfb; color:#222 }
+  .muted{ color:#60656b }
+  header{ background:linear-gradient(#ffffffcc,#ffffffcc); backdrop-filter:saturate(120%) blur(2px) }
+
+  /* 卡片 / 框線 */
+  .card{ background:#fff; border-color:#ececf0 }
+  .table th,.table td{ border-bottom:1px solid #ececf0 }
+  .empty{ color:#80858b; border-color:#e7e7ea }
+  .prod-img{ border-color:#ececf0 }
+
+  /* 按鈕與晶片 */
+  .btn{ color:#191919 } /* 主色在淺色仍為橘，深字即可 */
+  .btn.secondary{ background:#2a2c2f; color:#fff; border-color:#2a2c2f } /* 深底白字 */
+  .btn.compact{ color:#fff } /* 晶片區的次要鈕保持白字 */
+
+  /* 導覽列的訪客/登入晶片：深底白字 */
+  .chip{ background:#212225; border:1px solid #2a2b2d; color:#f1f1f1 }
+  .chip .sep{ color:#bbb; opacity:1 }
+
+  /* 漢堡抽屜 */
+  .menu{ background:#fff; border-left:1px solid #ececf0 }
+  .menu a{ background:#f5f6f8; border:1px solid #ececf0; color:#111 }
+  .menu-backdrop{ background:rgba(0,0,0,.45) }
+
+  /* Hero 區與標題對比 */
+  .section-caption{ color:#8b9096 }
+
+  /* 水平滑動箭頭在淺色模式採深底白字，對比更好 */
+  .hbtn{ background:#1f2023; color:#fff; border:0 }
+
+  /* 對話盒 / 彈窗（去白邊 + 標題深底白字） */
+  .auth-outer{ background:#f6f7f8; border-color:#ececf0 }
+  .auth-card{ background:#fff; border-color:#ececf0; color:#222 }
+  /* 產品詳情標題列做成深底白字，避免你截圖的黑字落在深底 */
+  dialog .auth-card header{
+    background:#1f2023;
+    color:#fff;
+    border-radius:12px;
+    padding:10px 12px;
+    margin:-8px -8px 12px;
+  }
+  dialog .auth-card header .btn.secondary{ background:#34363a } /* 右上關閉鈕反差 */
+  .pm-img{ background:#fff }  /* 照片預覽白底 */
+
+  /* 地圖框線 */
+  .mapbox{ border:1px solid #ececf0 }
+
+  /* Drawer/浮動件層級維持不變 */
 }
 
 /* Drawer 的優先權與安全區（避免被遮） */
