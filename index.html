@@ -21,6 +21,22 @@
   .fab { z-index: 9990; } /* 以免浮動按鈕擋到抽屜右側 */
   /* 若有全局把 a 設成 pointer-events:none 的樣式，這裡強制開啟 */
   #menu a { pointer-events: auto; }
+  /* —— 強制漢堡顯示三條線（不靠偽元素），避免被舊規則覆蓋 —— */
+button.menu-toggle{
+  width:44px;height:44px;border:none;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  background:rgba(0,0,0,.92) !important; color:#fff !important;
+}
+button.menu-toggle > .menu-ico{
+  display:block !important; width:22px; height:16px; position:relative;
+  /* 三條線用三個背景，任何瀏覽器都吃得到 */
+  background:
+    linear-gradient(#fff,#fff) left top/100% 2px no-repeat,
+    linear-gradient(#fff,#fff) left center/100% 2px no-repeat,
+    linear-gradient(#fff,#fff) left bottom/100% 2px no-repeat !important;
+}
+/* 把舊版利用偽元素畫線的規則「關掉」 */
+.menu-ico::before, .menu-ico::after{ content:none !important; }  
   </style>
   <!-- ✅ Leaflet CSS 必須在 head 先載入 -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
