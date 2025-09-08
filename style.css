@@ -295,3 +295,13 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 
 /* 若有舊樣式殘留，確保這兩條規則優先（可放在檔尾） */
 .menu-ico::before, .menu-ico::after { content: none !important; }
+
+/* === 固定品牌名稱不換行，過長省略 === */
+.brand span {
+  white-space: nowrap;        /* 不允許換行 */
+  overflow: hidden;           /* 超出隱藏 */
+  text-overflow: ellipsis;    /* 超出時顯示 … */
+  max-width: 140px;           /* 視需要可調，建議 120~160px */
+  display: inline-block;
+  vertical-align: middle;
+}
