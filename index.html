@@ -15,7 +15,7 @@
   <!-- 主要樣式 -->
   <link rel="stylesheet" href="./style.css">
 
-  <!-- ✅ 關鍵修正：Leaflet CSS 必須在 head 先載入 -->
+  <!-- ✅ Leaflet CSS 必須在 head 先載入 -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
 </head>
 <body>
@@ -345,7 +345,7 @@
   <button class="fab-btn" title="回頂端" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top</button>
 </div>
 
-<!-- 產品詳情 Modal（V11: 標題採 sheet-head 淺灰底） -->
+<!-- 產品詳情 Modal -->
 <dialog id="modal">
   <article class="auth-card">
     <header class="sheet-head inline space-between">
@@ -435,7 +435,7 @@
 <!-- ✅ Leaflet JS 放在 body 結尾 -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
 
-<!-- ===== Main Script（沿用 V11 + 小修） ===== -->
+<!-- ===== Main Script（沿用 V13，加入地圖穩定化） ===== -->
 <script>
 /* ===== 全域狀態（localStorage） ===== */
 const LS_KEY = 'purrgoState';
@@ -464,7 +464,7 @@ function showPage(sec){
   });
   closeMenu();
   location.hash = '#'+sec;
-  if(sec==='kiosk'){ setTimeout(initMap, 60); }
+  if(sec==='kiosk'){ setTimeout(initMap, 250); } // ⏱ 延後以避免白屏
   if(sec==='photos') { renderWall(); }
   if(sec==='guild')  { renderVet(); }
   if(sec==='community'){ renderChatSelectors(); renderChat(); }
@@ -874,27 +874,41 @@ function renderVideos(){
   });
 }
 
-/* ===== 地圖 ===== */
+/* ===== 地圖（穩定化） ===== */
 let _map, _mapReady=false;
 async function initMap(){
-  if(!_map){
-    _map=L.map('map'); _mapReady=true;
-    _map.setView([25.0330,121.5654],12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(_map);
-    try{
-      const points = await (await fetch('./data/locations.json',{cache:'no-cache'})).json();
-      points.forEach(p=>{
-        const m=L.marker([p.lat,p.lng]).addTo(_map);
-        const gLink = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
-        const aLink = `https://maps.apple.com/?q=${p.lat},${p.lng}`;
-        m.bindPopup(`<b>${p.name}</b><br>${p.address||''}<br><a href='${gLink}' target='_blank'>Google Maps</a> ｜ <a href='${aLink}' target='_blank'>Apple Maps</a>`);
-      });
-    }catch(e){}
-  }
-  if(_mapReady){
-    // ⏱ 把延遲拉長，避免容器尚未完成排版
+  const mapEl = document.getElementById('map');
+  if(!mapEl) return;
+
+  // 等到容器可見且具備尺寸再初始化（避免白屏）
+  const waitVisible = () => {
+    const style = getComputedStyle(mapEl);
+    const rect = mapEl.getBoundingClientRect();
+    const visible = style.display !== 'none' && rect.width > 80 && rect.height > 80;
+    if(!visible){ return setTimeout(waitVisible, 120); }
+
+    if(!_map){
+      _map = L.map(mapEl);
+      _mapReady = true;
+      _map.setView([25.0330,121.5654],12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(_map);
+      // 標記
+      fetch('./data/locations.json',{cache:'no-cache'})
+        .then(r=>r.json())
+        .then(points=>{
+          points.forEach(p=>{
+            const m=L.marker([p.lat,p.lng]).addTo(_map);
+            const gLink = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
+            const aLink = `https://maps.apple.com/?q=${p.lat},${p.lng}`;
+            m.bindPopup(`<b>${p.name}</b><br>${p.address||''}<br><a href='${gLink}' target='_blank'>Google Maps</a> ｜ <a href='${aLink}' target='_blank'>Apple Maps</a>`);
+          });
+        })
+        .catch(()=>{});
+    }
+    // 額外再重算一次尺寸
     setTimeout(()=>{ _map.invalidateSize(); }, 200);
-  }
+  };
+  waitVisible();
 }
 
 /* ===== 聯絡表單 ===== */
