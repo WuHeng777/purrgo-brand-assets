@@ -264,7 +264,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 #whoText.who{
   flex:1 1 auto;min-width:0;
   font-weight:600;                 /* 比之前再重一點 */
-  color:rgba(0,0,0,.86);           /* 比之前更深一點 */
+  color:rgba(0,0,0,.88);           /* 比之前更深一點 */
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
 }
 .chip .sep{opacity:.5;margin:0 .25rem}
@@ -277,11 +277,21 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
   color: rgba(0,0,0,.86);
   font-weight: 600;
 }
-/* 漢堡按鈕（配合 SVG icon） */
+/* 漢堡本體：深色圓角、置中 */
 .menu-toggle{
-  width:44px;height:44px;border:none;cursor:pointer;
+  width:44px;height:44px;border:none;border-radius:12px;
   display:flex;align-items:center;justify-content:center;
-  padding:0;border-radius:12px;
-  background:rgba(0,0,0,.9);
+  padding:0;cursor:pointer;background:rgba(0,0,0,.92);
 }
-.menu-ico{display:block;width:22px;height:16px}
+
+/* 3 條線（不靠偽元素） */
+.menu-ico{
+  display:block;width:22px;height:16px;
+  background:
+    linear-gradient(#fff, #fff) left top/100% 2px no-repeat,
+    linear-gradient(#fff, #fff) left center/100% 2px no-repeat,
+    linear-gradient(#fff, #fff) left bottom/100% 2px no-repeat;
+}
+
+/* 若有舊樣式殘留，確保這兩條規則優先（可放在檔尾） */
+.menu-ico::before, .menu-ico::after { content: none !important; }
