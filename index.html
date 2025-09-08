@@ -14,7 +14,14 @@
 
   <!-- 主要樣式 -->
   <link rel="stylesheet" href="./style.css">
-
+  <style>
+  /* 抽屜選單層級一定高於背景與浮動按鈕 */
+  #menu { position: fixed; z-index: 10010; }
+  #menuBackdrop { position: fixed; z-index: 10000; }
+  .fab { z-index: 9990; } /* 以免浮動按鈕擋到抽屜右側 */
+  /* 若有全局把 a 設成 pointer-events:none 的樣式，這裡強制開啟 */
+  #menu a { pointer-events: auto; }
+  </style>
   <!-- ✅ Leaflet CSS 必須在 head 先載入 -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
 </head>
@@ -935,22 +942,34 @@ function boot(){
   loadProducts();
   if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
 }
+// 保險：用事件代理處理選單點擊
+document.addEventListener('DOMContentLoaded', () => {
+  const menu = document.getElementById('menu');
+  if (!menu) return;
+  menu.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    e.preventDefault();
+    const id = a.getAttribute('href').slice(1);
+    navTo(id); // 會自動 closeMenu + showPage
+  }, { passive: false });
+});
 window.addEventListener('hashchange', restorePage);
 window.addEventListener('DOMContentLoaded', boot);
 </script>
 
 <!-- 手機：抽屜選單＋背景遮罩 -->
 <nav id="menu" class="menu" aria-label="主選單">
-  <a href="#home"      onclick="navTo('home')">首頁</a>
-  <a href="#products"  onclick="navTo('products')">產品</a>
-  <a href="#guild"     onclick="navTo('guild')">公會</a>
-  <a href="#kiosk"     onclick="navTo('kiosk')">據點</a>
-  <a href="#photos"    onclick="navTo('photos')">照片牆</a>
-  <a href="#community" onclick="navTo('community')">社群 / 聊天</a>
-  <a href="#delivery"  onclick="navTo('delivery')">配送與服務</a>
-  <a href="#video"     onclick="navTo('video')">短影片</a>
-  <a href="#about"     onclick="navTo('about')">理念</a>
-  <a href="#contact"   onclick="navTo('contact')">聯絡</a>
+  <a href="#home"      onclick="return navTo('home')">首頁</a>
+  <a href="#products"  onclick="return navTo('products')">產品</a>
+  <a href="#guild"     onclick="return navTo('guild')">公會</a>
+  <a href="#kiosk"     onclick="return navTo('kiosk')">據點</a>
+  <a href="#photos"    onclick="return navTo('photos')">照片牆</a>
+  <a href="#community" onclick="return navTo('community')">社群 / 聊天</a>
+  <a href="#delivery"  onclick="return navTo('delivery')">配送與服務</a>
+  <a href="#video"     onclick="return navTo('video')">短影片</a>
+  <a href="#about"     onclick="return navTo('about')">理念</a>
+  <a href="#contact"   onclick="return navTo('contact')">聯絡</a>
 </nav>
 <div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()"></div>
 
