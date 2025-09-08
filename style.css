@@ -208,3 +208,100 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 .leaflet-container { z-index: 1; }   /* 地圖本身層級低 */
 .fab { z-index: 1000; }               /* Top/FAB 蓋在地圖上 */
 .menu, .menu-backdrop { z-index: 2000; } /* 抽屜與遮罩最上層 */
+
+/* === Header / Chipbar 強化：穩定高度、對齊、溢位省略 === */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+.chipbar {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  min-width: 0; /* 允許內部做 ellipsis */
+}
+
+/* 晶片外框：固定高度、避免被內容撐高 */
+.chip {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+  height: 40px;
+  padding: 0 .6rem;
+  border-radius: 999px;
+  background: rgba(0,0,0,.06);
+  backdrop-filter: saturate(140%) blur(4px);
+  min-width: 0;
+  max-width: min(66vw, 340px); /* 行動裝置不超過 2/3 螢幕寬 */
+}
+
+/* 帳號文字：單行省略，避免拉爆版面 */
+#whoText.who {
+  display: inline-block;
+  max-width: calc(100% - 88px); /* 預留分隔線與按鈕空間 */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 1; /* 垂直置中更穩定 */
+}
+
+/* 分隔線窄一點，節省空間 */
+.chip .sep { opacity: .55; margin: 0 .25rem; }
+
+/* 登入/登出按鈕：橫向文字、不換行、緊湊 */
+.btn.compact,
+.chip .btn {
+  white-space: nowrap;
+  padding: .38rem .6rem;
+  line-height: 1;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 超窄螢幕保護（≤360px）：再緊一點 */
+@media (max-width: 360px) {
+  .chip { max-width: 75vw; padding: 0 .5rem; }
+  #whoText.who { max-width: calc(100% - 80px); font-size: .92rem; }
+  .btn.compact, .chip .btn { padding: .34rem .52rem; height: 26px; }
+}
+
+/* === 漢堡按鈕與 icon 垂直置中 === */
+.menu-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;              /* 中心對齊 */
+  place-items: center;
+  padding: 0;
+}
+
+.menu-ico {
+  position: relative;
+  width: 20px;
+  height: 16px;               /* 三線的整體高度 */
+}
+.menu-ico::before,
+.menu-ico::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+/* 上下兩線 */
+.menu-ico::before { top: 0; }
+.menu-ico::after  { bottom: 0; }
+/* 中線用 box-shadow 疊一條，確保正中 */
+.menu-ico { box-shadow: 0 7px 0 0 currentColor inset; }
+
+/* === 抽屜層級（沿用你 v13 設定，保留在這裡以免被其他樣式覆蓋） === */
+#menu { position: fixed; z-index: 10010; }
+#menuBackdrop { position: fixed; z-index: 10000; }
+.fab { z-index: 9990; }
+#menu a { pointer-events: auto; }
