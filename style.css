@@ -1,3 +1,5 @@
+V14 style.css
+
 /* ===== 基本 ===== */
 :root{
   --bg:#0f1113;
@@ -305,3 +307,239 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
   display: inline-block;
   vertical-align: middle;
 }
+
+/* ====== 喵力聯盟（Alliance）增補樣式 —— 貼在 style.css 檔尾 ====== */
+
+/* 區塊標題對齊與間距 */
+#page-alliance .section-caption { color:#9aa3ab; margin:8px 0 10px }
+#page-alliance h3 { margin:.25rem 0 .5rem }
+#page-alliance h4 { margin:.25rem 0 .25rem; font-size:1rem }
+
+/* 概覽：等級/XP 進度條 */
+#allyBarWrap{
+  height:12px; background:#eef2f4; border-radius:999px; overflow:hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.06);
+  max-width:460px;
+}
+#allyBar{
+  height:100%; width:0%;
+  background: linear-gradient(90deg,#ff9a6a,#ff7f50);
+  transition: width .4s ease;
+  border-radius:999px;
+}
+
+/* 卸任投票條 */
+#voteBarWrap{
+  height:12px; background:#eef2f4; border-radius:999px; overflow:hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.06);
+}
+#voteBar{
+  height:100%; width:0%;
+  background:#10b981;              /* 同意（綠） */
+  transition: width .3s ease;
+}
+
+/* 概覽右上角數字排版 */
+#page-alliance .align-right{ text-align:right }
+#page-alliance .align-right .muted b{ color:#111 }
+
+/* 祖譜容器：讓卡片整齊排列、可換行 */
+#geneLeader,
+#geneOfficers,
+#geneDiamond,#geneGold,#geneSilver,#geneBronze{
+  display:flex; flex-wrap:wrap; gap:10px;
+}
+
+/* 小尺寸卡片的共同樣式（覆蓋預設 card 一些間距） */
+#page-alliance .card{
+  background:var(--l-card);
+  color:var(--l-text);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+#page-alliance .card h3,
+#page-alliance .card h4 { color:var(--l-text) }
+
+/* 成員卡：內文排版微調（配合 JS 動態建立的 inline grid 結構） */
+#page-alliance .card img{
+  border-radius:12px; object-fit:cover;
+  box-shadow: 0 1px 2px rgba(0,0,0,.08);
+}
+#page-alliance .card .muted{ color:var(--l-muted) }
+
+/* 頭貼加外框（依階級上色） */
+#geneLeader   img{ box-shadow:0 0 0 3px #111 inset, 0 1px 2px rgba(0,0,0,.1) } /* 盟主：黑框 */
+#geneOfficers img{ box-shadow:0 0 0 3px #ffb86b inset, 0 1px 2px rgba(0,0,0,.1) } /* 官職：琥珀 */
+#geneDiamond  img{ box-shadow:0 0 0 3px #60a5fa inset, 0 1px 2px rgba(0,0,0,.1) } /* 鑽石：藍 */
+#geneGold     img{ box-shadow:0 0 0 3px #fbbf24 inset, 0 1px 2px rgba(0,0,0,.1) } /* 黃金 */
+#geneSilver   img{ box-shadow:0 0 0 3px #cbd5e1 inset, 0 1px 2px rgba(0,0,0,.1) } /* 白銀 */
+#geneBronze   img{ box-shadow:0 0 0 3px #d1a37a inset, 0 1px 2px rgba(0,0,0,.1) } /* 青銅 */
+
+/* 祖譜標題的色票 */
+#page-alliance h4.mt-0{
+  display:inline-flex; align-items:center; gap:.5ch;
+}
+#page-alliance h4.mt-0::before{
+  content:""; display:inline-block; width:10px; height:10px; border-radius:2px; opacity:.9;
+}
+#geneDiamond ~ h4.mt-0::before { background:#60a5fa }   /* 若直接接在標題後可用，但本頁容器分開，改個別指定： */
+#page-alliance h4:has(+ #geneDiamond)::before { background:#60a5fa }
+#page-alliance h4:has(+ #geneGold)::before    { background:#fbbf24 }
+#page-alliance h4:has(+ #geneSilver)::before  { background:#cbd5e1 }
+#page-alliance h4:has(+ #geneBronze)::before  { background:#d1a37a }
+
+/* 投票區：提示字更淡、按鈕間距 */
+#voteHint{ color:var(--l-muted) }
+#page-alliance #btnStartVote,
+#page-alliance #btnVoteYes,
+#page-alliance #btnVoteNo{ min-width:112px }
+
+/* Officers 區的卡片排版，讓一排最多 5 張時也不擁擠 */
+#geneOfficers{ gap:12px }
+#geneOfficers > .card{ min-width:230px }
+
+/* 人數/容量數字在手機也不擠 */
+@media (max-width:640px){
+  #page-alliance .align-right{ text-align:left }
+  #allyBarWrap{ max-width:100% }
+}
+
+/* 小螢幕祖譜：每張卡片全寬排列較好閱讀 */
+@media (max-width:480px){
+  #geneLeader > .card,
+  #geneOfficers > .card,
+  #geneDiamond > .card,
+  #geneGold > .card,
+  #geneSilver > .card,
+  #geneBronze > .card{
+    width:100%;
+  }
+}
+
+/* 投票進度數字排版一致 */
+#voteYes, #votePct, #voteNeed{ font-variant-numeric: tabular-nums; }
+
+/* 表單下拉在卡片內縮小一點（盟主調整職級用） */
+#page-alliance select.input{
+  padding:8px 10px; height:36px; border-radius:12px;
+}
+
+/* =========================================================
+   喵力聯盟（Miao Alliance）— v13 Add-on Styles
+   貼在 style.css 檔尾即可
+   ========================================================= */
+
+/* —— 漢堡三條線：穩固版（避免被舊規則覆蓋） —— */
+button.menu-toggle{
+  width:44px;height:44px;border:none;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  background:rgba(0,0,0,.92); color:#fff; cursor:pointer;
+}
+button.menu-toggle > .menu-ico{
+  display:block; width:22px; height:16px; position:relative;
+  background:
+    linear-gradient(#fff,#fff) left top/100% 2px no-repeat,
+    linear-gradient(#fff,#fff) left center/100% 2px no-repeat,
+    linear-gradient(#fff,#fff) left bottom/100% 2px no-repeat;
+}
+/* 關閉舊的偽元素畫線，避免疊出第4條 */
+.menu-ico::before,
+.menu-ico::after{ content:none !important; }
+
+/* —— 品牌名稱過長時不換行（若你檔內已有，這段等於保險覆寫） —— */
+.brand span{
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  max-width:140px; display:inline-block; vertical-align:middle;
+}
+
+/* =========================================================
+   喵力聯盟：等級條 / 投票條 / 人事祖譜元件
+   ========================================================= */
+
+/* XP 進度條（聯盟等級） */
+#allyBarWrap{
+  height:10px; border-radius:999px; background:#eef2f4; overflow:hidden;
+}
+#allyBar{
+  height:100%; width:0%;
+  background:linear-gradient(90deg,#ff9a6a,#ff7f50);
+  transition:width .35s ease;
+}
+
+/* 卸任投票條 */
+#voteBarWrap{
+  height:8px; border-radius:999px; background:#f1f5f9; overflow:hidden;
+}
+#voteBar{
+  height:100%; width:0%; background:#111; transition:width .25s ease;
+}
+
+/* 祖譜列排 */
+.gene-row{
+  display:flex; flex-wrap:wrap; gap:10px;
+}
+
+/* 成員卡片（頭貼 + 名稱 + 戰力 + 階級 Badge） */
+.gene-card{
+  display:flex; align-items:center; gap:10px;
+  min-width:220px; padding:10px 12px;
+  background:#f8fafb; border:1px solid #eef2f4;
+  border-radius:14px; box-shadow:0 1px 0 rgba(0,0,0,.02);
+}
+.gene-card:hover{ box-shadow:0 6px 18px rgba(0,0,0,.06); transform:translateY(-1px); transition:.2s ease; }
+
+.gene-ava{
+  width:36px; height:36px; border-radius:50%; object-fit:cover; background:#e5e7eb;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);
+}
+.gene-meta{ display:flex; flex-direction:column; line-height:1.2; }
+.gene-meta b{ font-weight:800; }
+.gene-meta .tiny{ color:#64748b; }
+
+.badge{
+  margin-left:auto;
+  display:inline-block; font-size:12px; font-weight:800; letter-spacing:.25px;
+  padding:2px 8px; border-radius:999px; color:#111; background:#fde1d4;
+  box-shadow:inset 0 -1px 0 rgba(0,0,0,.06);
+}
+
+/* 小工具字型與對齊 */
+.align-right{ text-align:right; }
+.tiny{ font-size:12px; opacity:.75; }
+.mono{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+               "Liberation Mono", "Courier New", monospace;
+}
+
+/* 手機友善：卡片收闔間距更緊湊 */
+@media (max-width:480px){
+  .gene-card{ min-width:unset; width:100%; }
+}
+
+/* =========================================================
+   舊公會與新聯盟的互通視覺微調（輕量）
+   ========================================================= */
+
+/* 卡片標題與說明行距一致 */
+.section-head .section-sub{ color:var(--l-muted); margin:.25rem 0 0; }
+
+/* 投票區與提示的距離更舒服 */
+#voteBox{ padding:.25rem 0 .5rem; }
+#voteHint{ color:#64748b; }
+
+/* 成員選單與角色選單在窄螢幕排版更穩定 */
+#allyMemberSelect, #allyRoleSelect{ min-width:0; }
+
+/* 表格列在深色/亮色主題下邊界微弱，避免太重 */
+.table th, .table td{ border-bottom:1px solid #eef2f4; }
+
+/* 晶片/導航保留你原本的霧面感（若先前段落已有同名規則，此段為兼容覆寫） */
+.chip{
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(12px) saturate(160%);
+  -webkit-backdrop-filter:blur(12px) saturate(160%);
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+#whoText.who{ color:rgba(0,0,0,.88); font-weight:600; }
+
+/* —— 完 —— */
