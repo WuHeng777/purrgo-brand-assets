@@ -1,3 +1,5 @@
+V14 html
+
 <!doctype html>
 <html lang="zh-Hant">
 <head>
@@ -18,26 +20,42 @@
   /* 抽屜選單層級一定高於背景與浮動按鈕 */
   #menu { position: fixed; z-index: 10010; }
   #menuBackdrop { position: fixed; z-index: 10000; }
-  .fab { z-index: 9990; } /* 以免浮動按鈕擋到抽屜右側 */
-  /* 若有全局把 a 設成 pointer-events:none 的樣式，這裡強制開啟 */
+  .fab { z-index: 9990; }
   #menu a { pointer-events: auto; }
+
   /* —— 強制漢堡顯示三條線（不靠偽元素），避免被舊規則覆蓋 —— */
-button.menu-toggle{
-  width:44px;height:44px;border:none;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;padding:0;
-  background:rgba(0,0,0,.92) !important; color:#fff !important;
-}
-button.menu-toggle > .menu-ico{
-  display:block !important; width:22px; height:16px; position:relative;
-  /* 三條線用三個背景，任何瀏覽器都吃得到 */
-  background:
-    linear-gradient(#fff,#fff) left top/100% 2px no-repeat,
-    linear-gradient(#fff,#fff) left center/100% 2px no-repeat,
-    linear-gradient(#fff,#fff) left bottom/100% 2px no-repeat !important;
-}
-/* 把舊版利用偽元素畫線的規則「關掉」 */
-.menu-ico::before, .menu-ico::after{ content:none !important; }  
+  button.menu-toggle{
+    width:44px;height:44px;border:none;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;padding:0;
+    background:rgba(0,0,0,.92) !important; color:#fff !important;
+  }
+  button.menu-toggle > .menu-ico{
+    display:block !important; width:22px; height:16px; position:relative;
+    background:
+      linear-gradient(#fff,#fff) left top/100% 2px no-repeat,
+      linear-gradient(#fff,#fff) left center/100% 2px no-repeat,
+      linear-gradient(#fff,#fff) left bottom/100% 2px no-repeat !important;
+  }
+  .menu-ico::before, .menu-ico::after{ content:none !important; }
+
+  /* === 喵力聯盟（本頁新增視覺） === */
+  #allyBarWrap{height:10px;border-radius:999px;background:#eef2f4;overflow:hidden}
+  #allyBar{height:100%;width:0;background:linear-gradient(90deg,#ff9a6a,#ff7f50)}
+  #voteBarWrap{height:8px;border-radius:999px;background:#f1f5f9;overflow:hidden}
+  #voteBar{height:100%;width:0;background:#111}
+  .gene-row{display:flex;flex-wrap:wrap;gap:10px}
+  .gene-card{
+    display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;
+    background:#f8fafb;border:1px solid #eef2f4;min-width:220px;
+  }
+  .gene-ava{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#e5e7eb}
+  .gene-meta{display:flex;flex-direction:column;line-height:1.2}
+  .badge{display:inline-block;background:#111;color:#fff;border-radius:999px;padding:2px 8px;font-size:12px}
+  .align-right{text-align:right}
+  .tiny{font-size:12px;opacity:.7}
+  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
   </style>
+
   <!-- ✅ Leaflet CSS 必須在 head 先載入 -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
 </head>
@@ -59,7 +77,6 @@ button.menu-toggle > .menu-ico{
       </div>
 
       <!-- 手機：漢堡 -->
-      <!-- 取代現有的漢堡按鈕 -->
       <button class="menu-toggle" aria-label="開啟選單" onclick="openMenu()">
         <span class="menu-ico" aria-hidden="true"></span>
       </button>
@@ -78,11 +95,11 @@ button.menu-toggle > .menu-ico{
         <span class="pill">PurrGo 喵來速</span>
         <h1 class="hero-title">便利 × 可愛 × 永續 × 共創</h1>
         <p class="muted">
-          用創新配送＋公會制度，讓補給更聰明、更便宜、更好玩。把「買貓砂」變成有成就感的里程碑遊戲。
+          用創新配送＋喵力聯盟共創制度，讓補給更聰明、更便宜、更好玩。把「買貓砂」變成有成就感的里程碑遊戲。
         </p>
         <div class="inline mt-1">
           <a class="btn" onclick="showPage('products')">開始探索產品</a>
-          <a class="btn secondary" onclick="showPage('guild')">加入貓奴公會</a>
+          <a class="btn secondary" onclick="showPage('guild')">加入喵力聯盟</a>
           <a class="btn secondary" onclick="showPage('about')">了解品牌理念</a>
         </div>
       </div>
@@ -141,16 +158,103 @@ button.menu-toggle > .menu-ico{
     </section>
   </section>
 
-  <!-- ============ 公會 / 健檢 ============ -->
+  <!-- ============ 喵力聯盟（公會） ============ -->
   <section id="page-guild" class="page" hidden>
-    <div class="section-caption">公會</div>
+    <div class="section-caption">喵力聯盟（公會）</div>
 
+    <!-- === 喵力聯盟（新功能整合；舊公會保留在下方） === -->
+    <section class="card">
+      <header class="section-head inline space-between">
+        <div>
+          <span class="pill">Alliance</span>
+          <h2 class="mt-0">喵力聯盟（整合版）</h2>
+          <p class="section-sub">等級、容量、人事、7日未上線可發起卸任投票、祖譜階級、任務掛鉤。</p>
+        </div>
+        <div class="align-right">
+          <div class="muted">人數：<b id="allyCount">0</b> / <b id="allyCap">0</b></div>
+          <div class="muted">等級：<b id="allyLv">0</b> ｜ XP：<b id="allyXpNow">0</b> / <b id="allyXpNeed">0</b></div>
+        </div>
+      </header>
+
+      <!-- XP 進度條 -->
+      <div id="allyBarWrap" class="mt-1"><div id="allyBar"></div></div>
+
+      <div class="grid g-2 mt-2">
+        <!-- 左：治理與投票 -->
+        <div>
+          <h3 class="mt-0">治理與卸任投票</h3>
+          <div class="muted" id="allyLeaderMeta">—</div>
+          <div class="inline mt-1">
+            <button class="btn" id="btnStartVote" onclick="allyStartVote()">發起卸任投票</button>
+            <button class="btn secondary" onclick="allyPingLeader()">提醒盟主上線</button>
+          </div>
+          <div class="mt-1">
+            <div class="tiny" id="voteHint">若盟主連續 7 日未上線，成員可發起卸任投票。需 ≥ 80% 成員同意即生效。</div>
+            <div id="voteBox" class="mt-1" hidden>
+              <div class="inline">
+                <button class="btn" id="btnVoteYes" onclick="allyCastVote(true)">同意</button>
+                <button class="btn secondary" id="btnVoteNo" onclick="allyCastVote(false)">不同意</button>
+              </div>
+              <div class="mt-1">
+                <div id="voteBarWrap"><div id="voteBar"></div></div>
+                <div class="muted mt-0">
+                  進度：<b id="voteYes">0</b> / <b id="voteNeed">0</b>（<span id="votePct">0%</span>）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右：人事與祖譜 -->
+        <div>
+          <h3 class="mt-0">人事與祖譜階級</h3>
+          <div class="muted">盟主可調整成員階級；所有成員依戰力自動分佈為：官職5名→鑽石→黃金→白銀→青銅。</div>
+          <div class="inline mt-1">
+            <select id="allyMemberSelect" class="input" style="max-width:220px"></select>
+            <select id="allyRoleSelect" class="input" style="max-width:180px">
+              <option value="leader">盟主</option>
+              <option value="officer">官職</option>
+              <option value="diamond">鑽石貓奴</option>
+              <option value="gold">黃金貓奴</option>
+              <option value="silver">白銀貓奴</option>
+              <option value="bronze">青銅貓奴</option>
+            </select>
+            <button class="btn" onclick="allySetRole()">調整階級</button>
+          </div>
+          <div class="tiny mt-0">（只有盟主可把他人設為盟主；一般成員可發起投票或調整自己介紹）</div>
+        </div>
+      </div>
+
+      <!-- 祖譜視覺（頭貼 + 名稱 + 戰力） -->
+      <div class="mt-2">
+        <h4 class="mt-0">盟主</h4>
+        <div id="geneLeader" class="gene-row"></div>
+
+        <h4 class="mt-1">官職（最多 5 名）</h4>
+        <div id="geneOfficers" class="gene-row"></div>
+
+        <h4 class="mt-1">鑽石貓奴</h4>
+        <div id="geneDiamond" class="gene-row"></div>
+
+        <h4 class="mt-1">黃金貓奴</h4>
+        <div id="geneGold" class="gene-row"></div>
+
+        <h4 class="mt-1">白銀貓奴</h4>
+        <div id="geneSilver" class="gene-row"></div>
+
+        <h4 class="mt-1">青銅貓奴</h4>
+        <div id="geneBronze" class="gene-row"></div>
+      </div>
+    </section>
+    <!-- === /喵力聯盟（新） === -->
+
+    <!-- === 舊公會內容（完整保留） === -->
     <section class="band">
       <header class="section-head">
         <div>
           <span class="pill">Guild</span>
           <h2 class="mt-0">公會制度：一起成長、一起更省</h2>
-          <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務…</p>
+          <p class="section-sub">創立門檻、VIP 等級、貢獻條、每日任務…（此區完整保留）</p>
         </div>
       </header>
 
@@ -222,6 +326,7 @@ button.menu-toggle > .menu-ico{
         </table>
       </section>
     </section>
+    <!-- === /舊公會 === -->
   </section>
 
   <!-- ============ 據點 / 地圖 ============ -->
@@ -338,7 +443,7 @@ button.menu-toggle > .menu-ico{
     <section class="card">
       <span class="pill">About</span>
       <h2 class="mt-0">我們相信「便利 × 可愛 × 永續 × 共創」</h2>
-      <p class="muted">用「創新配送」結合「公會化社群」；永續思維，和貓奴們一起把日常消耗品變成參與式里程碑。</p>
+      <p class="muted">用「創新配送」結合「喵力聯盟化社群」；永續思維，和貓奴們一起把日常消耗品變成參與式里程碑。</p>
     </section>
   </section>
 
@@ -459,7 +564,7 @@ button.menu-toggle > .menu-ico{
 <!-- ✅ Leaflet JS 放在 body 結尾 -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
 
-<!-- ===== Main Script（沿用 V13，加入地圖穩定化） ===== -->
+<!-- ===== Main Script（沿用 V13，加入喵力聯盟擴充） ===== -->
 <script>
 /* ===== 全域狀態（localStorage） ===== */
 const LS_KEY = 'purrgoState';
@@ -475,6 +580,11 @@ state.blocks  ||= [];
 state.chats   ||= {};           // name -> [{text, me:true/false, time}]
 state.videos  ||= [];
 state.delivery ||= [];          // 配送申請紀錄
+
+/* ===== 喵力聯盟：新增資料結構 ===== */
+state.guild.xp ||= 0;                       // 聯盟 XP（影響 Lv.0~99）
+state.guild.members ||= [];                 // {uid,name,role,avatar,power,lastActiveISO}
+state.guild.voting ||= null;                // {startedAtISO, votes:{uid:true/false}}
 save();
 
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); renderAll(); }
@@ -488,9 +598,9 @@ function showPage(sec){
   });
   closeMenu();
   location.hash = '#'+sec;
-  if(sec==='kiosk'){ setTimeout(initMap, 250); } // ⏱ 延後以避免白屏
+  if(sec==='kiosk'){ setTimeout(initMap, 250); }
   if(sec==='photos') { renderWall(); }
-  if(sec==='guild')  { renderVet(); }
+  if(sec==='guild')  { renderVet(); allyRender(); }
   if(sec==='community'){ renderChatSelectors(); renderChat(); }
 }
 function navTo(id){ closeMenu(); showPage(id); return false; }
@@ -501,7 +611,7 @@ function openMenu(){ el('menu').classList.add('open'); el('menuBackdrop').classL
 function closeMenu(){ el('menu').classList.remove('open'); el('menuBackdrop').classList.remove('show'); }
 
 /* ===== 水平捲動 ===== */
-function scrollH(id,dir){ const el=document.getElementById(id); if(!el) return; el.scrollBy({left: dir*(el.clientWidth*0.9), behavior:'smooth'}); }
+function scrollH(id,dir){ const elc=document.getElementById(id); if(!elc) return; elc.scrollBy({left: dir*(elc.clientWidth*0.9), behavior:'smooth'}); }
 
 /* ===== 登入 / 登出（不自動聚焦） ===== */
 function openAuth(){ el('authDlg').showModal(); setTimeout(()=>el('authNoFocus').focus(),0); }
@@ -512,6 +622,8 @@ function doLogin(){
   const phone = el('authPhone').value.trim();
   if(!id || !pwd || !phone){ alert('請填寫 ID / 密碼 / 手機'); return; }
   state.user.id = id; state.user.phone = phone;
+  // 自動把本人加入喵力聯盟成員清單（若尚未加入）
+  ensureMe();
   save(); closeAuth();
 }
 function logout(){ state.user.id=''; save(); }
@@ -674,8 +786,9 @@ function uploadVet(){
   const pid=el('vetPet').value, city=el('vetCity').value, hosp=el('vetHospital').value;
   const f=el('vetFile').files[0]; if(!f) return alert('請選擇檔案');
   state.vet.push({ petId: pid, city, hospital:hosp, fileName:f.name, time:new Date().toLocaleString() });
-  state.guild.contribution+=200; save();
-  alert('已上傳（示範）並獲得 +200 公會貢獻');
+  state.guild.contribution+=200; state.guild.xp+=50; // 健檢也給點聯盟 XP
+  save();
+  alert('已上傳（示範）並獲得 +200 公會貢獻、聯盟 XP +50');
 }
 function renderVet(){
   renderHospitals();
@@ -686,7 +799,7 @@ function renderVet(){
   }).join('<br>');
 }
 
-/* ===== 公會 ===== */
+/* ===== 公會基本（舊） ===== */
 const GUILD_CREATE_NEED = 1200;
 function renderGuild(){
   el('guildName').textContent = state.guild.name||'（尚未創立）';
@@ -696,9 +809,12 @@ function renderGuild(){
 function createGuild(){
   if((state.user.lifetimeSpend||0) < GUILD_CREATE_NEED){ return alert('尚未達到創立門檻：累積消費 $1,200'); }
   const name = prompt('輸入公會名稱'); if(!name) return;
-  state.guild.name=name; state.guild.level=1; save(); alert('公會已創立！');
+  state.guild.name=name; state.guild.level=1;
+  // 若第一次建立，初始化喵力聯盟成員
+  ensureMe(); ensureLeaderExists();
+  save(); alert('公會已創立！');
 }
-function contribute(n){ if(!state.guild.name) return alert('請先創立公會'); state.guild.contribution += n; if(state.guild.contribution>= (state.guild.level*500)) { state.guild.level++; alert('公會升級！'); } save(); }
+function contribute(n){ if(!state.guild.name) return alert('請先創立公會'); state.guild.contribution += n; state.guild.xp += Math.max(10, Math.floor(n/2)); if(state.guild.contribution>= (state.guild.level*500)) { state.guild.level++; alert('公會升級！'); } save(); }
 function mockWar(){ if(!state.guild.name) return alert('先創立公會'); const add=Math.floor(Math.random()*500+100); const tr=document.createElement('tr'); tr.innerHTML=`<td>*</td><td>${state.guild.name}</td><td>你的區域</td><td>+${add}</td>`; el('warTable').prepend(tr); }
 
 /* ===== 產品 / 購物車 ===== */
@@ -735,7 +851,8 @@ function checkout(){
   state.user.lifetimeSpend = (state.user.lifetimeSpend||0) + sum;
   state.user.vipXp += Math.round(sum/10);
   state.user.energy += Math.round(sum/20);
-  state.cart=[]; alert(`結帳成功！累積消費 +$${sum.toLocaleString()}，VIP XP 與能量已增加`);
+  state.guild.xp += Math.round(sum/8); // 消費給聯盟 XP
+  state.cart=[]; alert(`結帳成功！累積消費 +$${sum.toLocaleString()}，VIP XP 與能量已增加；聯盟 XP 也成長`);
   save();
 }
 function openDetail(p){
@@ -879,7 +996,7 @@ function submitDelivery(e){
   return false;
 }
 
-/* ===== 短影片 ===== */
+/* ===== 影片 ===== */
 function addVideo(e){
   const f=e.target.files[0]; if(!f) return;
   const url=URL.createObjectURL(f);
@@ -903,8 +1020,6 @@ let _map, _mapReady=false;
 async function initMap(){
   const mapEl = document.getElementById('map');
   if(!mapEl) return;
-
-  // 等到容器可見且具備尺寸再初始化（避免白屏）
   const waitVisible = () => {
     const style = getComputedStyle(mapEl);
     const rect = mapEl.getBoundingClientRect();
@@ -916,7 +1031,6 @@ async function initMap(){
       _mapReady = true;
       _map.setView([25.0330,121.5654],12);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(_map);
-      // 標記
       fetch('./data/locations.json',{cache:'no-cache'})
         .then(r=>r.json())
         .then(points=>{
@@ -929,14 +1043,10 @@ async function initMap(){
         })
         .catch(()=>{});
     }
-    // 額外再重算一次尺寸
     setTimeout(()=>{ _map.invalidateSize(); }, 200);
   };
   waitVisible();
 }
-
-/* ===== 聯絡表單 ===== */
-function submitForm(e){ e.preventDefault(); alert('已收到您的訊息（示範）'); e.target.reset(); return false; }
 
 /* ===== 小工具 ===== */
 function el(id){ return document.getElementById(id); }
@@ -952,34 +1062,232 @@ async function renderAll(){
   renderVideos();
   renderVet();
   renderWall();
+  allyRender(); // ← 新增
 }
 function boot(){
   restorePage();
   loadBreeds();
   loadProducts();
+  ensureMe(); ensureLeaderExists();
   if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
 }
-// 保險：用事件代理處理選單點擊
-document.addEventListener('DOMContentLoaded', () => {
-  const menu = document.getElementById('menu');
-  if (!menu) return;
-  menu.addEventListener('click', (e) => {
-    const a = e.target.closest('a[href^="#"]');
-    if (!a) return;
-    e.preventDefault();
-    const id = a.getAttribute('href').slice(1);
-    navTo(id); // 會自動 closeMenu + showPage
-  }, { passive: false });
-});
 window.addEventListener('hashchange', restorePage);
 window.addEventListener('DOMContentLoaded', boot);
+
+/* ===========================================================
+   喵力聯盟邏輯（Lv.0~99、容量、人事、投票卸任）
+   =========================================================== */
+/* —— 等級曲線、容量 —— */
+function allyNeedXpFor(level){
+  // 柔和成長：Lv0->1 200xp，之後逐級提高
+  return Math.min(99, level)===0 ? 200 : Math.floor(200 + level*level*35);
+}
+function allyCapacity(level){
+  // Lv0=5；每級 +5；上限 99 級
+  return Math.min(5 + Math.min(level,99)*5, 505);
+}
+
+/* —— 會員集與本人 —— */
+function meUid(){ return state.user.id || 'guest'; }
+function ensureMe(){
+  const uid = meUid();
+  if(uid==='guest') return;
+  let m = state.guild.members.find(x=>x.uid===uid);
+  if(!m){
+    const petAva = state.pets[0]?.avatar || './logo/logo-192.png';
+    m = {
+      uid, name: compactId(uid),
+      role: state.guild.members.length? 'bronze':'leader', // 第一位自動領袖
+      avatar: petAva, power: 100 + Math.floor(Math.random()*100),
+      lastActiveISO: new Date().toISOString()
+    };
+    state.guild.members.push(m);
+    // 初始化 5 個官職空位由系統占位（可刪除/覆蓋）
+  }
+  // 更新最後上線
+  m.lastActiveISO = new Date().toISOString();
+  save();
+}
+function ensureLeaderExists(){
+  if(!state.guild.members.length) return;
+  if(!state.guild.members.some(m=>m.role==='leader')){
+    const top = [...state.guild.members].sort((a,b)=>b.power-a.power)[0];
+    if(top) top.role='leader';
+    save();
+  }
+}
+
+/* —— 人事：設定角色（含官職上限 5） —— */
+function allySetRole(){
+  const uid = el('allyMemberSelect').value;
+  const role = el('allyRoleSelect').value;
+  if(!uid) return;
+  const me = state.guild.members.find(x=>x.uid===meUid());
+  const to = state.guild.members.find(x=>x.uid===uid);
+  if(!to) return;
+
+  const isLeader = me && me.role==='leader';
+  if(role==='leader' && !isLeader){ return alert('只有盟主可以指派新的盟主'); }
+
+  if(role==='officer'){
+    const officers = state.guild.members.filter(m=>m.role==='officer' || m.role==='leader');
+    if(officers.filter(o=>o.role==='officer').length>=5 && to.role!=='officer'){
+      return alert('官職名額已滿（5 名）');
+    }
+  }
+  // 若把別人設為 leader，現任領袖降為鑽石
+  if(role==='leader' && isLeader){
+    const cur = state.guild.members.find(x=>x.role==='leader');
+    if(cur) cur.role='diamond';
+  }
+  to.role = role;
+  state.guild.xp += 5; // 小幅增加 XP（人事互動）
+  save();
+}
+
+/* —— 投票：盟主連續 7 日未上線才能啟動 —— */
+function leaderInactiveDays(){
+  const leader = state.guild.members.find(m=>m.role==='leader');
+  if(!leader || !leader.lastActiveISO) return 0;
+  const ms = Date.now() - new Date(leader.lastActiveISO).getTime();
+  return Math.floor(ms / (1000*60*60*24));
+}
+function allyStartVote(){
+  if(!state.guild.members.length) return alert('尚無成員');
+  const inactive = leaderInactiveDays();
+  if(inactive < 7) return alert(`盟主最近 ${inactive} 天內有上線，未達 7 日門檻`);
+
+  state.guild.voting = { startedAtISO: new Date().toISOString(), votes:{} };
+  save();
+  alert('已發起卸任投票！');
+}
+function allyCastVote(yes){
+  const v = state.guild.voting; if(!v){ return; }
+  const uid = meUid(); if(uid==='guest') return alert('請先登入');
+  v.votes[uid] = !!yes;
+  save();
+  allyTryResolveVote();
+}
+function allyTryResolveVote(){
+  const v = state.guild.voting; if(!v) return;
+  const total = state.guild.members.length;
+  const need = Math.ceil(total*0.8); // 80%
+  const yes = Object.values(v.votes).filter(Boolean).length;
+
+  // 更新 UI（即時）
+  const pct = total? Math.round((yes/need)*100):0;
+  el('voteYes').textContent = yes;
+  el('voteNeed').textContent = need;
+  el('votePct').textContent = Math.min(100, pct)+'%';
+  el('voteBar').style.width = Math.min(100, pct)+'%';
+
+  if(yes >= need){
+    // 通過：盟主卸任為成員（青銅），新盟主選戰力最高者
+    const cur = state.guild.members.find(m=>m.role==='leader');
+    if(cur) cur.role='bronze';
+    const next = [...state.guild.members].filter(m=>m.uid!==cur?.uid).sort((a,b)=>b.power-a.power)[0];
+    if(next) next.role='leader';
+    state.guild.voting = null;
+    state.guild.xp += 50;
+    save();
+    alert(`投票通過：新盟主為 ${next?.name||'—'}`);
+  }
+}
+function allyPingLeader(){
+  const leader = state.guild.members.find(m=>m.role==='leader');
+  if(!leader) return alert('尚無盟主');
+  leader.lastActiveISO = new Date().toISOString();
+  save();
+  alert('已提醒盟主（示意）：其最後上線時間更新');
+}
+
+/* —— 渲染：統計、進度、祖譜、選單 —— */
+function allyRender(){
+  // 容量 / 等級
+  const lv = Math.min(99, Math.max(0, state.guild.level|0));
+  // 聯盟專屬等級可用 guild.level 或另行設計；先以 guild.level 展示，若無則按 XP 自動估算
+  let allyLv = lv;
+  // 也可用 XP 推導視覺等級（可選）
+  while(state.guild.xp >= allyNeedXpFor(allyLv)) allyLv++;
+  allyLv = Math.min(allyLv, 99);
+  const cap = allyCapacity(allyLv);
+
+  // 進度條
+  const curNeed = allyNeedXpFor(allyLv);
+  const prevNeed = allyNeedXpFor(Math.max(0, allyLv-1));
+  const base = state.guild.xp - prevNeed;
+  const span = curNeed - prevNeed;
+  const pct = Math.max(0, Math.min(100, Math.round((base/span)*100)));
+
+  el('allyLv').textContent = allyLv;
+  el('allyXpNow').textContent = Math.max(0, base);
+  el('allyXpNeed').textContent = Math.max(1, span);
+  el('allyBar').style.width = pct+'%';
+
+  // 人數與容量
+  const members = state.guild.members;
+  el('allyCount').textContent = members.length;
+  el('allyCap').textContent = cap;
+
+  // 投票盒可見性
+  const canStart = leaderInactiveDays() >= 7;
+  el('btnStartVote').disabled = !canStart;
+  el('voteHint').textContent = canStart ? '可發起投票：盟主已超過 7 日未上線' : '若盟主連續 7 日未上線，方可發起卸任投票';
+  el('voteBox').hidden = !state.guild.voting;
+  if(state.guild.voting){ allyTryResolveVote(); }
+
+  // 成員下拉
+  const sel = el('allyMemberSelect'); sel.innerHTML='';
+  members.forEach(m=>{
+    const o=document.createElement('option'); o.value=m.uid; o.textContent=`${m.name}（${m.role}）`;
+    sel.appendChild(o);
+  });
+
+  // 盟主資訊
+  const leader = members.find(m=>m.role==='leader');
+  el('allyLeaderMeta').innerHTML = leader
+    ? `盟主：<b>${leader.name}</b> ｜ 最後上線：<span class="mono">${(leader.lastActiveISO||'').slice(0,16).replace('T',' ')}</span>｜戰力：${leader.power}`
+    : '—';
+
+  // 祖譜：分組與視覺
+  const group = {
+    leader: members.filter(m=>m.role==='leader'),
+    officer: members.filter(m=>m.role==='officer').slice(0,5),
+    diamond: members.filter(m=>m.role==='diamond').sort((a,b)=>b.power-a.power),
+    gold: members.filter(m=>m.role==='gold').sort((a,b)=>b.power-a.power),
+    silver: members.filter(m=>m.role==='silver').sort((a,b)=>b.power-a.power),
+    bronze: members.filter(m=>m.role==='bronze').sort((a,b)=>b.power-a.power),
+  };
+  const fill = (id, list) => {
+    const box = el(id); box.innerHTML='';
+    list.forEach(m=>{
+      const dv=document.createElement('div');
+      dv.className='gene-card';
+      dv.innerHTML = `
+        <img class="gene-ava" src="${m.avatar||'./logo/logo-192.png'}" alt="">
+        <div class="gene-meta">
+          <b>${m.name}</b>
+          <span class="tiny">戰力 ${m.power} ｜ ${m.role}</span>
+        </div>
+        <span class="badge">${m.role==='leader'?'盟主':m.role==='officer'?'官職':m.role==='diamond'?'鑽石':m.role==='gold'?'黃金':m.role==='silver'?'白銀':'青銅'}</span>
+      `;
+      box.appendChild(dv);
+    });
+  };
+  fill('geneLeader', group.leader);
+  fill('geneOfficers', group.officer);
+  fill('geneDiamond', group.diamond);
+  fill('geneGold', group.gold);
+  fill('geneSilver', group.silver);
+  fill('geneBronze', group.bronze);
+}
 </script>
 
 <!-- 手機：抽屜選單＋背景遮罩 -->
 <nav id="menu" class="menu" aria-label="主選單">
   <a href="#home"      onclick="return navTo('home')">首頁</a>
   <a href="#products"  onclick="return navTo('products')">產品</a>
-  <a href="#guild"     onclick="return navTo('guild')">公會</a>
+  <a href="#guild"     onclick="return navTo('guild')">喵力聯盟（公會）</a>
   <a href="#kiosk"     onclick="return navTo('kiosk')">據點</a>
   <a href="#photos"    onclick="return navTo('photos')">照片牆</a>
   <a href="#community" onclick="return navTo('community')">社群 / 聊天</a>
